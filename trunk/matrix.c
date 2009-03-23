@@ -1,7 +1,7 @@
 /** File: matrix.c
  ** Author: ryanlei
  ** Creation : 2009/03/21
- ** Modification: 2009/03/22
+ ** Modification: 2009/03/23
  ** Description: matrix data structure 
  **/
 #include "matrix.h"
@@ -14,7 +14,7 @@
 
 /***** matrix basics *****/
 /* 顯示矩陣內容( 矩陣、名稱、第三維、INT或DOUBLE )：
- * color: {0,1,2,3} == {R,G,B,ALL}
+ * color: {0,1,2,3} == {RR,GG,BB,ALL}
  * 2D矩陣只有R有值，可以傳R或ALL
  */
 
@@ -22,11 +22,11 @@ void dump( Matrix *source, char *name, COLOR color, TYPE type ) {
 	int row, col, layer, layer_start, layer_end;
 	/* set layer range */
 	switch ( color ) {
-		case R: layer_start = 0; layer_end = 0; break;
-		case G: layer_start = 1; layer_end = 1; break;
-		case B: layer_start = 2; layer_end = 2; break;
+		case RR: layer_start = 0; layer_end = 0; break;
+		case GG: layer_start = 1; layer_end = 1; break;
+		case BB: layer_start = 2; layer_end = 2; break;
 		case ALL: layer_start = 0; layer_end = source->size3 - 1 ; break;
-		default: error( "dump(): parameter COLOR error." );
+		default: error( "dump(): Parameter COLOR error." );
 	}
 	for ( layer = layer_start; layer <= layer_end; layer++ ) {
 		printf( "%s(:,:,%d) =\n\n", name, layer );
@@ -37,13 +37,12 @@ void dump( Matrix *source, char *name, COLOR color, TYPE type ) {
 				else if ( type == DOUBLE )
 					printf( "%7.2lf", source->data[ layer ][ row ][ col ] );
 				else
-					error( "dump(): parameter TYPE error." );
+					error( "dump(): Parameter TYPE error." );
 			}
 			printf( "\n" );
 		}
 		printf( "\n" );
 	}
-	printf( "\n" );
 }
 
 void zeros( Matrix *source, int size1, int size2, int size3 ) {
@@ -230,92 +229,75 @@ void e_mul( Matrix *source1, Matrix *source2, Matrix *dest ) {
 /* 2D矩陣相乘，目前用最trivial的演算法：O^( n^3 )，
  * 將來有必要時可以combine Strassen's algorithm：O( n^2.807 )
  */
-void m_mul( Matrix *source1, Matrix *source2, COLOR color, Matrix *dest ) {
+void m_mul( Matrix *source1, Matrix *source2, COLOR color1, COLOR color2, Matrix *dest ) {
 	int count, row, col, layer, layer_start, layer_end;
 	int size11 = source1->size1, size21 = source2->size1;
 	int size12 = source1->size2, size22 = source2->size2;
 	int size13 = source1->size3, size23 = source2->size3;
+	int dim1 = 1, dim2 = 1;  // 兩矩陣真正的layer數必須相等，先假設是1
 	/* check dimensions */
-	if ( size12 != size21 || size13 != size23 ) 
-		error( "m_mul(): Dimensions disagree." );	
+	if ( size13 == 1 && ( color1 == GG || color1 == BB ) )
+		error( "m_mul(): source1 has only one layer." );
+	if ( size23 == 1 && ( color2 == GG || color2 == BB ) )
+		error( "m_mul(): source2 has only one layer." );
+	if ( size12 != size21 )
+		error( "m_mul(): Demensions disagree." );
+	if ( color1 == ALL ) dim1 = size13;
+	if ( color2 == ALL ) dim2 = size23;
+	if ( dim1 != dim2 )
+		error( "m_mul(): Layers disagree." );	
 	/* set dimensions */
 	dest->size1 = size11;
 	dest->size2 = size22;
-
-	/* branch on COLOR value */
-	if ( color == ALL ) {
-		dest->size3 = size13;
-		/* memory allocation */
-		dest->data = (double ***) malloc( size13 * sizeof( double ** ) );
-		for ( layer = 0; layer < size13; layer++ ) {
-			dest->data[ layer ] = (double **) malloc( size11 * sizeof( double * ) );
-			for ( row = 0; row < size11; row++ ) {
-				dest->data[ layer ][ row ] = malloc( size22 * sizeof( double ) );
-				for ( col = 0; col < size22; col++ ) {
-					/* initialization */
-					dest->data[ layer ][ row ][ col ] = 0.f;
-					/* multiplication */
-					for ( count = 0; count < size12; count++ ) {
-						/* the [ layer ][ count ][ col ] part has BAD LOCALITY */
-						dest->data[ layer ][ row ][ col ] += 
-						source1->data[ layer ][ row ][ count ] * 
-						source2->data[ layer ][ count ][ col ];
-					}
-				}
-			}
-		}
-	}
-	else {
-		/* only one color component:
-		 * now color = {R,G,B} */
-		dest->size3 = 1;
-		/* memory allocation */
-		dest->data = (double ***) malloc( 1 * sizeof( double ** ) );
-		dest->data[ 0 ] = (double **) malloc( size11 * sizeof( double * ) );
+	dest->size3 = dim1;
+	/* memory allocation */
+	dest->data = (double ***) malloc( dim1 * sizeof( double ** ) );
+	for ( layer = 0; layer < dim1; layer++ ) {
+		dest->data[ layer ] = (double **) malloc( size11 * sizeof( double * ) );
 		for ( row = 0; row < size11; row++ ) {
-			dest->data[ 0 ][ row ] = malloc( size22 * sizeof( double ) );
+			dest->data[ layer ][ row ] = malloc( size22 * sizeof( double ) );
 			for ( col = 0; col < size22; col++ ) {
 				/* initialization */
-				dest->data[ 0 ][ row ][ col ] = 0.f;
+				dest->data[ layer ][ row ][ col ] = 0.f;
 				/* multiplication */
 				for ( count = 0; count < size12; count++ ) {
-						/* the [ layer ][ count ][ col ] part has BAD LOCALITY */
-		 				/* now color = {R,G,B} */
-						dest->data[ 0 ][ row ][ col ] += 
-						source1->data[ color ][ row ][ count ] * 
-						source2->data[ color ][ count ][ col ];
+					/* the [ layer ][ count ][ col ] part has BAD LOCALITY */
+					dest->data[ layer ][ row ][ col ] += 
+					source1->data[ layer ][ row ][ count ] * 
+					source2->data[ layer ][ count ][ col ];
 				}
 			}
 		}
 	}
-}
-
-/* to be added in util.h */
-void error( char *msg ) {
-	fprintf( stderr, "%s\n", msg );
-	exit( EXIT_FAILURE );
 }
 
 #if DEBUG
 int main() {
 	srand( time( NULL ) );
-	Matrix A, B, C, D, E, Ra, Rb;
-	ones( &A, 10, 10, 1 );
-	eye( &B, 6 );
-	RAND( &C, 10, 10, 1, 20, 29 );
-	dump( &C, "C", R, INT );
-	s_pow( &C, 0.5 );
-	dump( &C, "(C^0.5)", R, DOUBLE );
-	RAND( &Ra, 2, 2, 3, 0, 9 );
-	RAND( &Rb, 2, 2, 3, 0, 9 );
-	//dump( &Ra, "Ra", ALL, INT );
-	//dump( &Rb, "Rb", ALL, INT );
-	m_mul( &Ra, &Rb, ALL, &E );
-	//dump( &E, "(Ra * Rb)", ALL, INT );
+	Matrix A, B, C, I, Ra, Rb;
+	
+	ones( &A, 3, 3, 3 );
+	dump( &A, "A", BB, INT );
+	RAND( &Ra, 5, 5, 1, 20, 29 );
+	dump( &Ra, "Ra", ALL, INT );
+	s_add( &Ra, -20.f );
+	s_mul( &Ra, 5 );
+	s_pow( &Ra, 0.5 );
+	dump( &Ra, "((Ra-20)*5)^0.5, ", ALL, DOUBLE );
+
+	eye( &I, 3 );
+	m_mul( &A, &I, GG, RR, &B );
+	dump( &B, "A(:,:,1)*I, ", ALL, INT );
+
+	RAND( &Rb, 3, 3, 3, 0, 9 );
+	dump( &Rb, "Rb ", ALL, INT );
+	m_mul( &Rb, &A, ALL, ALL, &C );
+	dump( &C, "Rb * A ", ALL, INT );
+
 
 	/* free memory space */
-	freeMatrix( &A ); freeMatrix( &B ); freeMatrix( &C ); freeMatrix( &D ); freeMatrix( &E );
-	freeMatrix( &Ra ); freeMatrix( &Rb );
+	freeMatrix( &A ); freeMatrix( &B ); freeMatrix( &C );
+	freeMatrix( &I ); freeMatrix( &Ra ); freeMatrix( &Rb );
 
 }
 
