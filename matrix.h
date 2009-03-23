@@ -16,7 +16,8 @@ typedef struct Matrix {
 } Matrix;
 
 /* matrix basics */
-typedef enum COLOR { R, G, B, ALL } COLOR; // 對於2D矩陣來說，R和ALL意義是一樣的
+typedef enum COLOR { RR, GG, BB, ALL } COLOR; 
+// 對於2D矩陣來說，RR和ALL意義是一樣的
 typedef enum TYPE { INT, DOUBLE } TYPE;
 void dump( Matrix *source, char *name, COLOR color, TYPE type ); 
 // 顯示矩陣內容( 矩陣、名稱、第三維、INT或DOUBLE )
@@ -37,9 +38,7 @@ void m_add( Matrix *source1, Matrix *source2, Matrix *dest );
 // 元素對應相加，sources不可和dest相同
 void e_mul( Matrix *source1, Matrix *source2, Matrix *dest ); 
 // 元素對應相乘，sources不可和dest相同
-void m_mul( Matrix *source1, Matrix *source2, COLOR color, Matrix *dest ); 
-// 2D矩陣相乘，sources不可和dest相同
+void m_mul( Matrix *source1, Matrix *source2, COLOR color1, COLOR color2, Matrix *dest ); 
+// 2D矩陣相乘，sources皆可指定用哪些layer，sources不可和dest相同
 
-/* to be added in util.h */
-void error( char *msg ); // 錯誤訊息，並中斷程式
 
