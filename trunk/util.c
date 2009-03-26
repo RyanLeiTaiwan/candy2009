@@ -1,7 +1,7 @@
 /** File: util.h
  ** Author: iopic, ryanlei
  ** Creation : 2009/03/23
- ** Modification: 2009/03/23
+ ** Modification: 2009/03/26
  ** Description: utility functions
  **/
 #include "util.h"
@@ -14,6 +14,13 @@ void error( char *msg ) {
 }
 
 void cos_sin_table( double COS[], double SIN[] ) {	
-	
+   
+   int i; 
+   double r=M_PI/180;
+   
+   for(i=0;i<180;i++){
+      SIN[i]= sin(r*i);
+      COS[i]= cos(r*i);      
+   }  
 	
 }
