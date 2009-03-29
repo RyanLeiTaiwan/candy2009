@@ -51,11 +51,11 @@ void zeros( Matrix *source, int size1, int size2, int size3 ) {
 	source->size2 = size2;
 	source->size3 = size3;
 	/* memory allocation */
-	source->data = (double ***) malloc( size3 * sizeof( double ** ) );
+	source->data = (float ***) malloc( size3 * sizeof( float ** ) );
 	for ( layer = 0; layer < size3; layer++ ) {
-		source->data[ layer ] = (double **) malloc( size1 * sizeof( double *) );
+		source->data[ layer ] = (float **) malloc( size1 * sizeof( float *) );
 		for ( row = 0; row < size1; row++ ) {
-			source->data[ layer ][ row ] = (double *) malloc( size2 * sizeof( double ) );
+			source->data[ layer ][ row ] = (float *) malloc( size2 * sizeof( float ) );
 			/* initialization */
 			for ( col = 0; col < size2; col++ ) {
 				source->data[ layer ][ row ][ col ] = 0.f;
@@ -71,11 +71,11 @@ void ones( Matrix *source, int size1, int size2, int size3 ) {
 	source->size2 = size2;
 	source->size3 = size3;
 	/* memory allocation */
-	source->data = (double ***) malloc( size3 * sizeof( double ** ) );
+	source->data = (float ***) malloc( size3 * sizeof( float ** ) );
 	for ( layer = 0; layer < size3; layer++ ) {
-		source->data[ layer ] = (double **) malloc( size1 * sizeof( double *) );
+		source->data[ layer ] = (float **) malloc( size1 * sizeof( float *) );
 		for ( row = 0; row < size1; row++ ) {
-			source->data[ layer ][ row ] = (double *) malloc( size2 * sizeof( double ) );
+			source->data[ layer ][ row ] = (float *) malloc( size2 * sizeof( float ) );
 			/* initialization */
 			for ( col = 0; col < size2; col++ ) {
 				source->data[ layer ][ row ][ col ] = 1.f;
@@ -91,10 +91,10 @@ void eye( Matrix *source, int size ) {
 	source->size2 = size;
 	source->size3 = 1;  /* Identity matrix 一律是2D方陣 */
 	/* memory allocation */
-	source->data = (double ***) malloc( 1 * sizeof( double ** ) );
-	source->data[ 0 ] = (double **) malloc( size * sizeof( double * ) );
+	source->data = (float ***) malloc( 1 * sizeof( float ** ) );
+	source->data[ 0 ] = (float **) malloc( size * sizeof( float * ) );
 	for ( row = 0; row < size; row++ ) {
-		source->data[ 0 ][ row ] = (double *) malloc( size * sizeof( double ) );
+		source->data[ 0 ][ row ] = (float *) malloc( size * sizeof( float ) );
 		/* initialization */
 		source->data[ 0 ][ row ][ row ] = 1.f;
 	}
@@ -107,23 +107,23 @@ void RAND( Matrix *source, int size1, int size2, int size3, int lower, int upper
 	source->size2 = size2;
 	source->size3 = size3;
 	/* memory allocation */
-	source->data = (double ***) malloc( size3 * sizeof( double ** ) );
+	source->data = (float ***) malloc( size3 * sizeof( float ** ) );
 	for ( layer = 0; layer < size3; layer++ ) {
-		source->data[ layer ] = (double **) malloc( size1 * sizeof( double * ) );
+		source->data[ layer ] = (float **) malloc( size1 * sizeof( float * ) );
 		for ( row = 0; row < size1; row++ ) {
-			source->data[ layer ][ row ] = (double *) malloc( size2 * sizeof( double ) );
+			source->data[ layer ][ row ] = (float *) malloc( size2 * sizeof( float ) );
 			/* initialization */
 			for ( col = 0; col < size2; col++ ) {
 				/* random number between [ lower, upper ] */
 				source->data[ layer ][ row ][ col ] = 
-					(double) ( rand() % (upper-lower+1) + lower );
+					(float) ( rand() % (upper-lower+1) + lower );
 			}
 		}
 	}
 }
 
 /***** scalar operations *****/
-void s_add( Matrix *source, double number ) {
+void s_add( Matrix *source, float number ) {
 	int row, col, layer;
 	for ( layer = 0; layer < source->size3; layer++ ) {
 		for ( row = 0; row < source->size1; row++ ) {
@@ -134,7 +134,7 @@ void s_add( Matrix *source, double number ) {
 	}
 }
 
-void s_mul( Matrix *source, double number ) {
+void s_mul( Matrix *source, float number ) {
 	int row, col, layer;
 	for ( layer = 0; layer < source->size3; layer++ ) {
 		for ( row = 0; row < source->size1; row++ ) {
@@ -145,12 +145,12 @@ void s_mul( Matrix *source, double number ) {
 	}
 }
 
-void s_pow( Matrix *source, double number ) {
+void s_pow( Matrix *source, float number ) {
 	int row, col, layer;
 	for ( layer = 0; layer < source->size3; layer++ ) {
 		for ( row = 0; row < source->size1; row++ ) {
 			for ( col = 0; col < source->size2; col++ ) {
-				double value = source->data[ layer ][ row ][ col ];
+				float value = source->data[ layer ][ row ][ col ];
 				source->data[ layer ][ row ][ col ] = pow( value, number );
 			}
 		}
@@ -184,11 +184,11 @@ void m_add( Matrix *source1, Matrix *source2, Matrix *dest ) {
 	dest->size2 = size2;
 	dest->size3 = size3;
 	/* memory allocation */
-	dest->data = (double ***) malloc( size3 * sizeof( double ** ) );
+	dest->data = (float ***) malloc( size3 * sizeof( float ** ) );
 	for ( layer = 0; layer < size3; layer++ ) {
-		dest->data[ layer ] = (double **) malloc( size1 * sizeof( double * ) );
+		dest->data[ layer ] = (float **) malloc( size1 * sizeof( float * ) );
 		for ( row = 0; row < size1; row++ ) {
-			dest->data[ layer ][ row ] = malloc( size2 * sizeof( double ) );
+			dest->data[ layer ][ row ] = malloc( size2 * sizeof( float ) );
 			/* addition */
 			for ( col = 0; col < size2; col++ ) {
 				dest->data[ layer ][ row ][ col ] = 
@@ -211,11 +211,11 @@ void e_mul( Matrix *source1, Matrix *source2, Matrix *dest ) {
 	dest->size2 = size2;
 	dest->size3 = size3;
 	/* memory allocation */
-	dest->data = (double ***) malloc( size3 * sizeof( double ** ) );
+	dest->data = (float ***) malloc( size3 * sizeof( float ** ) );
 	for ( layer = 0; layer < size3; layer++ ) {
-		dest->data[ layer ] = (double **) malloc( size1 * sizeof( double * ) );
+		dest->data[ layer ] = (float **) malloc( size1 * sizeof( float * ) );
 		for ( row = 0; row < size1; row++ ) {
-			dest->data[ layer ][ row ] = malloc( size2 * sizeof( double ) );
+			dest->data[ layer ][ row ] = malloc( size2 * sizeof( float ) );
 			/* addition */
 			for ( col = 0; col < size2; col++ ) {
 				dest->data[ layer ][ row ][ col ] = 
@@ -250,11 +250,11 @@ void m_mul( Matrix *source1, Matrix *source2, COLOR color1, COLOR color2, Matrix
 	dest->size2 = size22;
 	dest->size3 = dim1;
 	/* memory allocation */
-	dest->data = (double ***) malloc( dim1 * sizeof( double ** ) );
+	dest->data = (float ***) malloc( dim1 * sizeof( float ** ) );
 	for ( layer = 0; layer < dim1; layer++ ) {
-		dest->data[ layer ] = (double **) malloc( size11 * sizeof( double * ) );
+		dest->data[ layer ] = (float **) malloc( size11 * sizeof( float * ) );
 		for ( row = 0; row < size11; row++ ) {
-			dest->data[ layer ][ row ] = malloc( size22 * sizeof( double ) );
+			dest->data[ layer ][ row ] = malloc( size22 * sizeof( float ) );
 			for ( col = 0; col < size22; col++ ) {
 				/* initialization */
 				dest->data[ layer ][ row ][ col ] = 0.f;
