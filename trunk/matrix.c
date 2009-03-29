@@ -11,12 +11,13 @@
 #include <math.h>
 #define DEBUG 0
 
+extern void error( char * );
+
 /***** matrix basics *****/
 /* 顯示矩陣內容( 矩陣、名稱、第三維、INT或DOUBLE )：
  * color: {0,1,2,3} == {RR,GG,BB,ALL}
  * 2D矩陣只有R有值，可以傳R或ALL
  */
-
 void dump( Matrix *source, char *name, COLOR color, TYPE type ) {
 	int row, col, layer, layer_start, layer_end;
 	/* set layer range */
@@ -25,7 +26,7 @@ void dump( Matrix *source, char *name, COLOR color, TYPE type ) {
 		case GG: layer_start = 1; layer_end = 1; break;
 		case BB: layer_start = 2; layer_end = 2; break;
 		case ALL: layer_start = 0; layer_end = source->size3 - 1 ; break;
-		default: error( "dump(): Parameter COLOR error." );
+		default: error( "dump(): Parameter COLOR error." ); 
 	}
 	for ( layer = layer_start; layer <= layer_end; layer++ ) {
 		printf( "%s(:,:,%d) =\n\n", name, layer );
@@ -158,7 +159,7 @@ void s_pow( Matrix *source, float number ) {
 }
 
 void freeMatrix( Matrix *source ) {
-	int row, col, layer;
+	int row, layer;
 	for ( layer = 0; layer < source->size3; layer++ ) {
 		for ( row = 0; row < source->size1; row++ ) {
 			free( source->data[ layer ][ row ] );
@@ -229,7 +230,7 @@ void e_mul( Matrix *source1, Matrix *source2, Matrix *dest ) {
  * 將來有必要時可以combine Strassen's algorithm：O( n^2.807 )
  */
 void m_mul( Matrix *source1, Matrix *source2, COLOR color1, COLOR color2, Matrix *dest ) {
-	int count, row, col, layer, layer_start, layer_end;
+	int count, row, col, layer;
 	int size11 = source1->size1, size21 = source2->size1;
 	int size12 = source1->size2, size22 = source2->size2;
 	int size13 = source1->size3, size23 = source2->size3;
@@ -297,7 +298,8 @@ int main() {
 	/* free memory space */
 	freeMatrix( &A ); freeMatrix( &B ); freeMatrix( &C );
 	freeMatrix( &I ); freeMatrix( &Ra ); freeMatrix( &Rb );
-
+	
+	return 0;
 }
 
 #endif
