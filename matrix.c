@@ -1,7 +1,7 @@
 /** File: matrix.c
  ** Author: ryanlei
  ** Creation : 2009/03/21
- ** Modification: 2009/03/23
+ ** Modification: 2009/03/29
  ** Description: matrix data structure 
  **/
 #include "matrix.h"
@@ -9,8 +9,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
-
-#define DEBUG 1
+#define DEBUG 0
 
 /***** matrix basics *****/
 /* 顯示矩陣內容( 矩陣、名稱、第三維、INT或DOUBLE )：
