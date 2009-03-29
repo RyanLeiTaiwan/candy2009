@@ -1,5 +1,5 @@
 /** File: image.h
- ** Author: ryanlei 
+ ** Author: Ryan Lei
  ** Creation: 2009/03/29
  ** Modification: 2009/03/29
  ** Description: Image header and read/write, conversion operations.
@@ -54,10 +54,11 @@ typedef struct BMP_palette {
 	uint8 blue;
 	uint8 green;
 	uint8 red;
+	uint8 reserved;
 } BMP_palette;
 
 /**********    function prototypes    **********/
-void imread( char *filename, Matrix *dest );  // dest is not malloced
+void imread( char *filename, Matrix *dest );  // dest is not yet allocted
 void imwrite( char *filename, Matrix *dest );
 void color2Gray( Matrix *source ); // dest is source itself
 void gray2Color( Matrix *source ); // dest is source itself
