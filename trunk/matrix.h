@@ -6,8 +6,8 @@
  **/
 typedef struct Matrix {
 	
-	/* array of values, 先一律用double 3D array */
-	double ***data; /* [ layer ][ row ][ col ] */
+	/* array of values, 先一律用float 3D array */
+	float ***data; /* [ layer ][ row ][ col ] */
 	/* dimensions */
 	int size1; /* row: 碰到row vector的話size1 = 1 */
 	int size2; /* col: 碰到column vector的話size2 = 1 */
@@ -29,9 +29,9 @@ void RAND( Matrix *source, int size1, int size2, int size3, int lower, int upper
 void freeMatrix( Matrix *source ); // 清除矩陣的記憶體空間
 
 /* scalar operations */
-void s_add( Matrix *source, double number ); // 元素加上一個純量
-void s_mul( Matrix *source, double number ); // 元素乘上一個純量（係數積）
-void s_pow( Matrix *source, double number ); // 元素的純量次方 
+void s_add( Matrix *source, float number ); // 元素加上一個純量
+void s_mul( Matrix *source, float number ); // 元素乘上一個純量（係數積）
+void s_pow( Matrix *source, float number ); // 元素的純量次方 
 
 /* matrix or element-wise operations */
 void m_add( Matrix *source1, Matrix *source2, Matrix *dest ); 
