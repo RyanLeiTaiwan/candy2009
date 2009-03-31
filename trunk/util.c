@@ -5,9 +5,7 @@
  ** Description: utility functions
  **/
 #include "util.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
+
 #define DEBUG 0
 
 void error( char *msg ) {
@@ -15,15 +13,15 @@ void error( char *msg ) {
 	    exit( EXIT_FAILURE );
 }
 
-void cos_sin_table( float COS[], float SIN[] ) {	
-   
-	int i; 
+void cos_sin_table( float COS[], float SIN[] ) {
+
+	int i;
 	float r = M_PI/180;
-   
+
 	for( i=0; i<180; i++ ){
     	SIN[i] = sin( r*i );
-      	COS[i] = cos( r*i );      
-	}  
+      	COS[i] = cos( r*i );
+	}
 }
 
 #if DEBUG

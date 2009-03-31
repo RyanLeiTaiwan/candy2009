@@ -1,13 +1,12 @@
 /** File: matrix.h
  ** Author: ryanlei
  ** Creation : 2009/03/21
- ** Modification: 2009/03/22
+ ** Modification: 2009/04/01
  ** Description: matrix data structure
  **/
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <math.h>
+
+#include "util.h"
+
 typedef struct Matrix {
 
 	/* array of values, 先一律用float 3D array */

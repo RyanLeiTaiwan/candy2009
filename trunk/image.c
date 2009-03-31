@@ -1,7 +1,14 @@
+/** File: image.h
+ ** Author: snowm, ryanlei
+ ** Creation: 2009/03/29
+ ** Modification: 2009/04/01
+ ** Description: Image header and read/write, conversion operations.
+                 Handled in "Little-Endian".
+ **/
 #include "image.h"
 #include "util.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 
 void imread( char *filename, Matrix *dest ){  // dest is not yet allocted
