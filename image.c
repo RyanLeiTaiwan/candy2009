@@ -8,11 +8,11 @@
 #include "image.h"
 #include "util.h"
 
-#define DEBUG 0
+#define DEBUG 1
 
 
 void imread( char *filename, Matrix *dest ){  // dest is not yet allocted
-    FILE          *fp_s = NULL;  // source file handler
+    FILE *fp_s = NULL;  // source file handler
     BMP_file_header file_header;
     BMP_info_header info_header;
     uint8 *image_s = NULL; // temp one-dimension array to save
@@ -85,10 +85,15 @@ void gray2Color( Matrix *source ){ // dest is source itself
 #if DEBUG
 int main(){
     Matrix A;
+	clock_t tic, toc;
+	tic = clock();
 
     imread(  "pics/paint_16.bmp", &A );
     dump( &A, "A", BB, INT );
 
+	toc = clock();
+	/* 使用runningTime()來印計時結果 */
+	runningTime( tic, toc );
     return 0;
 
 

@@ -6,7 +6,7 @@
  **/
 #include "matrix.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 extern void error( char * );
 
@@ -270,6 +270,8 @@ void m_mul( Matrix *source1, Matrix *source2, COLOR color1, COLOR color2, Matrix
 
 #if DEBUG
 int main() {
+	clock_t tic, toc;
+	tic = clock();
 	srand( time( NULL ) );
 	Matrix A, B, C, I, Ra, Rb;
 
@@ -292,6 +294,9 @@ int main() {
 	dump( &C, "Rb * A ", ALL, INT );
 
 
+	/* running time */
+	toc = clock();
+	runningTime( tic, toc );
 	/* free memory space */
 	freeMatrix( &A ); freeMatrix( &B ); freeMatrix( &C );
 	freeMatrix( &I ); freeMatrix( &Ra ); freeMatrix( &Rb );

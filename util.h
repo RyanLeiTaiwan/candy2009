@@ -10,4 +10,5 @@
 #include <time.h>
 
 void error( char *msg ); // 錯誤訊息，並中斷程式
+void runningTime( clock_t tic, clock_t toc ); // 計時
 void cos_sin_table( float COS[], float SIN[] ); // cos, sin的建表函式
