@@ -1,11 +1,10 @@
 /** File: matrix.c
  ** Author: ryanlei
  ** Creation : 2009/03/21
- ** Modification: 2009/03/29
+ ** Modification: 2009/04/01
  ** Description: matrix data structure
  **/
 #include "matrix.h"
-
 #define DEBUG 0
 
 extern void error( char * );
@@ -15,7 +14,7 @@ extern void error( char * );
  * color: {0,1,2,3} == {RR,GG,BB,ALL}
  * 2D矩陣只有R有值，可以傳R或ALL
  */
-void dump( Matrix *source, char *name, COLOR color, TYPE type ) {
+void dump( Matrix *source, char *name, COLOR color, int rowBegin, int rowEnd, int colBegin, int colEnd, TYPE type ) {
 	int row, col, layer, layer_start, layer_end;
 	/* set layer range */
 	switch ( color ) {
@@ -25,14 +24,19 @@ void dump( Matrix *source, char *name, COLOR color, TYPE type ) {
 		case ALL: layer_start = 0; layer_end = source->size3 - 1 ; break;
 		default: error( "dump(): Parameter COLOR error." );
 	}
+	/* check row, col range */
+	if ( rowBegin < 0 || rowEnd >= source->size1 || colBegin < 0 || colEnd >= source->size2 ) {
+		error( "dump(): Parameters row or col out of range." );
+	}
+
 	for ( layer = layer_start; layer <= layer_end; layer++ ) {
-		printf( "%s(:,:,%d) =\n\n", name, layer );
-		for ( row = 0; row < source->size1; row++ ) {
-			for ( col = 0; col < source->size2; col++ ) {
+		printf( "%s( %d:%d, %d:%d, %d ) =\n\n", name, rowBegin, rowEnd, colBegin, colEnd, layer );
+		for ( row = rowBegin; row <= rowEnd; row++ ) {
+			for ( col = colBegin; col <= colEnd; col++ ) {
 				if ( type == INT )
 					printf( "%4d", (int) source->data[ layer ][ row ][ col ] );
 				else if ( type == DOUBLE )
-					printf( "%7.2lf", source->data[ layer ][ row ][ col ] );
+					printf( "%7.2f", source->data[ layer ][ row ][ col ] );
 				else
 					error( "dump(): Parameter TYPE error." );
 			}
@@ -270,31 +274,29 @@ void m_mul( Matrix *source1, Matrix *source2, COLOR color1, COLOR color2, Matrix
 
 #if DEBUG
 int main() {
-	clock_t tic, toc;
-	tic = clock();
-	srand( time( NULL ) );
 	Matrix A, B, C, I, Ra, Rb;
+	clock_t tic, toc;
+	srand( time( NULL ) );
 
+	tic = clock();
 	ones( &A, 3, 3, 3 );
-	dump( &A, "A", BB, INT );
+	dump( &A, "A", BB, 0, A.size1-1, 0, A.size2-1, INT );
 	RAND( &Ra, 5, 5, 1, 20, 29 );
-	dump( &Ra, "Ra", ALL, INT );
+	dump( &Ra, "Ra", ALL, 0, Ra.size1-1, 0, Ra.size2-1, INT );
 	s_add( &Ra, -20.f );
 	s_mul( &Ra, 5 );
 	s_pow( &Ra, 0.5 );
-	dump( &Ra, "((Ra-20)*5)^0.5, ", ALL, DOUBLE );
+	dump( &Ra, "((Ra-20)*5)^0.5, ", ALL, 0, Ra.size1-1, 0, Ra.size2-1, DOUBLE );
 
 	eye( &I, 3 );
 	m_mul( &A, &I, GG, RR, &B );
-	dump( &B, "A(:,:,1)*I, ", ALL, INT );
+	dump( &B, "A(:,:,1)*I, ", ALL, 0, B.size1-1, 0, B.size2-1, INT );
 
 	RAND( &Rb, 3, 3, 3, 0, 9 );
-	dump( &Rb, "Rb ", ALL, INT );
+	dump( &Rb, "Rb ", ALL, 0, Rb.size1-1, 0, Rb.size2-1, INT );
 	m_mul( &Rb, &A, ALL, ALL, &C );
-	dump( &C, "Rb * A ", ALL, INT );
+	dump( &C, "Rb * A ", ALL, 0, C.size1-1, 0, C.size2-1, INT );
 
-
-	/* running time */
 	toc = clock();
 	runningTime( tic, toc );
 	/* free memory space */

@@ -89,7 +89,7 @@ int main(){
 	tic = clock();
 
     imread(  "pics/paint_16.bmp", &A );
-    dump( &A, "A", BB, INT );
+    dump( &A, "A", ALL, 0, A.size1-1, 0, A.size2-1, INT );
 
 	toc = clock();
 	/* 使用runningTime()來印計時結果 */
