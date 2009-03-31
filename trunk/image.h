@@ -5,7 +5,10 @@
  ** Description: Image header and read/write, conversion operations.
                  Handled in "Little-Endian".
  **/
+#include <time.h>
 #include "matrix.h"
+
+
 /* Change the typedef settings for your environment, if necessary.
  * Mine is Macbook with Intel x86-64 CPU.
  */
@@ -44,11 +47,11 @@ typedef struct BMP_info_header {
 	uint32 H_resolution; /* horizontal resolution in pixels per meter */
 	uint32 V_resolution; /* vertical resolution in pixels per meter */
 	uint32 used_colors; /* number of colors in image, or zero */
-	uint32 important_colors; /* number of important colors, or zero */	
+	uint32 important_colors; /* number of important colors, or zero */
 } BMP_info_header;
 
 /* BMP Palette */
-/* the color palette is not used when the bitmap is 16-bit or higher; 
+/* the color palette is not used when the bitmap is 16-bit or higher;
  * there are no palette bytes in those BMP files. */
 typedef struct BMP_palette {
 	uint8 blue;

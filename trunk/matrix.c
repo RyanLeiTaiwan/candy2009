@@ -2,13 +2,10 @@
  ** Author: ryanlei
  ** Creation : 2009/03/21
  ** Modification: 2009/03/29
- ** Description: matrix data structure 
+ ** Description: matrix data structure
  **/
 #include "matrix.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <math.h>
+
 #define DEBUG 0
 
 extern void error( char * );
@@ -26,7 +23,7 @@ void dump( Matrix *source, char *name, COLOR color, TYPE type ) {
 		case GG: layer_start = 1; layer_end = 1; break;
 		case BB: layer_start = 2; layer_end = 2; break;
 		case ALL: layer_start = 0; layer_end = source->size3 - 1 ; break;
-		default: error( "dump(): Parameter COLOR error." ); 
+		default: error( "dump(): Parameter COLOR error." );
 	}
 	for ( layer = layer_start; layer <= layer_end; layer++ ) {
 		printf( "%s(:,:,%d) =\n\n", name, layer );
@@ -116,7 +113,7 @@ void RAND( Matrix *source, int size1, int size2, int size3, int lower, int upper
 			/* initialization */
 			for ( col = 0; col < size2; col++ ) {
 				/* random number between [ lower, upper ] */
-				source->data[ layer ][ row ][ col ] = 
+				source->data[ layer ][ row ][ col ] =
 					(float) ( rand() % (upper-lower+1) + lower );
 			}
 		}
@@ -178,8 +175,8 @@ void m_add( Matrix *source1, Matrix *source2, Matrix *dest ) {
 	int size2 = source1->size2;
 	int size3 = source1->size3;
 	/* check dimensions */
-	if ( size1 != source2->size1 || size1 != source2->size2 || size3 != source2->size3 ) 
-		error( "m_add(): Dimensions disagree." );	
+	if ( size1 != source2->size1 || size1 != source2->size2 || size3 != source2->size3 )
+		error( "m_add(): Dimensions disagree." );
 	/* set dimensions */
 	dest->size1 = size1;
 	dest->size2 = size2;
@@ -192,7 +189,7 @@ void m_add( Matrix *source1, Matrix *source2, Matrix *dest ) {
 			dest->data[ layer ][ row ] = malloc( size2 * sizeof( float ) );
 			/* addition */
 			for ( col = 0; col < size2; col++ ) {
-				dest->data[ layer ][ row ][ col ] = 
+				dest->data[ layer ][ row ][ col ] =
 					source1->data[ layer ][ row ][ col ] + source2->data[ layer ][ row ][ col ];
 			}
 		}
@@ -205,8 +202,8 @@ void e_mul( Matrix *source1, Matrix *source2, Matrix *dest ) {
 	int size2 = source1->size2;
 	int size3 = source1->size3;
 	/* check dimensions */
-	if ( size1 != source2->size1 || size1 != source2->size2 || size3 != source2->size3 ) 
-		error( "e_mul(): Dimensions disagree." );	
+	if ( size1 != source2->size1 || size1 != source2->size2 || size3 != source2->size3 )
+		error( "e_mul(): Dimensions disagree." );
 	/* set dimensions */
 	dest->size1 = size1;
 	dest->size2 = size2;
@@ -219,7 +216,7 @@ void e_mul( Matrix *source1, Matrix *source2, Matrix *dest ) {
 			dest->data[ layer ][ row ] = malloc( size2 * sizeof( float ) );
 			/* addition */
 			for ( col = 0; col < size2; col++ ) {
-				dest->data[ layer ][ row ][ col ] = 
+				dest->data[ layer ][ row ][ col ] =
 					source1->data[ layer ][ row ][ col ] * source2->data[ layer ][ row ][ col ];
 			}
 		}
@@ -245,7 +242,7 @@ void m_mul( Matrix *source1, Matrix *source2, COLOR color1, COLOR color2, Matrix
 	if ( color1 == ALL ) dim1 = size13;
 	if ( color2 == ALL ) dim2 = size23;
 	if ( dim1 != dim2 )
-		error( "m_mul(): Layers disagree." );	
+		error( "m_mul(): Layers disagree." );
 	/* set dimensions */
 	dest->size1 = size11;
 	dest->size2 = size22;
@@ -262,8 +259,8 @@ void m_mul( Matrix *source1, Matrix *source2, COLOR color1, COLOR color2, Matrix
 				/* multiplication */
 				for ( count = 0; count < size12; count++ ) {
 					/* the [ layer ][ count ][ col ] part has BAD LOCALITY */
-					dest->data[ layer ][ row ][ col ] += 
-					source1->data[ layer ][ row ][ count ] * 
+					dest->data[ layer ][ row ][ col ] +=
+					source1->data[ layer ][ row ][ count ] *
 					source2->data[ layer ][ count ][ col ];
 				}
 			}
@@ -275,7 +272,7 @@ void m_mul( Matrix *source1, Matrix *source2, COLOR color1, COLOR color2, Matrix
 int main() {
 	srand( time( NULL ) );
 	Matrix A, B, C, I, Ra, Rb;
-	
+
 	ones( &A, 3, 3, 3 );
 	dump( &A, "A", BB, INT );
 	RAND( &Ra, 5, 5, 1, 20, 29 );
@@ -298,7 +295,7 @@ int main() {
 	/* free memory space */
 	freeMatrix( &A ); freeMatrix( &B ); freeMatrix( &C );
 	freeMatrix( &I ); freeMatrix( &Ra ); freeMatrix( &Rb );
-	
+
 	return 0;
 }
 
