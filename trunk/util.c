@@ -13,6 +13,12 @@ void error( char *msg ) {
 	    exit( EXIT_FAILURE );
 }
 
+void runningTime( clock_t tic, clock_t toc ) {
+	printf( "Running Time: %f seconds.\n", 
+		(double) ( toc - tic ) / (double) CLOCKS_PER_SEC );
+}
+
+
 void cos_sin_table( float COS[], float SIN[] ) {
 
 	int i;
