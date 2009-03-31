@@ -1,13 +1,12 @@
 /** File: image.h
- ** Author: Ryan Lei
+ ** Author: ryanlei
  ** Creation: 2009/03/29
- ** Modification: 2009/03/29
+ ** Modification: 2009/04/01
  ** Description: Image header and read/write, conversion operations.
                  Handled in "Little-Endian".
  **/
-#include <time.h>
-#include "matrix.h"
 
+#include "matrix.h"
 
 /* Change the typedef settings for your environment, if necessary.
  * Mine is Macbook with Intel x86-64 CPU.
