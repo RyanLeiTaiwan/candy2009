@@ -43,7 +43,7 @@ void e_mul( Matrix *source1, Matrix *source2, Matrix *dest );
 void m_mul( Matrix *source1, Matrix *source2, COLOR color1, COLOR color2, Matrix *dest ); 
 // 2D矩陣相乘，sources皆可指定用哪些layer，sources不可和dest相同。
 void full_assign( Matrix *source, Matrix *dest, COLOR sColor, COLOR dColor );
-// 全範圍的matrix assignment，可指定兩者的layer。
+// 全範圍的matrix assignment，可指定兩者的layer。假設皆已malloc過。
 void part_assign( Matrix *source, Matrix *dest, 
 	int sRowBegin, int sRowEnd, int sColBegin, int sColEnd, int sLayerBegin, int sLayerEnd,
 	int dRowBegin, int dRowEnd, int dColBegin, int dColEnd, int dLayerBegin, int dLayerEnd );
