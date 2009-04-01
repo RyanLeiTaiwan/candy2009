@@ -37,10 +37,18 @@ void s_pow( Matrix *source, float number ); // 元素的純量次方
 
 /* matrix or element-wise operations */
 void m_add( Matrix *source1, Matrix *source2, Matrix *dest ); 
-// 元素對應相加，sources不可和dest相同
+// 元素對應相加，sources不可和dest相同。
 void e_mul( Matrix *source1, Matrix *source2, Matrix *dest ); 
-// 元素對應相乘，sources不可和dest相同
+// 元素對應相乘，sources不可和dest相同。
 void m_mul( Matrix *source1, Matrix *source2, COLOR color1, COLOR color2, Matrix *dest ); 
-// 2D矩陣相乘，sources皆可指定用哪些layer，sources不可和dest相同
+// 2D矩陣相乘，sources皆可指定用哪些layer，sources不可和dest相同。
+void full_assign( Matrix *source, Matrix *dest, COLOR sColor, COLOR dColor );
+// 全範圍的matrix assignment，可指定兩者的layer。
+void part_assign( Matrix *source, Matrix *dest, 
+	int sRowBegin, int sRowEnd, int sColBegin, int sColEnd, int sLayerBegin, int sLayerEnd,
+	int dRowBegin, int dRowEnd, int dColBegin, int dColEnd, int dLayerBegin, int dLayerEnd );
+// 指定row, col, layer範圍的matrix assignment，兩者皆已malloc過。
+void cross( Matrix *image, COLOR color, Matrix *filter, Matrix *dest );
+// 2D cross-correlation運算，filter必須為2D奇數X奇數且size小於image，邊界用鏡射法。
 
 
