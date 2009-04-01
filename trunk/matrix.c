@@ -7,8 +7,6 @@
 #include "matrix.h"
 #define DEBUG 0
 
-extern void error( char * );
-
 /***** matrix basics *****/
 /* 顯示矩陣內容( 矩陣、名稱、第三維、INT或DOUBLE )：
  * color: {0,1,2,3} == {RR,GG,BB,ALL}
@@ -28,6 +26,11 @@ void dump( Matrix *source, char *name, COLOR color, int rowBegin, int rowEnd, in
 	if ( rowBegin < 0 || rowEnd >= source->size1 || colBegin < 0 || colEnd >= source->size2 ) {
 		error( "dump(): Parameters row or col out of range." );
 	}
+	/* check fake layers */
+	if ( source->size3 == 1 && ( color == GG || color == BB ) ) {
+		error( "dump(): source has only one layer." );
+	}
+
 
 	for ( layer = layer_start; layer <= layer_end; layer++ ) {
 		printf( "%s( %d:%d, %d:%d, %d ) =\n\n", name, rowBegin, rowEnd, colBegin, colEnd, layer );
@@ -272,9 +275,58 @@ void m_mul( Matrix *source1, Matrix *source2, COLOR color1, COLOR color2, Matrix
 	}
 }
 
+void full_assign( Matrix *source, Matrix *dest, COLOR sColor, COLOR dColor ) {
+	int row, col, layer;
+	/* find the actual number of layers */
+	int sLayer = 1, dLayer = 1;
+	if ( sColor == ALL ) sLayer = source->size3;
+	if ( dColor == ALL ) dLayer = dest->size3;
+
+	/* check dimensions */
+	if ( source->size3 == 1 && ( sColor == GG || sColor == BB ) )
+		error( "full_assign(): source has only one layer." );
+	if ( dest->size3 == 1 && ( dColor == GG || dColor == BB ) )
+		error( "full_assign(): dest has only one layer." );
+	if ( source->size1 != dest->size1 || source->size2 != dest->size2 ||
+		sLayer != dLayer ) {
+		error( "full_assign(): Dimensions disagree." );
+	}
+
+	for ( layer = 0; layer < dLayer; layer++ ) {
+		for ( row = 0; row < dest->size1; row++ ) {
+			for ( col = 0; col < dest->size2; col++ ) {
+				dest->data[ layer ][ row ][ col ] = source->data[ layer ][ row ][ col ];
+			}
+		}
+	}
+}
+
+/* 指定row, col, layer範圍的matrix assignment */
+void part_assign( Matrix *source, Matrix *dest, 
+    int sRowBegin, int sRowEnd, int sColBegin, int sColEnd, int sLayerBegin, int sLayerEnd,
+	int dRowBegin, int dRowEnd, int dColBegin, int dColEnd, int dLayerBegin, int dLayerEnd ) {
+
+	int sRow, sCol, sLayer, dRow, dCol, dLayer;
+	/* check dimensions */
+	if ( sRowEnd - sRowBegin != dRowEnd - dRowBegin ||
+		sColEnd - sColBegin != dColEnd - dColBegin ||
+		sLayerEnd - sLayerBegin != dLayerEnd - dLayerBegin ) {
+		error( "part_assign(): Dimensions disagree." );
+	}
+
+	for ( sLayer = sLayerBegin, dLayer = dLayerBegin; sLayer <= sLayerEnd; sLayer++, dLayer++ ) {
+		for ( sRow = sRowBegin, dRow = dRowBegin; sRow <= sRowEnd; sRow++, dRow++ ) {
+			for ( sCol = sColBegin, dCol = dColBegin; sCol <= sColEnd; sCol++, dCol++ ) {
+				dest->data[ dLayer ][ dRow ][ dCol ] = source->data[ sLayer ][ sRow ][ sCol ];
+			}
+		}
+	}
+}
+
+
 #if DEBUG
 int main() {
-	Matrix A, B, C, I, Ra, Rb;
+	Matrix A, B, C, D, E, I, Ra, Rb;
 	clock_t tic, toc;
 	srand( time( NULL ) );
 
@@ -297,10 +349,17 @@ int main() {
 	m_mul( &Rb, &A, ALL, ALL, &C );
 	dump( &C, "Rb * A ", ALL, 0, C.size1-1, 0, C.size2-1, INT );
 
+	zeros( &D, 3, 3, 3 );
+	full_assign( &C, &D, ALL, ALL );
+	dump( &D, "C = Rb * A ", GG, 0, D.size1-1, 0, D.size2-1, INT );
+	ones( &E, 15, 15, 1 );
+	part_assign( &Ra, &E, 0, 4, 0, 4, 0, 0,  8, 12, 8, 12, 0, 0 );
+	dump( &E, "E(part_assigned from Ra) ", ALL, 0, E.size1-1, 0, E.size2-1, INT );
+
 	toc = clock();
 	runningTime( tic, toc );
 	/* free memory space */
-	freeMatrix( &A ); freeMatrix( &B ); freeMatrix( &C );
+	freeMatrix( &A ); freeMatrix( &B ); freeMatrix( &C ); freeMatrix( &D ); freeMatrix( &E );
 	freeMatrix( &I ); freeMatrix( &Ra ); freeMatrix( &Rb );
 
 	return 0;

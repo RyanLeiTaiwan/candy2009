@@ -8,7 +8,7 @@
 #include "image.h"
 #include "util.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 
 void imread( char *filename, Matrix *dest ){  // dest is not yet allocted
