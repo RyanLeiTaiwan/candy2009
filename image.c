@@ -88,7 +88,7 @@ int main(){
 	clock_t tic, toc;
 	tic = clock();
 
-    imread(  "pics/paint_16.bmp", &A );
+    imread( "pics/paint_16.bmp", &A );
     dump( &A, "A", ALL, 0, A.size1-1, 0, A.size2-1, INT );
 
 	toc = clock();
