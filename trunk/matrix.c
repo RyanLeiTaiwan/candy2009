@@ -5,7 +5,7 @@
  ** Description: matrix data structure
  **/
 #include "matrix.h"
-#define DEBUG 0
+#define DEBUG 1
 
 /***** matrix basics *****/
 /* 顯示矩陣內容( 矩陣、名稱、第三維、INT或DOUBLE )：
@@ -302,7 +302,7 @@ void full_assign( Matrix *source, Matrix *dest, COLOR sColor, COLOR dColor ) {
 }
 
 /* 指定row, col, layer範圍的matrix assignment */
-void part_assign( Matrix *source, Matrix *dest, 
+void part_assign( Matrix *source, Matrix *dest,
     int sRowBegin, int sRowEnd, int sColBegin, int sColEnd, int sLayerBegin, int sLayerEnd,
 	int dRowBegin, int dRowEnd, int dColBegin, int dColEnd, int dLayerBegin, int dLayerEnd ) {
 
@@ -323,11 +323,58 @@ void part_assign( Matrix *source, Matrix *dest,
 	}
 }
 
+void cross( Matrix *image, Matrix *filter, Matrix *dest ) {
+    int K = filter->size1;
+    int L = filter->size2;
+    int M = image->size1;
+    int N = image->size2;
+    int x, y, u, v;
+    int targetX, targetY;
+
+    if ( (K - L) != 0 || (K % 2) == 0 ) {
+        error( "cross(): Filter dimension error." );
+    }
+
+    zeros( dest, M, N, 1 );
+
+    for( x = 0; x < M; x++ ){
+        for( y = 0; y < N; y++ ){
+            for(u = 0; u < K; u++ ){
+                for(v = 0; v < K; v++ ){
+                    targetX = x + u - (K - 1)/2;
+                    targetY = y + v - (K - 1)/2;
+
+                    if(targetX < 0) targetX = -targetX;
+                    if(targetX >= M) targetX = 2 * M - 2 - targetX;
+                    if(targetY < 0) targetY = -targetY;
+                    if(targetY >= N) targetY = 2 * N - 2 - targetY;
+
+                    dest->data[0][x][y] += filter->data[0][u][v] * image->data[0][targetX][targetY];
+
+                }
+            }
+        }
+    }
+}
 
 #if DEBUG
 int main() {
-	Matrix A, B, C, D, E, I, Ra, Rb;
-	clock_t tic, toc;
+	Matrix A, B, C, D, E, F, G, H, I, Ra, Rb;
+	int row, col, count = 0;
+	float array[ 11 * 13 ] = {
+	    2,-1,0,1,3,3,-4,2,-2,4,0,-5,-5,
+	    -3,1,-3,0,2,5,4,3,4,3,1,1,4,
+	    -1,-2,1,4,2,4,-4,0,-4,2,1,3,3,
+	    -3,-1,4,2,-5,-5,3,5,-4,0,-4,-2,-3,
+	    4,-1,-5,-2,-1,-2,3,-5,5,2,-4,0,4,
+	    5,0,-1,-2,4,-3,2,0,-4,5,-2,-3,2,
+	    2,0,-5,-3,-2,-2,-4,-2,-4,0,3,5,2,
+	    2,5,1,5,1,5,-1,0,-4,-2,-1,0,5,
+	    5,-3,0,-2,-2,1,0,2,-5,3,4,0,-5,
+	    2,-2,3,-4,-4,3,0,-3,-1,-3,5,-3,-1,
+	    1,1,-3,-2,-1,4,4,1,2,-3,-1,-4,0
+	};
+		clock_t tic, toc;
 	srand( time( NULL ) );
 
 	tic = clock();
@@ -356,11 +403,27 @@ int main() {
 	part_assign( &Ra, &E, 0, 4, 0, 4, 0, 0,  8, 12, 8, 12, 0, 0 );
 	dump( &E, "E(part_assigned from Ra) ", ALL, 0, E.size1-1, 0, E.size2-1, INT );
 
+    /* 2D cross-correlation */
+    zeros( &F, 11, 13, 1 );
+    for ( row = 0; row < 11; row++ ) {
+        for ( col = 0; col < 13; col++ ) {
+            F.data[ 0 ][ row ][ col ] = array[ count++ ];
+        }
+    }
+    dump( &F, "F", ALL, 0, F.size1-1, 0, F.size2-1, INT );
+    ones( &H, 5, 5, 1 );
+    cross( &F, &H, &G );
+    dump( &G, "F ** H ", RR, 0, G.size1-1, 0, G.size2-1, INT );
+
 	toc = clock();
 	runningTime( tic, toc );
 	/* free memory space */
 	freeMatrix( &A ); freeMatrix( &B ); freeMatrix( &C ); freeMatrix( &D ); freeMatrix( &E );
+	freeMatrix( &F ); freeMatrix( &G ); freeMatrix( &H );
 	freeMatrix( &I ); freeMatrix( &Ra ); freeMatrix( &Rb );
+
+
+
 
 	return 0;
 }
