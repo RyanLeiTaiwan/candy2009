@@ -50,7 +50,6 @@ function [ result ] = cross_cor ( image, filter )
                     if ( targetY < 1 ) targetY = 2 - targetY; end    % 1 + (1-tY)
                     if ( targetY > N ) targetY = 2*N - targetY; end  % N - (tY-N)
 
-                    % ... in MATLAB means line is not over
                     result( x, y ) = result( x, y ) + filter( u, v ) * image( targetX, targetY );
                 
                 end
