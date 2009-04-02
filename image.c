@@ -77,20 +77,9 @@ void imread( char *filename, Matrix *dest ){  // dest is not yet allocted
         hivalue=0;
         info_header.height=abs(info_header.height);
         }
-    /*if(headertemp[25]=255){////
-        temp=headertemp[22]+ headertemp[23]*16+ headertemp[24]*256+ headertemp[25]*4096;
-        info_header.height =((headertemp[22]^255)+(headertemp[23]^255)*16+(headertemp[24]^255)*256+(headertemp[25]^255)*4096)+1  ;
-        //headertemp[22]=(headertemp[22])^0;
-        //info_header.height =abs(headertemp[22])+abs(headertemp[23])*16+abs(headertemp[24])*256+abs(headertemp[25])*4096;
-        printf("22:%d,hi= %d\n",headertemp[23],info_header.height);
+	/* calculate the padded data size */
+	pad_data_size = info_header.height * ( info_header.width * info_header.bits_per_pixel / 8 + mod4width );
 
-        hivalue=0;
-                }*/
-
-   // info_header.bits_per_pixel=headertemp[28]+headertemp[29]*16;////24
-    //printf("xx=%d",info_header.bits_per_pixel);
-
-pad_data_size=info_header.height*mod4width+info_header.height*info_header.width;
 /* messages of debugging header */
 #if DEBUG
     printf( "**imread( '%s' ):\n", filename );
@@ -99,7 +88,7 @@ pad_data_size=info_header.height*mod4width+info_header.height*info_header.width;
     printf( "width: %d\n", info_header.width );
     printf( "height: %d\n", info_header.height );
     printf( "bits_per_pixel: %d\n", info_header.bits_per_pixel );
-   // printf( "padded_data_size = %d\n", pad_data_size );
+    printf( "padded_data_size = %d\n", pad_data_size );
 
 #endif
 
@@ -114,7 +103,7 @@ pad_data_size=info_header.height*mod4width+info_header.height*info_header.width;
         error("malloc images_s error\n");
     }
 
-    fread(image_s, sizeof(unsigned char), (size_t)(long)info_header.width * abs( info_header.height ) * 3, fp_s);
+    fread(image_s, sizeof(uint8), pad_data_size, fp_s);
     //ivalue=0;
         /*if(mod4width==1 && info_header.bits_per_pixel==24){
             ine=info_header.width*info_header.bits_per_pixel/8;
@@ -195,7 +184,6 @@ pad_data_size=info_header.height*mod4width+info_header.height*info_header.width;
                             else if(mod4width==3){
 
                                     if(ine==i || ine==i+1 || ine==i+2){
-                                      //  printf("i+1:%d",ine);
                                         ine=ine+3;
                                         i=i+info_header.width*3+mod4width;
                                     }
@@ -245,7 +233,6 @@ pad_data_size=info_header.height*mod4width+info_header.height*info_header.width;
                             }
                             else if(mod4width==3){
                                 if(ine==i || ine==i+1 || ine==i+2){
-                                       // printf("X %d ",image_s[ine]);
                                         ine=ine+3;
                                         i=i+info_header.width*3+mod4width;
                                     }
@@ -368,8 +355,8 @@ int main(){
 
 	tic = clock();
 
-    imread(  "pics/paint_61.bmp", &A );
-    dump( &A, "A", RR, 0, 15, 16, 31, INT );
+    imread( "pics/huge.bmp", &A );
+    //dump( &A, "A", ALL, 0, A.size1-1, 0, A.size2-1, INT );
     toc = clock();
 	/* 使用runningTime()來印計時結果 */
 	runningTime( tic, toc );
