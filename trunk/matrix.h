@@ -49,6 +49,6 @@ void part_assign( Matrix *source, Matrix *dest,
 	int dRowBegin, int dRowEnd, int dColBegin, int dColEnd, int dLayerBegin, int dLayerEnd );
 // 指定row, col, layer範圍的matrix assignment，兩者皆已malloc過。
 void cross( Matrix *image, COLOR color, Matrix *filter, Matrix *dest );
-// 2D cross-correlation運算，filter必須為2D奇數X奇數且size小於image，邊界用鏡射法。
+// 2D cross-correlation運算，filter必須為2D奇數X奇數的方陣，且size小於image，邊界用鏡射法。
 
 
