@@ -61,7 +61,7 @@ typedef struct BMP_palette {
 
 /**********    function prototypes    **********/
 void imread( char *filename, Matrix *dest );  // dest is not yet allocted
-void imwrite( char *filename, Matrix *dest );
+void imwrite( char *filename, Matrix *source );
 void color2Gray( Matrix *source ); // dest is source itself
 void gray2Color( Matrix *source ); // dest is source itself
 

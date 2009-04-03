@@ -21,9 +21,8 @@ function [ result ] = cross_cor ( image, filter )
         disp( 'Filter dimension error.' );
         return;
     end
-
     result = zeros( M, N );
-    % ignore the border for now
+    
     for x = 1 : M 
         for y = 1 : N
             for u = 1 : K

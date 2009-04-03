@@ -23,10 +23,10 @@ typedef enum COLOR { RR, GG, BB, ALL } COLOR;
 typedef enum TYPE { INT, DOUBLE } TYPE;
 void dump( Matrix *source, char *name, COLOR color, int rowBegin, int rowEnd, int colBegin, int colEnd, TYPE type );
 // 顯示矩陣內容( 矩陣、名稱、第三維、INT或DOUBLE )
-void zeros( Matrix *source, int size1, int size2, int size3 ); // 產生全0的矩陣
-void ones( Matrix *source, int size1, int size2, int size3 ); // 產生全1的矩陣
-void eye( Matrix *source, int size ); // 產生2D Identity矩陣
-void RAND( Matrix *source, int size1, int size2, int size3, int lower, int upper );
+void zeros( Matrix *dest, int size1, int size2, int size3 ); // 產生全0的矩陣
+void ones( Matrix *dest, int size1, int size2, int size3 ); // 產生全1的矩陣
+void eye( Matrix *dest, int size ); // 產生2D Identity矩陣
+void RAND( Matrix *dest, int size1, int size2, int size3, int lower, int upper );
 // 產生整數亂數[lower,upper]矩陣
 void freeMatrix( Matrix *source ); // 清除矩陣的記憶體空間
 
