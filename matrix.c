@@ -5,7 +5,7 @@
  ** Description: matrix data structure
  **/
 #include "matrix.h"
-#define DEBUG 1
+#define DEBUG 0
 
 /***** matrix basics *****/
 /* 顯示矩陣內容( 矩陣、名稱、第三維、INT或DOUBLE )：
