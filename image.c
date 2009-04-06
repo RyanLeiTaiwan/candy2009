@@ -115,44 +115,102 @@ void imread( char *filename, Matrix *dest ) {
 	fclose( fin );
 }
 
-void imwrite( char *filename, Matrix *source ) {
-	//BMP_file_header BFH;
-	BMP_info_header BIH;
-	//BMP_palette *BPT = NULL;
-
-	FILE *fp = fopen( filename, "w" );
-	if ( fp == NULL ) {
-		error( "imwrite(): File open error." );
+void imwrite( char *filename, Matrix *dest ){
+    FILE          *fp_d = NULL; //destination
+    BMP_file_header file_header;
+    BMP_info_header info_header;
+	BMP_palette *palette=NULL;
+	int pad_data_size;
+	
+	fp_d = fopen(filename, "wb");
+    if (fp_d == NULL) {
+        error("imwrite:file error");
+    }
+    file_header.ID=0x4D42;  //bmp
+	file_header.reserved1=0;
+	file_header.reserved2=0;
+	info_header.info_size=40;
+	info_header.height= -(dest->size1);  //height
+	info_header.width=dest->size2;       //width-
+	info_header.planes=1;
+	info_header.bits_per_pixel=dest->size3 * 8;  //bits per pixel
+	//file_header.data_offset=54
+	pad_data_size = info_header.width * info_header.bits_per_pixel / 8;
+	pad_data_size = ( pad_data_size % 4 == 0 )? pad_data_size:pad_data_size+( 4 - pad_data_size % 4 );
+	pad_data_size *= abs( info_header.height );
+	info_header.compression=0;
+	info_header.data_size=0;
+	info_header.H_resolution=0;
+	info_header.V_resolution=0;
+	info_header.used_colors=0;////
+	info_header.important_colors=0;				
+	if(info_header.bits_per_pixel==24){
+		file_header.file_size=pad_data_size+54;
+		file_header.data_offset=54;
+		
 	}
-	
-	BIH.height = -(source->size1);
-	BIH.width = source->size2;
-	BIH.bits_per_pixel = source->size3 * 8;
-	
-	/* malloc and generate BMP palette */
-	/* genPalette( BPT, GRAY/RED ); */
-	
+	else if(info_header.bits_per_pixel==8){//palette
+		file_header.data_offset=54+1024;
+		file_header.file_size=pad_data_size+1024+54;  //1024 for palette
+		/* malloc and generate BMP palette */
+	//	palete=malloc()
+		/* genPalette( BPT, GRAY/RED ); */
+			
+	}		
+    //fwrite();  //header
+   // fwrite(dest,fp_d)
+    fclose(fp_d);
+
 
 }
+void color2Gray( Matrix *source ){ // dest is source itself
+    int col,row,layer;
 
-void color2Gray( Matrix *source ) {
+     for( row=0; row<source->size1; row++){
+        for ( col = 0; col < source->size2; col++ ) {
+            for(layer=1;layer<source->size3;layer++){
+            	source->data[ 0 ][ row ][ col ] = source->data[ layer ][ row ][ col ]+ source->data[ 0 ][ row ][ col ] ;
+            	free(source->data[layer][row]); //not sure...
+			}
+            source->data[ 0 ][ row ][ col ] =source->data[ 0 ][ row ][ col ] /3;
+        	free(source->data[layer]);
+		}
+     }
+	 source->size1=1;
+}
+void gray2Color( Matrix *source ){ // dest is source itself
+    int col,row,layer;
+	source->size1=3; 
+    for(layer=1;layer<source->size3;layer++){
+        source->data[layer]=(float **) malloc( size1 * sizeof( float *) );
+		for( row=0; row<source->size1; row++){
+			source->data[ layer ][ row ] = (float *) malloc( size2 * sizeof( float ) );
+            for ( col = 0; col < source->size2; col++ ) {
+                source->data[layer][row][col]=source->data[0][row][col];
+            }
+        }
+    }
+
 
 }
-
-void gray2Color( Matrix *source ) {
-
-}
-
 #if DEBUG
-int main() {
-	Matrix img;
-	clock_t tic, toc;
+int main(){
+    Matrix A;
+    clock_t tic, toc;
+
 	tic = clock();
-	imread( "pics/huge.bmp", &img );
-	//dump( &img, "img", ALL, 10, 29, 20, 29, INT );
-	//dump( &img, "img", ALL, 0, img.size1-1, 0, img.size2-1, INT );
-	toc = clock();
+
+    imread(  "pics/huge.bmp", &A );
+    color2Gray( &A  );	
+ //   dump( &A, "A", RR, 0, 15, 16, 31, INT );
+    toc = clock();
+	/* 使用runningTime()來印計時結果 */
 	runningTime( tic, toc );
-	return 0;
+    //dump( &A, "A", GG, INT );
+    //dump( &A, "A", RR, INT );
+    return 0;
+
+
 }
+
 #endif
