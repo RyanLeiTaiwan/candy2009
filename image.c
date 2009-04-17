@@ -109,7 +109,7 @@ void imread( char *filename, Matrix *dest ) {
 	/* message upon success */
 	printf( "imread( %s ): success!.\n", filename );
 	printf( "File size: %d bytes; ", BFH.file_size );
-	printf( "Height: %d; Width: %d.\n", abs( BIH.height ), BIH.width );
+	printf( "Height: %d; Width: %d.\n\n", abs( BIH.height ), BIH.width );
 
 	free( tempData );
 	fclose( fin );
@@ -120,7 +120,7 @@ void imwrite( char *filename, Matrix *source, w_mode mode ) {
     BMP_info_header info_header;
     BMP_palette *palette = NULL;
     int pad_data_size;
-    int row, col, layer;
+    int row, col, layer, i;
     int byteCount = 0;
     int giveUp; /* # of bytes of padding to give up at the end of each row */
     int ocount = 0;
@@ -129,6 +129,14 @@ void imwrite( char *filename, Matrix *source, w_mode mode ) {
 
 	if ( fp == NULL ) {
 		error( "imwrite(): File open error." );
+	}
+
+	/* check writing mode */
+	if ( source->size3 == 3 && mode != RGB ) {
+		error( "imwirte(): 24-bit image should not use GRAY/RED mode." );
+	}
+	if ( source->size3 == 1 && mode == RGB ) {
+		error( "imwrite(): 8-bit image should not use RGB mode." );
 	}
 
 	file_header.ID = 0x4D42 ;  /* BMP id */
@@ -163,7 +171,23 @@ void imwrite( char *filename, Matrix *source, w_mode mode ) {
         /* malloc and generate BMP palette */
 		/* ryanlei: 這邊要cast成BMP_palette*，之前轉成uint8*是錯的 */
         palette = (BMP_palette *) malloc( 256 * sizeof( BMP_palette ) );
-		/* genPalette( BPT, GRAY/RED ); */
+		
+		/** generate BMP palette : { B, G, R, reserved } **/
+		palette[ 0 ].blue = 0;
+		palette[ 0 ].green = 0;
+		palette[ 0 ].reserved = 0;
+		if ( mode == RED ) {
+			palette[ 0 ].red = 255; 
+		}
+		else {
+			palette[ 0 ].red = 0;
+		}
+		for ( i = 1; i < 256; i++ ) {
+			palette[ i ].blue = i;
+			palette[ i ].green = i;
+			palette[ i ].red = i;
+			palette[ i ].reserved = 0;
+		}
     }
 
 #if DEBUG
@@ -177,41 +201,42 @@ void imwrite( char *filename, Matrix *source, w_mode mode ) {
 	getchar();
 #endif
 
+	/* write the header and palette */
     fwrite( &file_header.ID, 2, 1, fp );
     fwrite( &file_header.file_size, 12, 1, fp );
     fwrite( &info_header, sizeof( info_header ), 1, fp);
-    /*if(palette!='NULL'){
-        fwrite(&palette, 256*sizeof(BMP_palette),1, fp);
-    }*/
-    tempData = (uint8 *) malloc( sizeof ( uint8 ) * pad_data_size );
+    if ( palette != NULL ) {
+        fwrite( palette, 256 * sizeof( BMP_palette ), 1, fp );
+    }
+
+	int layer_begin = info_header.bits_per_pixel / 8 - 1;
+    tempData = (uint8 *) malloc( sizeof( uint8 ) * pad_data_size );
     giveUp = source->size2 * info_header.bits_per_pixel / 8;
 	giveUp = (giveUp % 4 == 0) ? 0 : 4 - giveUp % 4;
 
     /* write the raw data into 1D array */
     for ( row = 0; row < source->size1; row ++ ) {
 		for ( col = 0; col < source->size2; col++ ) {
-
-			for ( layer = 0; layer < source->size3; layer++ ) {
-				tempData[ byteCount++ ]= source->data[ layer ][ row ][ col ];
+			for ( layer = layer_begin; layer >= 0; layer-- ) {
+				tempData[ byteCount++ ] = (uint8) source->data[ layer ][ row ][ col ];
 			}
-
 			/** adjust for padding at the end of each row **/
 			if ( col == source->size2 - 1 ) {
-			    while(ocount<giveUp){
-			        tempData[byteCount++]=0;
+			    while ( ocount < giveUp ){
+			        tempData[ byteCount++ ] = 0;
 			        ocount++;
                 }
-				ocount=0;
+				ocount = 0;
 			}
 		}
 	}
-	/*write the tempData into the file*/
-	fwrite(&tempData, pad_data_size*sizeof(uint8),sizeof ( uint8 ), fp);
+	/* write the tempData into the file */
+	fwrite( tempData, sizeof( uint8 ), pad_data_size, fp );
 
 	/* message upon success */
 	printf( "imwrite( %s ): success!.\n", filename );
 	printf( "File size: %d bytes; ", file_header.file_size );
-	printf( "Height: %d; Width: %d.\n", -( info_header.height ), info_header.width );
+	printf( "Height: %d; Width: %d.\n\n", -( info_header.height ), info_header.width );
 
 	free( tempData );
     fclose( fp );
@@ -239,13 +264,14 @@ void color2Gray( Matrix *source ) {
     }
 
 	/* free memory */
-    for( layer = 1; layer <= 2; layer++ ){
+    for ( layer = 1; layer <= 2; layer++ ) {
         for ( row = 0; row < source->size1; row++ ) {
         	free( source->data[ layer ][ row ] );
         }
     	free( source->data[ layer ] );
     }
-    source->size3=1;
+	/* set new size3 */
+    source->size3 = 1;
 }
 
 void gray2Color( Matrix *source ) {
@@ -270,17 +296,16 @@ void gray2Color( Matrix *source ) {
 
 #if DEBUG
 int main() {
-	Matrix img, img2;
+	Matrix img;
 	clock_t tic, toc;
 	tic = clock();
-	imread( "pics/paint_15.bmp", &img );
+	imread( "pics/paint_86.bmp", &img );
 	//dump( &img, "img(color)", ALL, 0, img.size1-1, 0, img.size2-1, INT );
-	//color2Gray( &img );
+	color2Gray( &img );
 	//dump( &img, "img(gray)", ALL, 0, img.size1-1, 0, img.size2-1, INT );
 	//gray2Color( &img );
 	//dump( &img, "img(gray)", ALL, 0, img.size1-1, 0, img.size2-1, INT );
-	imwrite("pics/p15out.bmp", &img, RGB );
-	imread( "pics/p15out.bmp", &img2 ); /* read back */
+	imwrite( "pics/imwrite.bmp", &img, RED );
 	toc = clock();
 	runningTime( tic, toc );
 	return 0;
