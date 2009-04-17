@@ -59,9 +59,13 @@ typedef struct BMP_palette {
 	uint8 reserved;
 } BMP_palette;
 
+/* BMP write mode */
+/* 寫入模式：24-bit全彩，8-bit灰階，8-bit灰階但index = 0代表紅色標記 */
+typedef enum { RGB, GRAY, RED } w_mode; 
+
 /**********    function prototypes    **********/
 void imread( char *filename, Matrix *dest );  // dest is not yet allocted
-void imwrite( char *filename, Matrix *dest);
+void imwrite( char *filename, Matrix *source, w_mode mode );
 void color2Gray( Matrix *source ); // dest is source itself
 void gray2Color( Matrix *source ); // dest is source itself
 

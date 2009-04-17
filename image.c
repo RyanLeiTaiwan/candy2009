@@ -115,94 +115,88 @@ void imread( char *filename, Matrix *dest ) {
 	fclose( fin );
 }
 
-void imwrite( char *filename, Matrix *dest ) {
-
+void imwrite( char *filename, Matrix *source, w_mode mode ) {
     BMP_file_header file_header;
     BMP_info_header info_header;
-    BMP_palette *palette=NULL;
+    BMP_palette *palette = NULL;
     int pad_data_size;
-    int row,col,layer;
+    int row, col, layer;
     int byteCount = 0;
     int giveUp; /* # of bytes of padding to give up at the end of each row */
-    int ocount=0;
+    int ocount = 0;
     uint8 *tempData;
-    FILE *fp = fopen( filename, "wb" );
+    FILE *fp = fopen( filename, "w" );
 
 	if ( fp == NULL ) {
 		error( "imwrite(): File open error." );
 	}
 
-	 file_header.ID=0x4D42;  //bmp
-	 file_header.reserved1=0;
-	 file_header.reserved2=0;
-	 info_header.info_size=40;
-	 info_header.height= -(dest->size1);  //height
-	 info_header.width=dest->size2;       //width-
-	 info_header.planes=1;
-	 info_header.bits_per_pixel=dest->size3 * 8;  //bits per pixel
-	 //file_header.data_offset=54
-	 pad_data_size = info_header.width * info_header.bits_per_pixel / 8;
-	 pad_data_size = ( pad_data_size % 4 == 0 )? pad_data_size:pad_data_size+( 4 - pad_data_size % 4 );
-	 pad_data_size *= abs( info_header.height );
-	 info_header.compression=0;
-	 info_header.data_size=pad_data_size;
-	 info_header.H_resolution=0;
-	 info_header.V_resolution=0;
-	 info_header.used_colors=0;////
-	 info_header.important_colors=0;
-	 if(info_header.bits_per_pixel==24){
-	     file_header.file_size=pad_data_size+54;
-	     file_header.data_offset=54;
+	file_header.ID = 0x4D42 ;  /* BMP id */
+	file_header.reserved1 = 0;
+	file_header.reserved2 = 0;
+
+	info_header.info_size = 40;
+	info_header.width = source->size2;       //width
+	info_header.height = -( source->size1 );  //height, negative
+	info_header.planes = 1;
+	info_header.bits_per_pixel = source->size3 * 8;  //bits per pixel
+	info_header.compression = 0;
+	/* compute padded data size */
+	pad_data_size = info_header.width * info_header.bits_per_pixel / 8;
+	pad_data_size = ( pad_data_size % 4 == 0 ) ? pad_data_size : 
+		pad_data_size + ( 4 - pad_data_size % 4 );
+	pad_data_size *= -( info_header.height );
+	info_header.data_size = pad_data_size;
+	info_header.H_resolution = 0;
+	info_header.V_resolution = 0;
+	info_header.used_colors = 0; /* ryanlei: 0 is correct */
+	info_header.important_colors = 0;
+	/* compute data offset & total file size */	
+	/* 只有兩種情況：24-bit 全彩，8-bit 256色 */
+	if ( info_header.bits_per_pixel == 24 ) {
+	    file_header.data_offset = 54;
+	    file_header.file_size = pad_data_size + 54;
     }
-     else if(info_header.bits_per_pixel==8){//palette
-         file_header.data_offset=54+1024;
-         file_header.file_size=pad_data_size+1024+54;  //1024 for palette
-         /* malloc and generate BMP palette */
-         palette=(uint8 *) malloc( 256 * sizeof(BMP_palette ) );
+    else if ( info_header.bits_per_pixel == 8 ) {
+        file_header.data_offset = 1078; /* 54 + 4 * 256 = 1078 */
+        file_header.file_size = 1078 + pad_data_size;  //1024 for palette
+        /* malloc and generate BMP palette */
+		/* ryanlei: 這邊要cast成BMP_palette*，之前轉成uint8*是錯的 */
+        palette = (BMP_palette *) malloc( 256 * sizeof( BMP_palette ) );
+		/* genPalette( BPT, GRAY/RED ); */
+    }
 
-         /* genPalette( BPT, GRAY/RED ); */
+#if DEBUG
+	printf( "**imwrite( '%s' ):\n", filename );
+	printf( "file_size: %d\n", file_header.file_size );
+	printf( "data_offset: %d\n", file_header.data_offset );
+	printf( "width: %d\n", info_header.width );
+	printf( "height: %d\n", info_header.height );
+	printf( "bits_per_pixel: %d\n", info_header.bits_per_pixel );
+	printf( "padded_data_size = %d\n", pad_data_size );
+	getchar();
+#endif
 
-	/* malloc and generate BMP palette */
-	/* genPalette( BPT, GRAY/RED ); */
-     }
-     //fwrite(&file_header, sizeof(BMP_file_header),1, fp);
-     fwrite(&file_header.ID, sizeof(uint16 ),1, fp);
-     fwrite(&file_header.file_size, sizeof(uint32),1, fp);
-     fwrite(&file_header.reserved1, sizeof(uint16 ),1, fp);
-     fwrite(&file_header.reserved2, sizeof(uint16 ),1, fp);
-     fwrite(&file_header.data_offset, sizeof(uint32),1, fp);
-     //fwrite(&info_header, sizeof(BMP_info_header),1, fp);
-     fwrite(&info_header.info_size, sizeof(int32),1, fp);
-     fwrite(&info_header.width, sizeof(uint32),1, fp);
-     fwrite(&info_header.height, sizeof(int32),1, fp);
-     fwrite(&info_header.planes, sizeof(uint16),1, fp);
-     fwrite(&info_header.bits_per_pixel, sizeof(uint16),1, fp);
-     fwrite(&info_header.compression, sizeof(uint32),1, fp);
-     fwrite(&info_header.data_size, sizeof(uint32),1, fp);
-     fwrite(&info_header.H_resolution, sizeof(uint32),1, fp);
-     fwrite(&info_header.V_resolution, sizeof(uint32),1, fp);
-     fwrite(&info_header.used_colors, sizeof(uint32),1, fp);
-     fwrite(&info_header.used_colors, sizeof(uint32),1, fp);
-     fwrite(&info_header.important_colors, sizeof(uint32),1, fp);
+    fwrite( &file_header.ID, 2, 1, fp );
+    fwrite( &file_header.file_size, 12, 1, fp );
+    fwrite( &info_header, sizeof( info_header ), 1, fp);
+    /*if(palette!='NULL'){
+        fwrite(&palette, 256*sizeof(BMP_palette),1, fp);
+    }*/
+    tempData = (uint8 *) malloc( sizeof ( uint8 ) * pad_data_size );
+    giveUp = source->size2 * info_header.bits_per_pixel / 8;
+	giveUp = (giveUp % 4 == 0) ? 0 : 4 - giveUp % 4;
 
+    /* write the raw data into 1D array */
+    for ( row = 0; row < source->size1; row ++ ) {
+		for ( col = 0; col < source->size2; col++ ) {
 
-     /*if(palette!='NULL'){
-         fwrite(&palette, 256*sizeof(BMP_palette),1, fp);
-     }*/
-     tempData = (uint8 *) malloc( sizeof ( uint8 ) * pad_data_size );
-     giveUp = dest->size2 * info_header.bits_per_pixel / 8;
-	 giveUp = (giveUp % 4 == 0) ? 0 : 4 - giveUp % 4;
-
-     /* write the raw data into 1D array */
-     for ( row = 0; row < dest->size1; row ++ ) {
-		for ( col = 0; col < dest->size2; col++ ) {
-
-			for ( layer = 0; layer < dest->size3; layer++ ) {
-				tempData[ byteCount++ ]= dest->data[ layer ][ row ][ col ];
+			for ( layer = 0; layer < source->size3; layer++ ) {
+				tempData[ byteCount++ ]= source->data[ layer ][ row ][ col ];
 			}
 
 			/** adjust for padding at the end of each row **/
-			if ( col == dest->size2 - 1 ) {
+			if ( col == source->size2 - 1 ) {
 			    while(ocount<giveUp){
 			        tempData[byteCount++]=0;
 			        ocount++;
@@ -214,7 +208,13 @@ void imwrite( char *filename, Matrix *dest ) {
 	/*write the tempData into the file*/
 	fwrite(&tempData, pad_data_size*sizeof(uint8),sizeof ( uint8 ), fp);
 
-    fclose(fp);
+	/* message upon success */
+	printf( "imwrite( %s ): success!.\n", filename );
+	printf( "File size: %d bytes; ", file_header.file_size );
+	printf( "Height: %d; Width: %d.\n", -( info_header.height ), info_header.width );
+
+	free( tempData );
+    fclose( fp );
 }
 /*void genPalette(){
 
@@ -222,55 +222,65 @@ void imwrite( char *filename, Matrix *dest ) {
 }*/
 void color2Gray( Matrix *source ) {
     int col,row,layer;
+	/* check layer */
+	if ( source->size3 != 3 ) {
+		error( "color2Gray(): Source is not color image " );
+	}
 
-    for( row=0; row<source->size1; row++){
+	/* ryanlei: 拆掉一個迴圈 */
+    for( row = 0; row < source->size1; row++ ){
         for ( col = 0; col < source->size2; col++ ) {
-            for(layer=1;layer<source->size3;layer++){
-            	source->data[ 0 ][ row ][ col ] = source->data[ layer ][ row ][ col ]+ source->data[ 0 ][ row ][ col ] ;
-			}
-			source->data[ 0 ][ row ][ col ] =source->data[ 0 ][ row ][ col ] /3;
+            source->data[ 0 ][ row ][ col ] = 
+				source->data[ 0 ][ row ][ col ] + 
+				source->data[ 1 ][ row ][ col ] +
+				source->data[ 2 ][ row ][ col ];
+			source->data[ 0 ][ row ][ col ] /= 3;
 		}
-     }
+    }
 
-    for(layer=1;layer<source->size3;layer++){
-         for ( row = 0; row < source->size2; row++ ) {
-             free(source->data[layer][row]);
-         }
-         free(source->data[layer]);
-     }
+	/* free memory */
+    for( layer = 1; layer <= 2; layer++ ){
+        for ( row = 0; row < source->size1; row++ ) {
+        	free( source->data[ layer ][ row ] );
+        }
+    	free( source->data[ layer ] );
+    }
     source->size3=1;
-    printf("color2Gray--OK\n");
-
-
 }
 
 void gray2Color( Matrix *source ) {
-    int col,row,layer;
-	source->size3=3;
-    for(layer=1;layer<source->size3;layer++){
-        source->data[layer]=(float **) malloc( source->size1 * sizeof( float *) ); ////float?
-		for( row=0; row<source->size1; row++){
-			source->data[ layer ][ row ] = (uint8 *) malloc( source->size2 * sizeof( float ) ); ////float?
+    int col, row, layer;
+	/* check layer */
+	if ( source->size3 != 1 ) {
+		error( "gray2Color(): Source is not grayscale image " );
+	}
+
+	source->size3 = 3;
+	/* ryanlei: Yes, it is "float" */
+    for( layer = 1; layer<source->size3; layer++ ) {
+        source->data[layer]=(float **) malloc( source->size1 * sizeof( float * ) );
+		for( row = 0; row<source->size1; row++) {
+			source->data[ layer ][ row ] = (float *) malloc( source->size2 * sizeof( float ) );
             for ( col = 0; col < source->size2; col++ ) {
-                source->data[layer][row][col]=source->data[0][row][col];
+                source->data[ layer ][ row ][ col ] = source->data[ 0 ][ row ][ col ];
             }
         }
     }
-    printf("gray2Color--OK\n");
-
 }
 
 #if DEBUG
 int main() {
-	Matrix img;
+	Matrix img, img2;
 	clock_t tic, toc;
 	tic = clock();
 	imread( "pics/paint_15.bmp", &img );
-	//color2Gray(&img);
-	//gray2Color(&img);
-	imwrite("pics/p15out.bmp", &img);
-	//dump( &img, "img", ALL, 10, 29, 20, 29, INT );
-	//dump( &img, "img", ALL, 0, img.size1-1, 0, img.size2-1, INT );
+	//dump( &img, "img(color)", ALL, 0, img.size1-1, 0, img.size2-1, INT );
+	//color2Gray( &img );
+	//dump( &img, "img(gray)", ALL, 0, img.size1-1, 0, img.size2-1, INT );
+	//gray2Color( &img );
+	//dump( &img, "img(gray)", ALL, 0, img.size1-1, 0, img.size2-1, INT );
+	imwrite("pics/p15out.bmp", &img, RGB );
+	imread( "pics/p15out.bmp", &img2 ); /* read back */
 	toc = clock();
 	runningTime( tic, toc );
 	return 0;
