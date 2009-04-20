@@ -5,16 +5,20 @@
 % [d] choose no more than XX best votes
 % And use cells to avoid too many lines
 %%%
+%%% Consider printing candidate (rho,theta) counts at each step.
 
 % File: hough.m
 % Author: ryanlei
 % Creation: 2009/04/19
-% Modification: XXXX/XX/XX
+% Modification: 2009/04/20
 % Description: The Hough transform which starts with nothing.
 clear all;
 close all;
 
-img = color2gray( imread( '../pics/hough/paint_hough.bmp' ) );  % original image in grayscale
+img = color2gray( imread( '../pics/hough/line.bmp' ) );  % original image in grayscale
+figure( 1 );
+imshow( img );
+title( 'Original image' );
 M = size( img, 1 );
 N = size( img, 2 );
 % voting matrix: -D <= rho <= D (D = diagonal); 1' <= theta < 180'
@@ -24,7 +28,7 @@ vote = zeros( 2 * D + 1, 180 );
 % #define the threshold edge value
 min_edge = 30;      
 % [a] #define the threshold number of votes
-min_vote = D * 0.2;
+min_vote = D * 0.5;
 % or [b] #define the ratio to the maximum votes
 vote_ratio = 0.75;
 
@@ -38,10 +42,12 @@ COT = cotd( i );
 
 %%% [1] Obtain an edge image
 %%% Other filters ??
-% use the Laplacian operator
-%filter = [0,-1,0; -1,4,-1; 0,-1,0];
-% use the Sobel operator
-filter = [-1,0,1; -2,0,2; -1,0,1];
+% the Laplacian operator
+filter = [0,-1,0; -1,4,-1; 0,-1,0];
+% the Sobel operator (horizontal)
+%filter = [-1,0,1; -2,0,2; -1,0,1];
+% the simple horizontal gradient
+%filter = [0,0,0;0,1,-1;0,0,0];
 % obtain the "edge image"
 edge = abs( filter2( filter, img ) );
 %%% chop the border pixels [ SHOULD NOT DO THIS IN C => Use reflection ]
@@ -51,9 +57,9 @@ edge( :, 1 ) = 0;
 edge( :, N ) = 0;
 
 edge = map_0_255( edge );
-figure( 1 );
+figure( 2 );
 imshow( edge );
-title( 'edge image' );
+title( 'Edge image' );
 
 %%% [2] The voting process
 % only keep those > edge_min and record their (x,y)
@@ -69,8 +75,9 @@ for THETA = 1 : 180
 end
 
 % show the voting result
-% figure( 2 );
+% figure( 3 );
 % imshow( map_0_255( vote ) );
+% title( 'Voting result' );
 
 %%% [3] Plot the lines based on the voted rho's and theta's
 % plot the straight line using rho's and theta's that received top votes
@@ -130,6 +137,6 @@ for line = 1 : size( slope, 1 )
     end
 end
 
-figure( 3 );
+figure( 4 );
 imshow( result );
 title( 'Hough Transform' );
