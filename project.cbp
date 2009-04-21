@@ -19,13 +19,14 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="hough.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="hough.h" />
 		<Unit filename="image.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="image.h" />
-		<Unit filename="main.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="matrix.c">
 			<Option compilerVar="CC" />
 		</Unit>
