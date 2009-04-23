@@ -1,7 +1,7 @@
 /** File: hough.c
  ** Author: snowm, ryanlei
  ** Creation: 2009/04/01
- ** Modification: 2009/04/03
+ ** Modification: 2009/04/23
  ** Description: Hough Transform, the Rho-Theta Version
  **/
 
@@ -27,14 +27,7 @@ int main() {
 	/* only a test */
 
 	imread( "pics/hough/line.bmp", &img );
-	/* manual color2Gray ...囧rz */
-	for ( row = 0; row < img.size1; row++ ) {
-		for ( col = 0; col < img.size2; col++ ) {
-			img.data[ 0 ][ row ][ col ] = ( img.data[ 0 ][ row ][ col ]
-				+ img.data[ 1 ][ row ][ col ] + img.data[ 2 ][ row ][ col ]
-				) / 3.f;
-		}
-	}
+	color2Gray( &img );  /* ryanlei: 寫好color2Gray當然要用阿 */
 
 	ones( &filt, 5, 5, 1 );
     s_mul( &filt, 1/25.f );
