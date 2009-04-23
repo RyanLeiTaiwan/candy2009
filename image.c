@@ -6,7 +6,7 @@
                  Handled in "Little-Endian".
  **/
 #include "image.h"
-#define DEBUG 1
+#define DEBUG 0
 
 /*** Important Note:
  *** I safely assume that all images are uncompressed BMPs, 24-bit color or
