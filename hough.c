@@ -14,7 +14,7 @@
 int main() {
 	clock_t tic, toc;
 	Matrix img, filt, edge, vote,Sob,Lap; /* the image, filter */
-	int row, col;
+	int row, col,ang;
 	int dmax, min_vote;
     int min_edge = 30;
     int vote_ratio = 0.75;
@@ -27,7 +27,8 @@ int main() {
 	/* only a test */
 
 	imread( "pics/hough/line.bmp", &img );
-	color2Gray( &img );  /* ryanlei: ÂØ´Â•Ωcolor2GrayÁï∂ÁÑ∂Ë¶ÅÁî®Èòø */
+
+	color2Gray( &img );  /* ryanlei: ºg¶ncolor2Gray∑ÌµM≠n•Œ™¸ */
 
 	ones( &filt, 5, 5, 1 );
     s_mul( &filt, 1/25.f );
@@ -51,23 +52,31 @@ int main() {
 	tic = clock();
 	//cross( &img, &Sob, &edge );
     cross( &img, &Lap, &edge );
+    //dump(&edge, "eg", RR, 0, edge.size1-1, 0, edge.size2-1,INT);
 	//dump( &edge, "edge(gray) ", RR, 300, 319, 300, 319, INT );
     imwrite("lapedge.bmp", &edge,GRAY);
     dmax=floorf(sqrt(((img.size1)^2)+((img.size2)^2)));
     min_vote = dmax * 0.5;
+    printf("dma=%d",dmax);
+    zeros(&vote,2*dmax+3,180,1);  //voting matrix
 
-    zeros(&vote,2*dmax+1,180,1);  //voting matrix
-    /*for( row=0; row< edge.size1; row++){
+    for( row=0; row< edge.size1; row++){
         for( col=0; col< edge.size2; col++){
-            if( edge.data[col][row][1]>= min_edge){
-                for( THETA=1; THETA<=180; THETA++){/////////////need modified!
-                    RHO= floorf(row* COS[THETA] + col* SIN[THETA]+ (dmax + 1));
-                    vote.data[RHO][THETA][1]= vote.data[RHO][THETA][1]+1;
+            //printf("t:%d ",edge.data[0][row][col]);
+            if( edge.data[0][row][col]>= min_edge){
+
+                for( THETA=0; THETA<180; THETA++){
+
+                    RHO= floorf(row* COS[THETA] + col* SIN[THETA] + dmax+1);
+                    printf("ro=%d ",RHO);
+                    /*for(ang=0;ang<RHO;ang++){/////////////need modified!
+                        vote.data[0][ang][THETA]= vote.data[0][ang][THETA]+1;
+                    }*/
                 }
             }
         }
     }
-*/
+
 	toc = clock();
 	runningTime( tic, toc );
 
