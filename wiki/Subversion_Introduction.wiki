@@ -4,8 +4,7 @@
 = Introduction =
 
 之前一直擔心合作程式與版本控制的問題，後來決定使用Google Code + Subversion (svn)來實現。<br>
-Google Code提供的平台很不錯，最近也蠻紅的；<br>
-而svn這類的工具還蠻重要的，最好能把它練會。
+Google Code提供的平台很不錯，最近也蠻紅的；而svn這類的工具還蠻重要的，最好能把它練會。
 
 = 網路上的基礎文章 =
 
@@ -14,4 +13,33 @@ Google Code提供的平台很不錯，最近也蠻紅的；<br>
   # [http://blog.linux.org.tw/~jserv/archives/001148.html 淺談版本控制系統]     
   # [http://svn.stu.edu.tw/svnbook/book.html Subversion Book(完整中文手冊)]
 
-= 之前在專題板寫的教學文章 =
+= 之前在專題板寫的教學文章( 可以對照"基礎文章1."來看 ) =
+
+== Google Code平台的部份 ==
+目前我開放的分頁是預設的Home, Downloads, Wiki, Issues, Source, Administer。<br>
+=== Home ===
+Home除了可以把外觀佈置漂亮一點之外XD，還可以從Updates查看最近的更新。
+=== Downloads ===
+Downloads會放完成品這類的東西，應該是project後期才會有完成品，平常翻到的機會不大。
+=== Wiki ===
+Wiki的用途除了把project的注意事項貼上去，還可以放各階段的references。<br>
+_ryanlei:_ 既然現在都移駕到Web了，應該會放更多東西在這裡XD。
+=== Issue ===
+Issue是討論程式或是想法的相關議題，既然現在移駕到Web了，除了敲MSN，有些比較要記下來的issues可以放在這裡。
+=== Source ===
+Source就是原始碼，這應該是跟大家最有關的。在這裡的Browse可以瀏覽所有的原始碼，甚至可以切換不同的*修訂版(revision)*。<br>
+我們的project規模不大，用不到tags跟branches的目錄，所以程式碼都會放在*trunk(主幹)*這個資料夾，或是trunk底下建的目錄。<br>
+  * *Checkout* 是Google Code附的svn checkout語法，這在某電腦第一次取回儲藏庫時用的到。<br>
+  * *Browse* 是瀏覽程式碼，除了語法都會套色外，double click還可以留下評論。<br>
+  * *Changes* 則是查看版本間的變化，不管是Browse或Change，都有辦法查看同一檔案在不同版本的差異，顏色也套得很好。可以摘要式、或是整頁展開顯示差異。
+=== Administer ===
+Administer是project的管理頁面，大家都是project owner所以只要不要有太超過的舉動，要更動什麼應該都OK。
+
+== Subversion的部份 ==
+=== 安裝 ===
+接來下就是真正版本控制的工作啦。Google Code平台支援的版本控制工具是[http://subversion.tigris.org/ subversion(svn)]，<br>
+在Windows上可以去找圖形介面的[http://tortoisesvn.net/ TortoiseSVN]，或是文字模式的[http://www.collab.net/downloads/subversion/ CollabNet Subversion]；<br>
+Unix-like系統上也有圖形介面，不過身為unix-like user通常都會裝文字模式的套件，
+用終端機來操作。在官網上有針對各種unix-like系統的[http://subversion.tigris.org/getting.html#binary-packages 取得方法]：
+
+=== 使用 ===
