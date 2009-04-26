@@ -28,7 +28,7 @@ int main() {
 
 	imread( "pics/hough/line.bmp", &img );
 
-	color2Gray( &img );  /* ryanlei: ¼g¦ncolor2Gray·íµM­n¥Îªü */
+	color2Gray( &img );  /* ryanlei: å¯«å¥½color2Grayç•¶ç„¶è¦ç”¨é˜¿ */
 
 	ones( &filt, 5, 5, 1 );
     s_mul( &filt, 1/25.f );
