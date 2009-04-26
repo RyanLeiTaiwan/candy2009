@@ -15,7 +15,7 @@ Google Code提供的平台很不錯，最近也蠻紅的；而svn這類的工具
 
 = 之前在專題板寫的教學文章( 可以對照"基礎文章1."來看 ) =
 
-== Google Code平台的部份 ==
+== 1.Google Code平台的部份 ==
 目前我開放的分頁是預設的Home, Downloads, Wiki, Issues, Source, Administer。<br>
 === Home ===
 Home除了可以把外觀佈置漂亮一點之外XD，還可以從Updates查看最近的更新。
@@ -35,7 +35,7 @@ Source就是原始碼，這應該是跟大家最有關的。在這裡的Browse�
 === Administer ===
 Administer是project的管理頁面，大家都是project owner所以只要不要有太超過的舉動，要更動什麼應該都OK。
 
-== Subversion的部份 ==
+== 2.Subversion的部份 ==
 === 安裝 ===
 接來下就是真正版本控制的工作啦。Google Code平台支援的版本控制工具是[http://subversion.tigris.org/ subversion(svn)]，<br>
 在Windows上可以去找圖形介面的[http://tortoisesvn.net/ TortoiseSVN]，或是文字模式的[http://www.collab.net/downloads/subversion/ CollabNet Subversion]。；<br>
@@ -44,11 +44,10 @@ Unix-like系統上也有圖形介面，不過身為unix-like user通常都會裝
 在官網上有針對各種系統的[http://subversion.tigris.org/getting.html#binary-packages 取得方法]：
 
 === 使用 ===
-以下說明都是以指令為主，如果是圖形介面點滑鼠應該更簡單，
-對照第一行那篇教學操作應該就沒啥問題了。
-
+以下說明都是以指令為主，如果是圖形介面點滑鼠應該更簡單，對照第一行那篇教學操作應該就沒啥問題了。
 只列出平常會用到的指令：
-==== 從無到有 → svn checkout ====
+
+==== <font color=red>從無到有 → svn checkout</font> ====
 遠端已經有了一個*貯藏庫(repository)*，現在要整個*取回(checkout)*到本地。這步只有在自己電腦上第一次，或是在系計中有還原卡時才需要做。<br>
 Google Code的 Source->chekcout 也有教，指令是：<br>
   * _svn checkout https://candy2009.googlecode.com/svn/trunk/ candy2009 --username XXXXXX_ <br>
@@ -56,5 +55,54 @@ Google Code的 Source->chekcout 也有教，指令是：<br>
 指令後半段代表以XXXXXX的身分登入，要注意的是被問及密碼時，並不是用Google帳號的密碼，而是用Google Code幫你隨機產生的密碼，可以在Google Code畫面最上方的Profile->Settings裡查到自己的Google Code password，如果按了，"Regenerate"重設密碼，則往後用svn的指令也必須改密碼。<br>
 另外，也有唯讀開放給其他人的anonymous取得方式，位址就變成是http而不是https，不過跟我們無關。
 
-==== 每次工作時的第一步 → svn update(up) ====
+==== <font color=red>每次工作時的第一步 → svn update(up)</font> ====
+確定本地端保持在與遠端相同的最新版本，*每次工作之前一定要先做*。<br>
+如果是第一次工作，因為之前已經checkout過一定是最新版，所以就不用update了。
 
+==== <font color=red>產生更動 → M:Modification, A:Add, D: Delete</font> ====
+
+<font color=red>修改(M)現有檔案 → NOTHING</font><br>      
+純粹修改檔案不用特別幹麻。=> 通常是這樣
+
+<font color=red>新增(A)檔案或目錄至repository -- svn add XXX</font><br>
+新建檔案時往往要做這步，將其納入版本控制的範圍。=> 偶爾
+
+<font color=red>從repository移除(D)檔案，並刪除本地端 -- svn delete(del) XXX</font><br>
+有點詭異的是，之後上傳時會同時把本地端的該檔案刪除，有點危險請小心。
+
+<font color=red>從repository移除(D)檔案，並保留本地端 -- svn del --keep-local XXX</font><br>
+如果只是單純不想把某檔案放進repository，這樣比較正常，
+所以除非確定某檔案在project已經不需要，否則--keep-local比較安全。
+
+<font color=red>本地和遠端複製某檔案 -- svn copy(cp) OLD NEW</font><br>
+當於一般的複製一份 + svn add NEW
+
+<font color=red>本地遠端重新命名某檔案 -- svn move(mv)</font><br>
+相當於svn cp OLD NEW + svn delete OLD
+
+<font color=red>檢視更動 → svn status(st)</font><br>
+會列出本地與遠端檔案的更動，常見的符號有：
+  * *M:修改 A:新增  D:刪除  ?:未納入管理  C:衝突*<br>
+上傳前_一定_要再做這步來檢查是否無衝突。
+
+==== <font color=red>解決衝突/其他版本問題</font> ====
+感覺不太會發生，而且處理不太容易，碰到再說好了0.0。
+可能遇到的問題是，修改期間有人已經上傳，做某個更動想反悔，
+甚至是想把repository整個還原回某一個修訂版(revision)，可能會用到merge、revert這類的指令。
+
+==== <font color=red>上傳 → svn commit(ci)</font> ====
+如果幸運地在svn status這步沒有發現衝突，那就可以放心*上傳(commit)*了。
+commit指令下了以後，還需要編輯這次revision的*摘要(summary)*。<br>
+如果是文字模式的環境，系統會開vi/vim，打完按:wq存檔以後就會進行上傳。<br>
+圖形介面的TortoiseSVN也會冒出編輯log的視窗（好像還能選擇哪些要上傳），點OK以後也會開始動作。
+
+=== 結論 ===
+除了第一次需要<font color=red>*Checkout*</font>，平常的工作流程大概像上面幾段這樣：
+  * <h2><font color=red>*update → modification/add/delete → stat → resolve conflicts → commit*
+</font></h2>
+結束以後可以接著到Google Code上看一下結果。
+或是在步驟之間也可以配合Google Code來查看程式碼的狀況。
+如果有svn update過，平時也可以用svn info來查看目前本地端的修訂版。
+
+Subversion的指令還有很多很多，有必要可以上網找，
+或是翻基礎文章的[http://svn.stu.edu.tw/svnbook/book.html Subversion Book]，我寫這篇的工作流程就是參考它的XD。
