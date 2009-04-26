@@ -13,11 +13,11 @@
 #if DEBUG
 int main() {
 	clock_t tic, toc;
-	Matrix img, filt, edge, vote,Sob,Lap; /* the image, filter */
-	int row, col,ang;
+	Matrix img, filt, edge, vote, Sob,Lap; /* the image, filter */
+	int row, col;
 	int dmax, min_vote;
     int min_edge = 30;
-    int vote_ratio = 0.75;
+    //float vote_ratio = 0.75;
     float COS[ 180 ], SIN[ 180 ];
    // int Laplacian [3][3] = {0,-1,0, -1,4,-1, 0,-1,0};
     int THETA, RHO;
@@ -68,7 +68,7 @@ int main() {
                 for( THETA=0; THETA<180; THETA++){
 
                     RHO= floorf(row* COS[THETA] + col* SIN[THETA] + dmax+1);
-                    printf("ro=%d ",RHO);
+                    //printf("ro=%d ",RHO);
                     /*for(ang=0;ang<RHO;ang++){/////////////need modified!
                         vote.data[0][ang][THETA]= vote.data[0][ang][THETA]+1;
                     }*/
