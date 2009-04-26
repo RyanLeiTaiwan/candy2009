@@ -95,6 +95,7 @@ Google Code的 Source->chekcout 也有教，指令是：<br>
 commit指令下了以後，還需要編輯這次revision的*摘要(summary)*。<br>
 如果是文字模式的環境，系統會開vi/vim，打完按:wq存檔以後就會進行上傳。<br>
 圖形介面的TortoiseSVN也會冒出編輯log的視窗（好像還能選擇哪些要上傳），點OK以後也會開始動作。
+<h3><font color=red>每一次工作結束，不管進度如何都請務必commit，以免之後和別人發生程式衝突，也有利組員互相知道目前的進展。</font>
 
 === 結論 ===
 除了第一次需要<font color=red>*Checkout*</font>，平常的工作流程大概像上面幾段這樣：
