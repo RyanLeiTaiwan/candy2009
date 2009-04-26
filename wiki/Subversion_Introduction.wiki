@@ -1,14 +1,17 @@
-#summary One-sentence summary of this page.
+#summary Introdunction to Subversion
 #labels 教學
 
 = Introduction =
 
-Add your content here.
+之前一直擔心合作程式與版本控制的問題，後來決定使用Google Code + Subversion (svn)來實現。<br>
+Google Code提供的平台很不錯，最近也蠻紅的；<br>
+而svn這類的工具還蠻重要的，最好能把它練會。
 
+= 網路上的基礎文章 =
 
-= Details =
+  # [http://blog.ericsk.org/archives/446 用 Subversion 跟 Google Code 作版本控制 （一）→ 圖文教學]
+  # [http://plog.longwin.com.tw/my_note-programming/2007/07/10/svn_tutorial_2007 SVN基本指令教學]
+  # [http://blog.linux.org.tw/~jserv/archives/001148.html 淺談版本控制系統]     
+  # [http://svn.stu.edu.tw/svnbook/book.html Subversion Book(完整中文手冊)]
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+= 之前在專題板寫的教學文章 =
