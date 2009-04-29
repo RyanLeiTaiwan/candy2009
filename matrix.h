@@ -1,7 +1,7 @@
 /** File: matrix.h
  ** Author: ryanlei
  ** Creation : 2009/03/21
- ** Modification: 2009/04/01
+ ** Modification: 2009/04/29
  ** Description: matrix data structure
  **/
 #include "util.h"
@@ -17,12 +17,13 @@ typedef struct Matrix {
 
 } Matrix;
 
-/* matrix basics */
 typedef enum COLOR { RR, GG, BB, ALL } COLOR;
 // 對於2D矩陣來說，RR和ALL意義是一樣的
 typedef enum TYPE { INT, DOUBLE } TYPE;
-void dump( Matrix *source, char *name, COLOR color, int rowBegin, int rowEnd, int colBegin, int colEnd, TYPE type );
-// 顯示矩陣內容( 矩陣、名稱、第三維、INT或DOUBLE )
+void full_dump( Matrix *source, char *name, COLOR color, TYPE type );
+// 顯示矩陣全部內容( 矩陣、名稱、第三維、INT或DOUBLE )
+void part_dump( Matrix *source, char *name, COLOR color, int rowBegin, int rowEnd, int colBegin, int colEnd, TYPE type );
+// 顯示矩陣部分內容( 矩陣、名稱、第三維、前兩維度的範圍、INT或DOUBLE )
 void zeros( Matrix *dest, int size1, int size2, int size3 ); // 產生全0的矩陣
 void ones( Matrix *dest, int size1, int size2, int size3 ); // 產生全1的矩陣
 void eye( Matrix *dest, int size ); // 產生2D Identity矩陣
@@ -50,5 +51,8 @@ void part_assign( Matrix *source, Matrix *dest,
 // 指定row, col, layer範圍的matrix assignment，兩者皆已malloc過。
 void cross( Matrix *image, Matrix *filter, Matrix *dest );
 // 2D cross-correlation運算，filter必須為2D奇數X奇數的方陣，且size小於image，邊界用鏡射法。
+void max_min( Matrix *image, float *maxRet, float *minRet );
+// 求2D矩陣的最大值和最小值，只求值不求index
+
 
 
