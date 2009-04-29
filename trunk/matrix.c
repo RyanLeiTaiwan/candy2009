@@ -5,14 +5,48 @@
  ** Description: matrix data structure
  **/
 #include "matrix.h"
-#define DEBUG 0
+#define DEBUG 1
 
-/***** matrix basics *****/
-/* 顯示矩陣內容( 矩陣、名稱、第三維、INT或DOUBLE )：
+/* 顯示全部矩陣內容( 矩陣、名稱、第三維、INT或DOUBLE )：
  * color: {0,1,2,3} == {RR,GG,BB,ALL}
- * 2D矩陣只有R有值，可以傳R或ALL
+ * 2D矩陣只有R component有值，可以傳R或ALL
  */
-void dump( Matrix *source, char *name, COLOR color, int rowBegin, int rowEnd, int colBegin, int colEnd, TYPE type ) {
+void full_dump( Matrix *source, char *name, COLOR color, TYPE type ) {
+	int row, col, layer, layer_start, layer_end;
+	/* set layer range */
+	switch ( color ) {
+		case RR: layer_start = 0; layer_end = 0; break;
+		case GG: layer_start = 1; layer_end = 1; break;
+		case BB: layer_start = 2; layer_end = 2; break;
+		case ALL: layer_start = 0; layer_end = source->size3 - 1 ; break;
+		default: error( "dump(): Parameter COLOR error." );
+	}
+	/* check fake layers */
+	if ( source->size3 == 1 && ( color == GG || color == BB ) ) {
+		error( "dump(): source has only one layer." );
+	}
+
+	for ( layer = layer_start; layer <= layer_end; layer++ ) {
+		printf( "%s( :, :, %d ) =\n\n", name, layer );
+		for ( row = 0; row < source->size1; row++ ) {
+			for ( col = 0; col < source->size2; col++ ) {
+				if ( type == INT )
+					printf( "%4d", (int) source->data[ layer ][ row ][ col ] );
+				else if ( type == DOUBLE )
+					printf( "%7.2f", source->data[ layer ][ row ][ col ] );
+				else
+					error( "dump(): Parameter TYPE error." );
+			}
+			printf( "\n" );
+		}
+		printf( "\n" );
+	}
+}
+
+/* 顯示部分矩陣內容：
+ * 與full_assign相似，但是row跟col要指定起點、終點
+ */
+void part_dump( Matrix *source, char *name, COLOR color, int rowBegin, int rowEnd, int colBegin, int colEnd, TYPE type ) {
 	int row, col, layer, layer_start, layer_end;
 	/* set layer range */
 	switch ( color ) {
@@ -323,6 +357,9 @@ void part_assign( Matrix *source, Matrix *dest,
 	}
 }
 
+/* 2D cross-correlation
+ * 參考matlab/cross_cor.m :
+ * image: M x N; filter: K x L */
 void cross( Matrix *image, Matrix *filter, Matrix *dest ) {
     int K = filter->size1;
     int L = filter->size2;
@@ -331,25 +368,33 @@ void cross( Matrix *image, Matrix *filter, Matrix *dest ) {
     int x, y, u, v;
     int targetX, targetY;
 
-    if ( (K - L) != 0 || (K % 2) == 0 ) {
+	/* check image and filter dimensions: should be 2D, square, odd */
+	if ( image->size3 != 1 ) {
+		error( "cross(): Image should be 2D." );
+	}
+	if ( filter->size3 != 1 ) {
+		error( "cross(): Filter should be 2D." );
+	}
+    if ( K != L || !( K & 1 ) ) {
         error( "cross(): Filter dimension error." );
     }
 
     zeros( dest, M, N, 1 );
 
-    for( x = 0; x < M; x++ ){
-        for( y = 0; y < N; y++ ){
-            for(u = 0; u < K; u++ ){
-                for(v = 0; v < K; v++ ){
-                    targetX = x + u - (K - 1)/2;
-                    targetY = y + v - (K - 1)/2;
+    for ( x = 0; x < M; x++ ){
+        for ( y = 0; y < N; y++ ){
+            for ( u = 0; u < K; u++ ){
+                for ( v = 0; v < K; v++ ){
+                    targetX = x + u - ( ( K - 1 ) >> 1 );  /* >> 1 means / 2 */
+                    targetY = y + v - ( ( K - 1 ) >> 1 );
 
-                    if(targetX < 0) targetX = -targetX;
-                    if(targetX >= M) targetX = 2 * M - 2 - targetX;
-                    if(targetY < 0) targetY = -targetY;
-                    if(targetY >= N) targetY = 2 * N - 2 - targetY;
+                    if ( targetX < 0 ) targetX = -targetX;
+                    if ( targetX >= M ) targetX = 2 * M - 2 - targetX;
+                    if ( targetY < 0 ) targetY = -targetY;
+                    if ( targetY >= N ) targetY = 2 * N - 2 - targetY;
 
-                    dest->data[0][x][y] += filter->data[0][u][v] * image->data[0][targetX][targetY];
+                    dest->data[ 0 ][ x ][ y ] += 
+						filter->data[ 0 ][ u ][ v ] * image->data[ 0 ][ targetX ][ targetY ];
 
                 }
             }
@@ -357,10 +402,91 @@ void cross( Matrix *image, Matrix *filter, Matrix *dest ) {
     }
 }
 
+/* 求2D矩陣的最大值和最小值，只求值不求index
+ * 使用Algorithms教的simultaneous max and min
+ * Time: O( 1.5mn )
+ */
+void max_min( Matrix *image, float *maxRet, float *minRet ) {
+	/* check image dimensions: should be 2D */
+	if ( image->size3 != 1 ) {
+		error( "cross(): Image should be 2D." );
+	}
+	int total = image->size1 * image->size2;
+	int half = total >> 1;
+	int colEnd = image->size2 - 1;
+	float winners[ half + 1 ], losers[ half + 1 ];
+	int lPtr = -1, wPtr = -1;  /* end of array index */
+	int row = 0, col = 0;
+	int max, min;
+
+	/* [1] divide the image->data into winners, losers arrays */
+	while ( half-- ) {
+		float a, b;
+		a = image->data[ 0 ][ row ][ col ];
+		if ( col == colEnd ) {
+			row++;
+			col = 0;
+		}
+		else {
+			col++;
+		}
+		b = image->data[ 0 ][ row ][ col ];
+		
+		if ( a < b ) {
+			losers[ ++lPtr ] = a;
+			winners[ ++wPtr ] = b;
+		}
+		else {
+			winners[ ++wPtr ] = a;
+			losers[ ++lPtr ] = b;
+		}
+
+		if ( col == colEnd ) {
+			row++;
+			col = 0;
+		}
+		else {
+			col++;
+		}
+	}
+	/* total is odd => 種子隊 */
+	if ( total & 1 ) {
+		float last = image->data[ 0 ][ row ][ col ];
+		if ( last > winners[ wPtr ] ) {
+			winners[ ++wPtr ] = last;
+		}
+		else {
+			losers[ ++lPtr ] = last;
+		}
+	}
+
+	/* [2] find max from the winners */
+	max = winners[ wPtr ];
+	while ( wPtr-- ) {
+		float temp = winners[ wPtr ];
+		if ( temp > max ) {
+			max = temp;
+		}
+	}
+	*maxRet = max;
+
+	/* [3] find min from the losers */
+	min = losers[ lPtr ];
+	while ( lPtr-- ) {
+		float temp = losers[ lPtr ];
+		if ( temp < min ) {
+			min = temp;
+		}
+	}
+	*minRet = min;
+}	
+
+
 #if DEBUG
 int main() {
-	Matrix A, B, C, D, E, F, G, H, I, Ra, Rb;
+	Matrix A, B, C, D, E, F, G, H, I, Ra, Rb, Rc, Rd;
 	int row, col, count = 0;
+	float max, min;
 	float array[ 11 * 13 ] = {
 	    2,-1,0,1,3,3,-4,2,-2,4,0,-5,-5,
 	    -3,1,-3,0,2,5,4,3,4,3,1,1,4,
@@ -374,34 +500,34 @@ int main() {
 	    2,-2,3,-4,-4,3,0,-3,-1,-3,5,-3,-1,
 	    1,1,-3,-2,-1,4,4,1,2,-3,-1,-4,0
 	};
-		clock_t tic, toc;
+	clock_t tic, toc;
 	srand( time( NULL ) );
 
 	tic = clock();
 	ones( &A, 3, 3, 3 );
-	dump( &A, "A", BB, 0, A.size1-1, 0, A.size2-1, INT );
+	full_dump( &A, "A", BB, INT );
 	RAND( &Ra, 5, 5, 1, 20, 29 );
-	dump( &Ra, "Ra", ALL, 0, Ra.size1-1, 0, Ra.size2-1, INT );
+	full_dump( &Ra, "Ra", ALL, INT );
 	s_add( &Ra, -20.f );
 	s_mul( &Ra, 5 );
 	s_pow( &Ra, 0.5 );
-	dump( &Ra, "((Ra-20)*5)^0.5, ", ALL, 0, Ra.size1-1, 0, Ra.size2-1, DOUBLE );
+	full_dump( &Ra, "((Ra-20)*5)^0.5, ", ALL, DOUBLE );
 
 	eye( &I, 3 );
 	m_mul( &A, &I, GG, RR, &B );
-	dump( &B, "A(:,:,1)*I, ", ALL, 0, B.size1-1, 0, B.size2-1, INT );
+	full_dump( &B, "A(:,:,1)*I, ", ALL, INT );
 
 	RAND( &Rb, 3, 3, 3, 0, 9 );
-	dump( &Rb, "Rb ", ALL, 0, Rb.size1-1, 0, Rb.size2-1, INT );
+	full_dump( &Rb, "Rb ", ALL, INT );
 	m_mul( &Rb, &A, ALL, ALL, &C );
-	dump( &C, "Rb * A ", ALL, 0, C.size1-1, 0, C.size2-1, INT );
+	full_dump( &C, "Rb * A ", ALL, INT );
 
 	zeros( &D, 3, 3, 3 );
 	full_assign( &C, &D, ALL, ALL );
-	dump( &D, "C = Rb * A ", GG, 0, D.size1-1, 0, D.size2-1, INT );
+	full_dump( &D, "C = Rb * A ", GG, INT );
 	ones( &E, 15, 15, 1 );
 	part_assign( &Ra, &E, 0, 4, 0, 4, 0, 0,  8, 12, 8, 12, 0, 0 );
-	dump( &E, "E(part_assigned from Ra) ", ALL, 0, E.size1-1, 0, E.size2-1, INT );
+	full_dump( &E, "E(part_assigned from Ra) ", ALL, INT );
 
     /* 2D cross-correlation */
     zeros( &F, 11, 13, 1 );
@@ -410,20 +536,30 @@ int main() {
             F.data[ 0 ][ row ][ col ] = array[ count++ ];
         }
     }
-    dump( &F, "F", ALL, 0, F.size1-1, 0, F.size2-1, INT );
+    full_dump( &F, "F", ALL, INT );
     ones( &H, 5, 5, 1 );
     cross( &F, &H, &G );
-    dump( &G, "F ** H ", RR, 0, G.size1-1, 0, G.size2-1, INT );
+    full_dump( &G, "F ** H ", RR, INT );
+
+	RAND( &Rc, 10, 9, 1, 0, 999 );
+	full_dump( &Rc, "Rc", ALL, INT );
+	max_min( &Rc, &max, &min );
+	printf( "Rc: max = %d; min = %d\n", (int) max, (int) min );
+	RAND( &Rd, 11, 9, 1, 0, 999 );
+#if 1
+	full_dump( &Rd, "Rc", ALL, INT );
+	max_min( &Rd, &max, &min );
+	printf( "Rc: max = %d; min = %d\n", (int) max, (int) min );
+#endif
 
 	toc = clock();
 	runningTime( tic, toc );
+
 	/* free memory space */
 	freeMatrix( &A ); freeMatrix( &B ); freeMatrix( &C ); freeMatrix( &D ); freeMatrix( &E );
 	freeMatrix( &F ); freeMatrix( &G ); freeMatrix( &H );
-	freeMatrix( &I ); freeMatrix( &Ra ); freeMatrix( &Rb );
-
-
-
+	freeMatrix( &I ); freeMatrix( &Ra ); freeMatrix( &Rb ); 
+	freeMatrix( &Rc ); freeMatrix( &Rd );
 
 	return 0;
 }
