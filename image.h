@@ -68,4 +68,6 @@ void imread( char *filename, Matrix *dest );  // dest is not yet allocted
 void imwrite( char *filename, Matrix *source, w_mode mode );
 void color2Gray( Matrix *source ); // dest is source itself
 void gray2Color( Matrix *source ); // dest is source itself
+void slopeIntPlot( Matrix *img, float slope, float y_int, float rho );
+// hough()專用：給定斜率，y截距，rho，畫出紅線(index = 0)至img上
 
