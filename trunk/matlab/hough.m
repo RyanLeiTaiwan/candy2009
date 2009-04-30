@@ -15,7 +15,7 @@
 clear all;
 close all;
 
-img = color2gray( imread( '../pics/hough/line.bmp' ) );  % original image in grayscale
+img = color2gray( imread( '../pics/road2.bmp' ) );  % original image in grayscale
 figure( 1 );
 imshow( img );
 title( 'Original image' );
@@ -26,9 +26,9 @@ D = round( sqrt( M^2 + N^2 ) );
 vote = zeros( 2 * D + 1, 180 );  
 
 % #define the threshold edge value
-min_edge = 30;      
+min_edge = 20;      
 % [a] #define the threshold number of votes
-min_vote = D * 0.5;
+min_vote = D * 0.3;
 % or [b] #define the ratio to the maximum votes
 vote_ratio = 0.75;
 
@@ -43,10 +43,10 @@ COT = cotd( i );
 %%% [1] Obtain an edge image
 %%% Other filters ??
 % the Laplacian operator
-filter = [0,-1,0; -1,4,-1; 0,-1,0];
+%filter = [0,-1,0; -1,4,-1; 0,-1,0];
 % the Sobel operator (horizontal)
-%filter = [-1,0,1; -2,0,2; -1,0,1];
-% the simple horizontal gradient
+filter = [-1,0,1; -2,0,2; -1,0,1];
+% the Gradient (horizontal)
 %filter = [0,0,0;0,1,-1;0,0,0];
 % obtain the "edge image"
 edge = abs( filter2( filter, img ) );

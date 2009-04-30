@@ -107,8 +107,8 @@ void imread( char *filename, Matrix *dest ) {
 	}
 
 	/* message upon success */
-	printf( "imread( %s ): success!.\n", filename );
-	printf( "File size: %d bytes; ", BFH.file_size );
+	printf( "imread( %s ): ", filename );
+	printf( "Size: %d Bytes; ", BFH.file_size );
 	printf( "Height: %d; Width: %d.\n\n", abs( BIH.height ), BIH.width );
 
 	free( tempData );
@@ -234,8 +234,8 @@ void imwrite( char *filename, Matrix *source, w_mode mode ) {
 	fwrite( tempData, sizeof( uint8 ), pad_data_size, fp );
 
 	/* message upon success */
-	printf( "imwrite( %s ): success!.\n", filename );
-	printf( "File size: %d bytes; ", file_header.file_size );
+	printf( "imwrite( %s ): ", filename );
+	printf( "Size: %d Bytes; ", file_header.file_size );
 	printf( "Height: %d; Width: %d.\n\n", -( info_header.height ), info_header.width );
 
 	free( tempData );
@@ -289,6 +289,49 @@ void gray2Color( Matrix *source ) {
             }
         }
     }
+}
+
+/* hough()專用：給定斜率，y截距，rho，畫出紅線(index = 0)至img上 */
+void slopeIntPlot( Matrix *img, float slope, float y_int, float rho ) {
+/*      |slope| <=   1, then plot with x increments
+ *  1 < |slope| <  100, then plot with y increments
+ *      |slope| >= 100, then plot vertical line
+ */
+ 	float abs_slope = fabs( slope );
+	int x, y, M, N;
+	M = img->size1;
+	N = img->size2;
+
+	/* plot with x increments */
+ 	if ( abs_slope <= 1.f ) {
+		for ( x = 0; x < M; x++ ) {
+			/* y = slope * x + y_int */
+			y = lroundf( slope * x + y_int );
+			if ( y >= 0 && y < N ) {
+				img->data[ 0 ][ x ][ y ] = 0;
+			}
+		}
+ 	}	
+	/* plot with y increments */
+ 	else if ( abs_slope < 100.f ) {
+		for ( y = 0; y < N; y++ ) {
+			/* x = ( y - y_int ) / slope */
+			x = lroundf( ( y - y_int ) / slope );
+			if ( x >= 0 && x < M ) {
+				img->data[ 0 ][ x ][ y ] = 0;
+			}
+		}
+ 	}
+	/* plot vertically */
+ 	else {
+		for ( y = 0; y < N; y++ ) {
+			/* x = rho */
+			x = rho;
+			if ( x >= 0 && x < M ) {
+				img->data[ 0 ][ x ][ y ] = 0;
+			}
+		}
+	}
 }
 
 #if DEBUG
