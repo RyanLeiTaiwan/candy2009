@@ -17,9 +17,13 @@ typedef struct Matrix {
 
 } Matrix;
 
-typedef enum COLOR { RR, GG, BB, ALL } COLOR;
+typedef enum { RR, GG, BB, ALL } COLOR;
 // 對於2D矩陣來說，RR和ALL意義是一樣的
-typedef enum TYPE { INT, DOUBLE } TYPE;
+typedef enum { INT, FLOAT } TYPE;
+// 格式指定：int, float
+typedef enum { Gradient, Sobel, Laplace } FILTER;
+// 水平gradient，水平Sobel，二階Laplacian filter
+
 void full_dump( Matrix *source, char *name, COLOR color, TYPE type );
 // 顯示矩陣全部內容( 矩陣、名稱、第三維、INT或DOUBLE )
 void part_dump( Matrix *source, char *name, COLOR color, int rowBegin, int rowEnd, int colBegin, int colEnd, TYPE type );
@@ -49,10 +53,16 @@ void part_assign( Matrix *source, Matrix *dest,
 	int sRowBegin, int sRowEnd, int sColBegin, int sColEnd, int sLayerBegin, int sLayerEnd,
 	int dRowBegin, int dRowEnd, int dColBegin, int dColEnd, int dLayerBegin, int dLayerEnd );
 // 指定row, col, layer範圍的matrix assignment，兩者皆已malloc過。
-void cross( Matrix *image, Matrix *filter, Matrix *dest );
-// 2D cross-correlation運算，filter必須為2D奇數X奇數的方陣，且size小於image，邊界用鏡射法。
+void ABS( Matrix *source );
+// 整個矩陣取絕對值
 void max_min( Matrix *image, float *maxRet, float *minRet );
 // 求2D矩陣的最大值和最小值，只求值不求index
+void map_0_255( Matrix *source );  
+// 將範圍線性對應到[0, 255]
+void change_0_to_1( Matrix *source );
+// 把所有值是0的都改成1
+void cross( Matrix *image, Matrix *filter, Matrix *dest );
+// 2D cross-correlation運算，filter必須為2D奇數X奇數的方陣，且size小於image，邊界用鏡射法。
 
 
 

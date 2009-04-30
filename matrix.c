@@ -1,13 +1,13 @@
 /** File: matrix.c
  ** Author: ryanlei
  ** Creation : 2009/03/21
- ** Modification: 2009/04/01
+ ** Modification: 2009/04/30
  ** Description: matrix data structure
  **/
 #include "matrix.h"
-#define DEBUG 1
+#define DEBUG 0
 
-/* 顯示全部矩陣內容( 矩陣、名稱、第三維、INT或DOUBLE )：
+/* 顯示全部矩陣內容( 矩陣、名稱、第三維、INT或FLOAT )：
  * color: {0,1,2,3} == {RR,GG,BB,ALL}
  * 2D矩陣只有R component有值，可以傳R或ALL
  */
@@ -32,7 +32,7 @@ void full_dump( Matrix *source, char *name, COLOR color, TYPE type ) {
 			for ( col = 0; col < source->size2; col++ ) {
 				if ( type == INT )
 					printf( "%4d", (int) source->data[ layer ][ row ][ col ] );
-				else if ( type == DOUBLE )
+				else if ( type == FLOAT )
 					printf( "%7.2f", source->data[ layer ][ row ][ col ] );
 				else
 					error( "dump(): Parameter TYPE error." );
@@ -72,7 +72,7 @@ void part_dump( Matrix *source, char *name, COLOR color, int rowBegin, int rowEn
 			for ( col = colBegin; col <= colEnd; col++ ) {
 				if ( type == INT )
 					printf( "%4d", (int) source->data[ layer ][ row ][ col ] );
-				else if ( type == DOUBLE )
+				else if ( type == FLOAT )
 					printf( "%7.2f", source->data[ layer ][ row ][ col ] );
 				else
 					error( "dump(): Parameter TYPE error." );
@@ -481,6 +481,42 @@ void max_min( Matrix *image, float *maxRet, float *minRet ) {
 	*minRet = min;
 }	
 
+/* 將矩陣的值線性對應到[0, 255] */
+void map_0_255( Matrix *source ) {
+	float max, min;
+	max_min( source, &max, &min );
+	/* source = ( source - min ) / ( max - min ) * 255 */
+	s_add( source, -min );
+	s_mul( source, 255.f / ( max - min ) );
+}
+
+void ABS( Matrix *source ) {
+	int size1 = source->size1, size2 = source->size2, size3 = source->size3;
+	int row, col, layer;
+	for ( row = 0; row < size1; row++ ) {
+		for ( col = 0; col < size2; col++ ) {
+			for ( layer = 0; layer < size3; layer++ ) {
+				source->data[ layer ][ row ][ col ] =
+					fabs( source->data[ layer ][ row ][ col ] );
+			}
+		}
+	}
+}
+
+void change_0_to_1( Matrix *source ) {
+	int size1 = source->size1, size2 = source->size2, size3 = source->size3;
+	int row, col, layer;
+	for ( row = 0; row < size1; row++ ) {
+		for ( col = 0; col < size2; col++ ) {
+			for ( layer = 0; layer < size3; layer++ ) {
+				float value = source->data[ layer ][ row ][ col ];
+				if ( value >= 0.f && value < 1.f ) {
+					source->data[ layer ][ row ][ col ] = 1.f;
+				}
+			}
+		}
+	}
+}
 
 #if DEBUG
 int main() {
@@ -511,7 +547,7 @@ int main() {
 	s_add( &Ra, -20.f );
 	s_mul( &Ra, 5 );
 	s_pow( &Ra, 0.5 );
-	full_dump( &Ra, "((Ra-20)*5)^0.5, ", ALL, DOUBLE );
+	full_dump( &Ra, "((Ra-20)*5)^0.5, ", ALL, FLOAT );
 
 	eye( &I, 3 );
 	m_mul( &A, &I, GG, RR, &B );
@@ -541,16 +577,15 @@ int main() {
     cross( &F, &H, &G );
     full_dump( &G, "F ** H ", RR, INT );
 
+	/* simultaneous max and min */
 	RAND( &Rc, 10, 9, 1, 0, 999 );
 	full_dump( &Rc, "Rc", ALL, INT );
 	max_min( &Rc, &max, &min );
 	printf( "Rc: max = %d; min = %d\n", (int) max, (int) min );
 	RAND( &Rd, 11, 9, 1, 0, 999 );
-#if 1
 	full_dump( &Rd, "Rc", ALL, INT );
 	max_min( &Rd, &max, &min );
 	printf( "Rc: max = %d; min = %d\n", (int) max, (int) min );
-#endif
 
 	toc = clock();
 	runningTime( tic, toc );
