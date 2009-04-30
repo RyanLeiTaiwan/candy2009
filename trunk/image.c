@@ -241,10 +241,7 @@ void imwrite( char *filename, Matrix *source, w_mode mode ) {
 	free( tempData );
     fclose( fp );
 }
-/*void genPalette(){
 
-
-}*/
 void color2Gray( Matrix *source ) {
     int col,row,layer;
 	/* check layer */

@@ -21,7 +21,7 @@ imshow( img );
 title( 'Original image' );
 M = size( img, 1 );
 N = size( img, 2 );
-% voting matrix: -D <= rho <= D (D = diagonal); 1' <= theta < 180'
+% voting matrix: -D <= rho <= D (D = diagonal); 1' <= theta <= 180'
 D = round( sqrt( M^2 + N^2 ) );
 vote = zeros( 2 * D + 1, 180 );  
 
