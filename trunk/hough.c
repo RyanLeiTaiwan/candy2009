@@ -1,11 +1,11 @@
 /** File: hough.c
  ** Author: snowm, ryanlei
  ** Creation: 2009/04/01
- ** Modification: 2009/04/30
+ ** Modification: 2009/07/04
  ** Description: Hough Transform, the Rho-Theta Version
  **/
 
-#include "hough.h"
+#include "image.h"
 #define DEBUG 1
 
 /* Hough Transform with several parameters :
@@ -16,7 +16,8 @@ void hough( Matrix *img, char *nameIn,
 	FILTER filterIn, float min_edge, float min_diag ) {
 	
 	float COS[ 180 ], SIN[ 180 ], COT[ 180 ], CSC[ 180 ];
-	Matrix filter, edge, vote, voteOut;
+	Matrix filter, edge, vote;
+	//Matrix voteOut;
 	int M, N, D, i, x, y, rho, theta;
 	float min_vote;
 	int lineCount = 0;
@@ -46,8 +47,8 @@ void hough( Matrix *img, char *nameIn,
 	zeros( &filter, 3, 3, 1 );
 	switch ( filterIn ) {
 		case Gradient:
-			filter.data[ 0 ][ 1 ][ 1 ] = 1;
-			filter.data[ 0 ][ 1 ][ 2 ] = -1;
+			/*** use the function gradient() to speed up ***/
+			gradient( img, &edge, horizontal, false );
 			break;
 		case Sobel:
 			filter.data[ 0 ][ 0 ][ 0 ] = -1;
@@ -67,7 +68,9 @@ void hough( Matrix *img, char *nameIn,
 	}
 	
 	/* [1] Obtain the "edge image" */
-	cross( img, &filter, &edge );
+	if ( filterIn != Gradient ) {
+		cross( img, &filter, &edge );
+	}
 	freeMatrix( &filter );
 	ABS( &edge );  /* take absolute value */
 	map_0_255( &edge );
@@ -92,11 +95,14 @@ void hough( Matrix *img, char *nameIn,
 		}
 	}
 	/* OPTIONAL: output the voting result */
+	/*
 	zeros( &voteOut, 2 * D + 1, 180, 1 );
 	full_assign( &vote, &voteOut, ALL, ALL );
 	map_0_255( &voteOut );
 	sprintf( fileName, "%s_vote.bmp", newName );
 	imwrite( fileName, &voteOut, GRAY );
+	freeMatrix( &voteOut );
+	*/
 
 	/** secretly change values 0 to values 1 **/
 	change_0_to_1( &edge );

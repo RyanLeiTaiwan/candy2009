@@ -1,7 +1,7 @@
 /** File: matrix.c
  ** Author: ryanlei
  ** Creation : 2009/03/21
- ** Modification: 2009/04/30
+ ** Modification: 2009/07/04
  ** Description: matrix data structure
  **/
 #include "matrix.h"
@@ -186,9 +186,10 @@ void s_mul( Matrix *source, float number ) {
 
 void s_pow( Matrix *source, float number ) {
 	int row, col, layer;
-	for ( layer = 0; layer < source->size3; layer++ ) {
-		for ( row = 0; row < source->size1; row++ ) {
-			for ( col = 0; col < source->size2; col++ ) {
+	int M = source->size1, N = source->size2, L = source->size3;
+	for ( layer = 0; layer < L; layer++ ) {
+		for ( row = 0; row < M; row++ ) {
+			for ( col = 0; col < N; col++ ) {
 				float value = source->data[ layer ][ row ][ col ];
 				source->data[ layer ][ row ][ col ] = pow( value, number );
 			}
@@ -402,6 +403,81 @@ void cross( Matrix *image, Matrix *filter, Matrix *dest ) {
     }
 }
 
+/* 2D gradient filters: horizontal/vertical; centered/uncentered */
+void gradient( Matrix *source, Matrix *dest, DIRECTION dir, bool centered ) {
+	int row, col;
+	if ( source->size3 != 1 ) {
+		error( "gradient(): Image should be 2D." );
+	}
+    zeros( dest, source->size1, source->size2, 1 );
+
+	/* 分成四種case各別處理 */
+	if ( dir == horizontal && !centered ) {
+		/* [1.,-1] */
+		for ( row = 0; row < source->size1; row++ ) {
+			for ( col = 0; col < source->size2 - 1; col++ ) {
+				dest->data[ 0 ][ row ][ col ] = 
+					source->data[ 0 ][ row ][ col ] - source->data[ 0 ][ row ][ col + 1 ];
+			}
+			/* boundary: rightmost */
+			dest->data[ 0 ][ row ][ col ] = 
+					source->data[ 0 ][ row ][ col ] - source->data[ 0 ][ row ][ col - 1 ];
+		}
+	}
+	else if ( dir == horizontal && centered ) {
+		/* [-1,0,1] */
+		for ( row = 0; row < source->size1; row++ ) {
+			/* boundary: leftmost */
+			dest->data[ 0 ][ row ][ 0 ] = 
+					source->data[ 0 ][ row ][ 1 ] - source->data[ 0 ][ row ][ 0 ];
+			for ( col = 1; col < source->size2 - 1; col++ ) {
+				dest->data[ 0 ][ row ][ col ] = 
+					source->data[ 0 ][ row ][ col + 1 ] - source->data[ 0 ][ row ][ col - 1 ];
+			}
+			/* boundary: rightmost */
+			dest->data[ 0 ][ row ][ col ] = 
+					source->data[ 0 ][ row ][ col ] - source->data[ 0 ][ row ][ col - 1 ];
+		}
+
+	}
+	else if ( dir == vertical && !centered ) {
+		/* [1.,-1]T */
+		for ( row = 0; row < source->size1 - 1; row++ ) {
+			for ( col = 0; col < source->size2; col++ ) {
+				dest->data[ 0 ][ row ][ col ] = 
+					source->data[ 0 ][ row ][ col ] - source->data[ 0 ][ row + 1 ][ col ];
+			}
+		}
+		/* boundary: bottom */
+		for ( col = 0; col < source->size2; col++ ) {
+			dest->data[ 0 ][ row ][ col ] = 
+				source->data[ 0 ][ row ][ col ] - source->data[ 0 ][ row - 1 ][ col ];
+		}
+	}
+	else if ( dir == vertical && centered ) {
+		/* [-1,0,1]T */
+		/* boundary: top */
+		for ( col = 0; col < source->size2; col++ ) {
+			dest->data[ 0 ][ 0 ][ col ] = 
+				source->data[ 0 ][ 1 ][ col ] - source->data[ 0 ][ 0 ][ col ];
+		}
+		for ( row = 1; row < source->size1 - 1; row++ ) {
+			for ( col = 0; col < source->size2; col++ ) {
+				dest->data[ 0 ][ row ][ col ] = 
+					source->data[ 0 ][ row + 1 ][ col ] - source->data[ 0 ][ row - 1 ][ col ];
+			}
+		}
+		/* boundary: bottom */
+		for ( col = 0; col < source->size2; col++ ) {
+			dest->data[ 0 ][ row ][ col ] = 
+				source->data[ 0 ][ row ][ col ] - source->data[ 0 ][ row - 1 ][ col ];
+		}
+	}
+	else {
+		error( "gradient(): unexpected gradient type." );
+	}
+}
+
 /* 求2D矩陣的最大值和最小值，只求值不求index
  * 使用Algorithms教的simultaneous max and min
  * Time: O( 1.5mn )
@@ -409,7 +485,7 @@ void cross( Matrix *image, Matrix *filter, Matrix *dest ) {
 void max_min( Matrix *image, float *maxRet, float *minRet ) {
 	/* check image dimensions: should be 2D */
 	if ( image->size3 != 1 ) {
-		error( "cross(): Image should be 2D." );
+		error( "max_min(): Image should be 2D." );
 	}
 	int total = image->size1 * image->size2;
 	int half = total >> 1;
@@ -520,7 +596,7 @@ void change_0_to_1( Matrix *source ) {
 
 #if DEBUG
 int main() {
-	Matrix A, B, C, D, E, F, G, H, I, Ra, Rb, Rc, Rd;
+	Matrix A, B, C, D, E, F, G, H, H2, I, Ra, Rb, Rc, Rd, Re;
 	int row, col, count = 0;
 	float max, min;
 	float array[ 11 * 13 ] = {
@@ -587,14 +663,67 @@ int main() {
 	max_min( &Rd, &max, &min );
 	printf( "Rc: max = %d; min = %d\n", (int) max, (int) min );
 
+	/* 4 gradient filter variants */
+	zeros( &H2, 3, 3, 1 );
+	H2.data[ 0 ][ 1 ][ 1 ] = 1;
+	H2.data[ 0 ][ 1 ][ 2 ] = -1;
+	cross( &F, &H2, &G );
+	full_dump( &G, "cross[0,1,-1]", ALL, INT );
+	gradient( &F, &G, horizontal, false );
+	full_dump( &G, "grad[0,1,-1]", ALL, INT );
+
+	H2.data[ 0 ][ 1 ][ 0 ] = -1;
+	H2.data[ 0 ][ 1 ][ 1 ] = 0;
+	H2.data[ 0 ][ 1 ][ 2 ] = 1;
+	cross( &F, &H2, &G );
+	full_dump( &G, "cross[-1,0,1]", ALL, INT );
+	gradient( &F, &G, horizontal, true );
+	full_dump( &G, "grad[-1,0,1]", ALL, INT );
+
+	H2.data[ 0 ][ 0 ][ 1 ] = 0;
+	H2.data[ 0 ][ 1 ][ 1 ] = 1;
+	H2.data[ 0 ][ 2 ][ 1 ] = -1;
+	H2.data[ 0 ][ 1 ][ 0 ] = 0;
+	H2.data[ 0 ][ 1 ][ 2 ] = 0;
+	cross( &F, &H2, &G );
+	full_dump( &G, "cross[0,1,-1]T", ALL, INT );
+	gradient( &F, &G, vertical, false );
+	full_dump( &G, "grad[0,1,-1]T", ALL, INT );
+
+	H2.data[ 0 ][ 0 ][ 1 ] = -1;
+	H2.data[ 0 ][ 1 ][ 1 ] = 0;
+	H2.data[ 0 ][ 2 ][ 1 ] = 1;
+	cross( &F, &H2, &G );
+	full_dump( &G, "cross[-1,0,1]T", ALL, INT );
+	gradient( &F, &G, vertical, true );
+	full_dump( &G, "grad[-1,0,1]T", ALL, INT );
+
 	toc = clock();
+	runningTime( tic, toc );
+
+	/* speed time: filter() vs gradient() */
+	H2.data[ 0 ][ 1 ][ 0 ] = -1;
+	H2.data[ 0 ][ 1 ][ 1 ] = 0;
+	H2.data[ 0 ][ 1 ][ 2 ] = 1;
+	H2.data[ 0 ][ 0 ][ 1 ] = 0;
+	H2.data[ 0 ][ 2 ][ 1 ] = 0;
+	RAND( &Re, 10000, 10000, 1, 1, 5 );
+	tic = clock();
+	cross( &Re, &H2, &G );
+	toc = clock();
+	printf( "Use filter():\n" );
+	runningTime( tic, toc );
+	tic = clock();
+	gradient( &Re, &G, horizontal, true );
+	toc = clock();
+	printf( "Use gradient():\n" );
 	runningTime( tic, toc );
 
 	/* free memory space */
 	freeMatrix( &A ); freeMatrix( &B ); freeMatrix( &C ); freeMatrix( &D ); freeMatrix( &E );
-	freeMatrix( &F ); freeMatrix( &G ); freeMatrix( &H );
+	freeMatrix( &F ); freeMatrix( &G ); freeMatrix( &H ); freeMatrix( &H2 );
 	freeMatrix( &I ); freeMatrix( &Ra ); freeMatrix( &Rb ); 
-	freeMatrix( &Rc ); freeMatrix( &Rd );
+	freeMatrix( &Rc ); freeMatrix( &Rd ); freeMatrix( &Re );
 
 	return 0;
 }
