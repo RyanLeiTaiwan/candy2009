@@ -1,7 +1,7 @@
 /** File: matrix.h
  ** Author: ryanlei
  ** Creation : 2009/03/21
- ** Modification: 2009/04/29
+ ** Modification: 2009/07/04
  ** Description: matrix data structure
  **/
 #include "util.h"
@@ -23,11 +23,12 @@ typedef enum { INT, FLOAT } TYPE;
 // 格式指定：int, float
 typedef enum { Gradient, Sobel, Laplace } FILTER;
 // 水平gradient，水平Sobel，二階Laplacian filter
+typedef enum { horizontal, vertical } DIRECTION;
 
 void full_dump( Matrix *source, char *name, COLOR color, TYPE type );
-// 顯示矩陣全部內容( 矩陣、名稱、第三維、INT或DOUBLE )
+// 顯示矩陣全部內容( 矩陣、名稱、第三維、INT或FLOAT )
 void part_dump( Matrix *source, char *name, COLOR color, int rowBegin, int rowEnd, int colBegin, int colEnd, TYPE type );
-// 顯示矩陣部分內容( 矩陣、名稱、第三維、前兩維度的範圍、INT或DOUBLE )
+// 顯示矩陣部分內容( 矩陣、名稱、第三維、前兩維度的範圍、INT或FLOAT )
 void zeros( Matrix *dest, int size1, int size2, int size3 ); // 產生全0的矩陣
 void ones( Matrix *dest, int size1, int size2, int size3 ); // 產生全1的矩陣
 void eye( Matrix *dest, int size ); // 產生2D Identity矩陣
@@ -63,6 +64,5 @@ void change_0_to_1( Matrix *source );
 // 把所有值是0的都改成1
 void cross( Matrix *image, Matrix *filter, Matrix *dest );
 // 2D cross-correlation運算，filter必須為2D奇數X奇數的方陣，且size小於image，邊界用鏡射法。
-
-
-
+void gradient( Matrix *source, Matrix *dest, DIRECTION dir, bool centered );
+// gradient filters: horizontal/vertical, centered/uncentered
