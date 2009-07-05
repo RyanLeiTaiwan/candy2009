@@ -9,7 +9,7 @@
  **/
 
 #include "image.h"
-#define DEBUG 0
+#define DEBUG 1
 
 /* [1], [2], [3], 代表步驟
  * [A], [B], [C], 代表參數 */
@@ -30,7 +30,6 @@ void HOG( Matrix *img, char *outFileName ) {
 	for ( i = 0; i < 3; i++ ) { 
 		zeros( &RGBimg[ i ], M, N, 1 );
 		full_assign( img, &RGBimg[ i ], (COLOR)i, RR );
-		part_dump( &RGBimg[ i ], "RGBimg[ 0~2 ]", ALL, 100, 109, 100, 109, INT );
 		gradient( &RGBimg[ i ], &gradHor[ i ], horizontal, true );
 		gradient( &RGBimg[ i ], &gradVer[ i ], vertical, true );
 	}
@@ -38,16 +37,13 @@ void HOG( Matrix *img, char *outFileName ) {
 	 * if it IS the largest, also compute the angle of the gradient */
 	zeros( &gradMag, M, N, 1 );
 	zeros( &gradAng, M, N, 1 );
-	//part_dump( &gradHor[ 1 ], "gradHor[ 0 ]", ALL, 100, 109, 100, 109, INT );
-	//part_dump( &gradVer[ 1 ], "gradVer[ 0 ]", ALL, 100, 109, 100, 109, INT );
-	for ( row = 100; row < 110; row++ ) {
-		for ( col = 100; col < 110; col++ ) {
+	for ( row = 0; row < M; row++ ) {
+		for ( col = 0; col < N; col++ ) {
 			for ( i = 0; i < 3; i++ ) {
 				float Fh = gradHor[ i ].data[ 0 ][ row ][ col ]; 
 				float Fv = gradVer[ i ].data[ 0 ][ row ][ col ];
 				float mag = sqrt( Fh * Fh + Fv * Fv );
-				//printf( "%d: (%.0f,%.0f) has mag = %f\n", i, Fh, Fv, mag );
-				/* is largest (excludes the (0,0) case */
+				/* is largest ( automatically excludes the (0,0) case ) */
 				if ( mag > gradMag.data[ 0 ][ row ][ col ] ) { 
 					float ang;
 					int bin;
@@ -60,7 +56,8 @@ void HOG( Matrix *img, char *outFileName ) {
 					else if ( Fv < 0 ) { /* IV */
 						ang += 360.f;
 					}
-					//printf( "ang = %.0f\n", ang );
+					assert( ang >= 0 && ang < 360.f );
+					//printf( "layer%d: (%.0f,%.0f): mag = %f, ang = %.0f\n", i, Fh, Fv, mag, ang );
 				}
 
 			}
