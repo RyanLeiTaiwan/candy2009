@@ -1,11 +1,11 @@
 /** File: matrix.c
  ** Author: ryanlei
  ** Creation : 2009/03/21
- ** Modification: 2009/07/04
+ ** Modification: 2009/07/05
  ** Description: matrix data structure
  **/
 #include "matrix.h"
-#define DEBUG 0
+#define DEBUG 1
 
 /* 顯示全部矩陣內容( 矩陣、名稱、第三維、INT或FLOAT )：
  * color: {0,1,2,3} == {RR,GG,BB,ALL}
@@ -44,7 +44,7 @@ void full_dump( Matrix *source, char *name, COLOR color, TYPE type ) {
 }
 
 /* 顯示部分矩陣內容：
- * 與full_assign相似，但是row跟col要指定起點、終點
+ * 與full_dump相似，但是row跟col要指定起點、終點
  */
 void part_dump( Matrix *source, char *name, COLOR color, int rowBegin, int rowEnd, int colBegin, int colEnd, TYPE type ) {
 	int row, col, layer, layer_start, layer_end;
@@ -311,26 +311,35 @@ void m_mul( Matrix *source1, Matrix *source2, COLOR color1, COLOR color2, Matrix
 }
 
 void full_assign( Matrix *source, Matrix *dest, COLOR sColor, COLOR dColor ) {
-	int row, col, layer;
-	/* find the actual number of layers */
-	int sLayer = 1, dLayer = 1;
-	if ( sColor == ALL ) sLayer = source->size3;
-	if ( dColor == ALL ) dLayer = dest->size3;
-
+	int row, col, sLayer, dLayer;
+	int sLayerBeg = (int)sColor, sLayerEnd = (int)sColor;
+	int dLayerBeg = (int)dColor, dLayerEnd = (int)dColor;
+	/* find the actual number of layers, and set beginning, ending layers */
+	int sLayerNum = 1, dLayerNum = 1;
+	if ( sColor == ALL ) { 
+		sLayerNum = source->size3;
+		sLayerBeg = 0;
+		sLayerEnd = source->size3 - 1;
+	}
+	if ( dColor == ALL ) {
+		dLayerNum = dest->size3;
+		dLayerBeg = 0;
+		dLayerEnd = dest->size3 - 1;
+	}
 	/* check dimensions */
 	if ( source->size3 == 1 && ( sColor == GG || sColor == BB ) )
 		error( "full_assign(): source has only one layer." );
 	if ( dest->size3 == 1 && ( dColor == GG || dColor == BB ) )
 		error( "full_assign(): dest has only one layer." );
 	if ( source->size1 != dest->size1 || source->size2 != dest->size2 ||
-		sLayer != dLayer ) {
+		sLayerNum != dLayerNum ) {
 		error( "full_assign(): Dimensions disagree." );
 	}
 
-	for ( layer = 0; layer < dLayer; layer++ ) {
+	for ( sLayer = sLayerBeg, dLayer = dLayerBeg; sLayer <= sLayerEnd; sLayer++, dLayer++ ) {
 		for ( row = 0; row < dest->size1; row++ ) {
 			for ( col = 0; col < dest->size2; col++ ) {
-				dest->data[ layer ][ row ][ col ] = source->data[ layer ][ row ][ col ];
+				dest->data[ dLayer ][ row ][ col ] = source->data[ sLayer ][ row ][ col ];
 			}
 		}
 	}
@@ -699,24 +708,6 @@ int main() {
 	full_dump( &G, "grad[-1,0,1]T", ALL, INT );
 
 	toc = clock();
-	runningTime( tic, toc );
-
-	/* speed time: filter() vs gradient() */
-	H2.data[ 0 ][ 1 ][ 0 ] = -1;
-	H2.data[ 0 ][ 1 ][ 1 ] = 0;
-	H2.data[ 0 ][ 1 ][ 2 ] = 1;
-	H2.data[ 0 ][ 0 ][ 1 ] = 0;
-	H2.data[ 0 ][ 2 ][ 1 ] = 0;
-	RAND( &Re, 10000, 10000, 1, 1, 5 );
-	tic = clock();
-	cross( &Re, &H2, &G );
-	toc = clock();
-	printf( "Use filter():\n" );
-	runningTime( tic, toc );
-	tic = clock();
-	gradient( &Re, &G, horizontal, true );
-	toc = clock();
-	printf( "Use gradient():\n" );
 	runningTime( tic, toc );
 
 	/* free memory space */
