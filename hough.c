@@ -6,7 +6,7 @@
  **/
 
 #include "image.h"
-#define DEBUG 1
+#define DEBUG 0
 
 /* Hough Transform with several parameters :
  * [1], [2], [3] 代表步驟
@@ -179,6 +179,8 @@ int main() {
 	toc = clock();
 	printf( "road2.bmp: " );
 	runningTime( tic, toc );
+
+	freeMatrix( &img );
 
 	return 0;
 }

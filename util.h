@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
+#include <string.h>
 
 typedef enum { false, true } bool; // define 'bool' type
 void error( char *msg ); // 錯誤訊息，並中斷程式

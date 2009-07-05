@@ -1,7 +1,7 @@
 /** File: image.c
  ** Author: ryanlei snowm
  ** Creation: 2009/03/29
- ** Modification: 2009/04/07
+ ** Modification: 2009/07/05
  ** Description: Implementation of image operations.
                  Handled in "Little-Endian".
  **/
@@ -107,9 +107,11 @@ void imread( char *filename, Matrix *dest ) {
 	}
 
 	/* message upon success */
+#if DEBUG
 	printf( "imread( %s ): ", filename );
 	printf( "Size: %d Bytes; ", BFH.file_size );
 	printf( "Height: %d; Width: %d.\n\n", abs( BIH.height ), BIH.width );
+#endif
 
 	free( tempData );
 	fclose( fin );
@@ -234,9 +236,11 @@ void imwrite( char *filename, Matrix *source, w_mode mode ) {
 	fwrite( tempData, sizeof( uint8 ), pad_data_size, fp );
 
 	/* message upon success */
+#if DEBUG
 	printf( "imwrite( %s ): ", filename );
 	printf( "Size: %d Bytes; ", file_header.file_size );
 	printf( "Height: %d; Width: %d.\n\n", -( info_header.height ), info_header.width );
+#endif
 
 	free( tempData );
     fclose( fp );
