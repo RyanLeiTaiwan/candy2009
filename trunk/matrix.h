@@ -63,6 +63,7 @@ void map_0_255( Matrix *source );
 void change_0_to_1( Matrix *source );
 // 把所有值是0的都改成1
 void cross( Matrix *image, Matrix *filter, Matrix *dest );
-// 2D cross-correlation運算，filter必須為2D奇數X奇數的方陣，且size小於image，邊界用鏡射法。
+// 2D cross-correlation運算，filter必須為2D奇數X奇數的方陣，且size小於image，邊界用鏡射法，
+// dest尚未malloc。
 void gradient( Matrix *source, Matrix *dest, DIRECTION dir, bool centered );
-// gradient filters: horizontal/vertical, centered/uncentered
+// gradient filters: horizontal/vertical, centered/uncentered，dest is not yet malloced
