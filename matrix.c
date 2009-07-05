@@ -422,15 +422,15 @@ void gradient( Matrix *source, Matrix *dest, DIRECTION dir, bool centered ) {
 
 	/* 分成四種case各別處理 */
 	if ( dir == horizontal && !centered ) {
-		/* [1.,-1] */
+		/* [-1.,1] */
 		for ( row = 0; row < source->size1; row++ ) {
 			for ( col = 0; col < source->size2 - 1; col++ ) {
 				dest->data[ 0 ][ row ][ col ] = 
-					source->data[ 0 ][ row ][ col ] - source->data[ 0 ][ row ][ col + 1 ];
+					source->data[ 0 ][ row ][ col + 1 ] - source->data[ 0 ][ row ][ col ];
 			}
 			/* boundary: rightmost */
 			dest->data[ 0 ][ row ][ col ] = 
-					source->data[ 0 ][ row ][ col ] - source->data[ 0 ][ row ][ col - 1 ];
+					source->data[ 0 ][ row ][ col - 1 ] - source->data[ 0 ][ row ][ col ];
 		}
 	}
 	else if ( dir == horizontal && centered ) {
@@ -450,17 +450,17 @@ void gradient( Matrix *source, Matrix *dest, DIRECTION dir, bool centered ) {
 
 	}
 	else if ( dir == vertical && !centered ) {
-		/* [1.,-1]T */
+		/* [-1.,1]T */
 		for ( row = 0; row < source->size1 - 1; row++ ) {
 			for ( col = 0; col < source->size2; col++ ) {
 				dest->data[ 0 ][ row ][ col ] = 
-					source->data[ 0 ][ row ][ col ] - source->data[ 0 ][ row + 1 ][ col ];
+					source->data[ 0 ][ row + 1 ][ col ] - source->data[ 0 ][ row ][ col ];
 			}
 		}
 		/* boundary: bottom */
 		for ( col = 0; col < source->size2; col++ ) {
 			dest->data[ 0 ][ row ][ col ] = 
-				source->data[ 0 ][ row ][ col ] - source->data[ 0 ][ row - 1 ][ col ];
+				source->data[ 0 ][ row - 1 ][ col ] - source->data[ 0 ][ row ][ col ];
 		}
 	}
 	else if ( dir == vertical && centered ) {
