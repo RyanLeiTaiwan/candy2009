@@ -58,11 +58,16 @@ void HOG( Matrix *img, char *outFileName ) {
 					}
 					assert( ang >= 0 && ang < 360.f );
 					//printf( "layer%d: (%.0f,%.0f): mag = %f, ang = %.0f\n", i, Fh, Fv, mag, ang );
+					
+					
 				}
 
 			}
 		}
 	}
+	
+	/*** [2] Weighted vote into spatial & orientation cells ***/
+	/* figure out which bin this angle belongs to, then vote */
 	
 	/* free memory space */
 	for ( i = 0; i < 3; i++ ) {
@@ -117,6 +122,14 @@ int main( int argc, char *argv[] ) {
 	char fileName[ 60 ];
 	int pathLen, imgCount;
 	clock_t tic, toc;
+
+	/*** HOG Parameters:
+	 * [A] centered/uncentered gradients
+	 * [B] # of orientation bins
+	 * [C] c x c cell
+	 * [D] b x b blocks
+	 ***/
+
 
 	if ( argc != 2 ) {
 		error( "Usage: ./run \"XX/YY\" (directory path)" );
