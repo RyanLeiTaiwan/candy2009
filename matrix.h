@@ -30,6 +30,7 @@ void full_dump( Matrix *source, char *name, COLOR color, TYPE type );
 void part_dump( Matrix *source, char *name, COLOR color, int rowBegin, int rowEnd, int colBegin, int colEnd, TYPE type );
 // 顯示矩陣部分內容( 矩陣、名稱、第三維、前兩維度的範圍、INT或FLOAT )
 void zeros( Matrix *dest, int size1, int size2, int size3 ); // 產生全0的矩陣
+void clear( Matrix *source ); // 將矩陣數值歸零
 void ones( Matrix *dest, int size1, int size2, int size3 ); // 產生全1的矩陣
 void eye( Matrix *dest, int size ); // 產生2D Identity矩陣
 void RAND( Matrix *dest, int size1, int size2, int size3, int lower, int upper );
@@ -47,7 +48,7 @@ void s_pow( Matrix *source, float number ); // 元素的純量次方
 void m_add( Matrix *source1, Matrix *source2, Matrix *dest );
 // 元素對應相加，sources不可和dest相同。
 void e_mul( Matrix *source1, Matrix *source2, Matrix *dest );
-// 元素對應相乘，sources不可和dest相同。
+// 元素對應相乘，sources不可和dest相同，假設dest尚未malloc。
 void m_mul( Matrix *source1, Matrix *source2, COLOR color1, COLOR color2, Matrix *dest );
 // 2D矩陣相乘，sources皆可指定用哪些layer，sources不可和dest相同。
 void full_assign( Matrix *source, Matrix *dest, COLOR sColor, COLOR dColor );

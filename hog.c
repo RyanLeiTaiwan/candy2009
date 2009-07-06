@@ -10,22 +10,41 @@
 
 #include "image.h"
 
+/* enum: normalization scheme */
+typedef enum { L2_norm, L2_Hys, L1_norm, L1_sqrt } NORMALIZE;
 /*** HOG Parameters:
  * [A] centered/uncentered gradients
  * [B] # of orientation bins
- * [C] c x c cell, 2c x 2c blocks (each block contains 2 x 2 cells)
- * [D] sigma, the Gaussian stddev, for the weighted vote
- * => feature vector dimension = (2*2*binNum) x 1
+ * [C] c x c cell
+ * [D] b x b blocks, b must be a multiple of c. Let b = r * c
+ *     => feature vector dimension = (blockNum * r * r * binNum) x 1
+ *     The blocks are overlapping and blockNum is computed in HOG.
+ * [E] sigma, the Gaussian stddev, for the weighted vote
+ * [F] normalization scheme: L2-norm
+ * [G] epsilon: a very small constant in normalization (to avoid div-by-0)
 ***/
-void HOG( Matrix *img, char *outFileName, bool centered, int binNum, int cellSize, float sigma ) {
+void HOG( Matrix *img, char *outFileName, 
+	bool centered, int binNum, int cellSize, int blockSize, float sigma, NORMALIZE scheme, float epsilon ) {
+
 	Matrix RGBimg[ 3 ]; /* array of 2D matrices, each being the RGB components of img */
 	/* Hor: horizontal, Ver: vertical, Mag: magnitude, Bin: orientation bin */
 	Matrix gradHor[ 3 ], gradVer[ 3 ], gradMag, gradBin;
+	Matrix Gauss, tempMag, tempVote, tempBin, tempBlock;
 	int M = img->size1, N = img->size2;
-	int i, row, col;
-	int blockSize = cellSize * 2;
+	int i, j, row, col, Hcount, Vcount, HH, VV, cRow, cCol;
+	int BCratio = blockSize / cellSize; /* the "r" in comment [D] */
+	/* number of cells in horizontal and vertical directions:
+	 * 不整除的部份忽略不做，多做的feature也不見得好 
+	 */
+	int cellV = M / cellSize, cellH = N / cellSize;
+	/* number of blocks in horizontal and vertical directions */
+	int blockV = cellV - BCratio + 1; /* overlapping blocks */
+	int blockH = cellH - BCratio + 1; /* overlapping blocks */
+	int blockNum = blockV * blockH;
 
 	/*** [0] Pre-processing ***/
+	/* Generate Gaussian filter */
+	Gaussian( &Gauss, cellSize, sigma );
 
 	/*** [1] Compute gradients ***/
 	/* Separate img into RGBimg[ 0~2 ].
@@ -72,18 +91,72 @@ void HOG( Matrix *img, char *outFileName, bool centered, int binNum, int cellSiz
 	}
 	
 	/*** [2] Weighted vote into spatial & orientation cells ***/
+	zeros( &tempMag, cellSize, cellSize, 1 );
+	zeros( &tempBin, cellSize, cellSize, 1 );
+	zeros( &tempBlock, BCratio * BCratio, binNum, 1 );
+	i = 0; // cell count
+	for ( row = 0, Vcount = 0; Vcount < blockV; row += cellSize, Vcount++ ) {
+		for ( col = 0, Hcount = 0; Hcount < blockH; col += cellSize, Hcount++ ) {
+			/* for each (overlapping) block of BCratio x BCratio cell array: */
+			j = 0; // cell count within a block
+			for ( VV = 0; VV < BCratio; VV++ ) {
+				for ( HH = 0; HH < BCratio; HH++ ) {
+					/* for each cell in the block: */
+					int rowBeg = row + VV * cellSize;
+					int rowEnd = rowBeg + cellSize - 1;
+					int colBeg = col + HH * cellSize;
+					int colEnd = colBeg + cellSize - 1;
+
+					/* extract a cell from gradMag, gradBin */
+					part_assign( &gradMag, &tempMag, rowBeg, rowEnd, colBeg, colEnd, 0, 0,
+						0, cellSize - 1, 0, cellSize - 1, 0, 0 );
+					part_assign( &gradBin, &tempBin, rowBeg, rowEnd, colBeg, colEnd, 0, 0,
+						0, cellSize - 1, 0, cellSize - 1, 0, 0 );
+					/* ".*" the Gaussian weight */
+					e_mul( &tempMag, &Gauss, &tempVote );
+					/* count the vote for corresponding bin and record it */
+					for ( cRow = 0; cRow < cellSize; cRow++ ) {
+						for ( cCol = 0; cCol < cellSize; cCol++ ) {
+							/* for each pixel in the cell */
+							int bin = tempBin.data[ 0 ][ cRow ][ cCol ];
+							tempBlock.data[ 0 ][ j ][ bin ] += tempVote.data[ 0 ][ cRow ][ cCol ];
+						}
+					}
+
+					j++; i++;	
+					/* free memory space that was alloated here */
+					freeMatrix( &tempVote );
+				}
+			}
+
+			full_dump( &tempBlock, "tempBlock", ALL, FLOAT );
+			/* Still in the "for each block" loop */
+			/*** [3] Contrast normalize over overlapping spatial blocks ***/
+
+
+			/*** [4] Collect HOG's over detection window ***/
+
+			/* clear tempBlock (restart from 0) */
+			clear( &tempBlock );
+		}
+	}
+	printf( "blockNum = %d, cellNum = %d\n", blockNum, i );
+	assert( i == blockNum * BCratio * BCratio );
 	
+
 	/* free memory space */
 	for ( i = 0; i < 3; i++ ) {
 		freeMatrix( &RGBimg[ i ] );
 		freeMatrix( &gradHor[ i ] );
 		freeMatrix( &gradVer[ i ] );
 	}
-	freeMatrix( &gradMag );
-	freeMatrix( &gradBin );
+	freeMatrix( &gradMag ); freeMatrix( &gradBin ); freeMatrix( &tempMag ); freeMatrix( &tempBin );
+	freeMatrix( &Gauss ); freeMatrix( &tempBlock );
 }
 
-int trainEach( char *fileName, int pathLen, bool centered, int binNum, int cellSize, float sigma ) {
+int trainEach( char *fileName, int pathLen, 
+	bool centered, int binNum, int cellSize, int blockSize, float sigma, NORMALIZE scheme, float epsilon ) {
+
 	FILE *ftest;
 	Matrix img;
 	char D1, D2, D3; /* each from '0' ~ '9' */
@@ -105,7 +178,8 @@ int trainEach( char *fileName, int pathLen, bool centered, int binNum, int cellS
 					/* imread(), HOG(), freeMatrix() */
 					imread( fileName, &img );
 					/***** second argument should change into file pointer *****/
-					HOG( &img, "pics/output/HOG_train.txt", centered, binNum, cellSize, sigma );
+					HOG( &img, "pics/output/HOG_train.txt", 
+						centered, binNum, cellSize, blockSize, sigma, scheme, epsilon );
 					imgCount++;
 					printf( "%s extracted.\n", fileName );
 					freeMatrix( &img );
@@ -130,15 +204,22 @@ int main( int argc, char *argv[] ) {
 	/*** HOG Parameters:
 	 * [A] centered/uncentered gradients
 	 * [B] # of orientation bins
-	 * [C] c x c cell, 2c x 2c blocks (each block contains 2 x 2 cells)
-	 * [D] sigma, the Gaussian stddev, for the weighted vote
-	 * => feature vector dimension = (2*2*binNum) x 1
+	 * [C] c x c cell
+	 * [D] b x b blocks, b must be a multiple of c. Let b = r * c
+	 *     => feature vector dimension = (blockNum * r * r * binNum) x 1
+	 *     The blocks are overlapping and blockNum is computed in HOG.
+	 * [E] sigma, the Gaussian stddev, for the weighted vote
+	 * [F] normalization scheme: L2-norm
+	 * [G] epsilon: a very small constant in normalization (to avoid div-by-0)
 	 ***/
 	bool centered = true;
 	int binNum = 8;
 	int cellSize = 8;
+	int blockSize = 16;
 	float sigma = 8.f;
+	float epsilon = 1e-6;
 	assert( !( 360 % binNum ) ); // binNum must divide 360
+	assert( !( blockSize % cellSize ) ); // cellSize must divide blockSize
 
 	if ( argc != 2 ) {
 		error( "Usage: ./run \"XX/YY\" (directory path)" );
@@ -154,7 +235,8 @@ int main( int argc, char *argv[] ) {
 	
 	tic = clock();
 	/* training of each image */
-	imgCount = trainEach( fileName, pathLen, centered, binNum, cellSize, sigma );
+	imgCount = trainEach( fileName, pathLen, 
+		centered, binNum, cellSize, blockSize, sigma, L2_norm, epsilon );
 	toc = clock();
 	printf( "HOG: feature extraction of %d images completed.\n", imgCount );
 	runningTime( tic, toc );
