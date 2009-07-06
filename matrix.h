@@ -42,7 +42,8 @@ void freeMatrix( Matrix *source ); // 清除矩陣的記憶體空間
 /* scalar operations */
 void s_add( Matrix *source, float number ); // 元素加上一個純量
 void s_mul( Matrix *source, float number ); // 元素乘上一個純量（係數積）
-void s_pow( Matrix *source, float number ); // 元素的純量次方
+void s_pow( Matrix *source, float power ); // 元素的純量次方
+void s_sqrt( Matrix *source ); // 元素開根號，是s_pow的特例。
 
 /* matrix or element-wise operations */
 void m_add( Matrix *source1, Matrix *source2, Matrix *dest );
@@ -72,3 +73,5 @@ void cross( Matrix *image, Matrix *filter, Matrix *dest );
 // dest尚未malloc。
 void gradient( Matrix *source, Matrix *dest, DIRECTION dir, bool centered );
 // gradient filters: horizontal/vertical, centered/uncentered，dest is not yet malloced
+float v_norm2( Matrix *source );
+// 把整個矩陣當作vector取2-norm

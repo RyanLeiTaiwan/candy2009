@@ -23,16 +23,17 @@ typedef enum { L2_norm, L2_Hys, L1_norm, L1_sqrt } NORMALIZE;
  * [F] normalization scheme: L2-norm
  * [G] epsilon: a very small constant in normalization (to avoid div-by-0)
 ***/
-void HOG( Matrix *img, char *outFileName, 
-	bool centered, int binNum, int cellSize, int blockSize, float sigma, NORMALIZE scheme, float epsilon ) {
+void HOG( Matrix *img, char *label, FILE *fout, bool centered, int binNum, 
+	int cellSize, int blockSize, float sigma, NORMALIZE scheme, float epsilon ) {
 
 	Matrix RGBimg[ 3 ]; /* array of 2D matrices, each being the RGB components of img */
 	/* Hor: horizontal, Ver: vertical, Mag: magnitude, Bin: orientation bin */
 	Matrix gradHor[ 3 ], gradVer[ 3 ], gradMag, gradBin;
 	Matrix Gauss, tempMag, tempVote, tempBin, tempBlock;
 	int M = img->size1, N = img->size2;
-	int i, j, row, col, Hcount, Vcount, HH, VV, cRow, cCol;
+	int i, j, k, row, col, Hcount, Vcount, HH, VV, cRow, cCol, bRow, bCol;
 	int BCratio = blockSize / cellSize; /* the "r" in comment [D] */
+	int BCratioSquare = BCratio * BCratio;
 	/* number of cells in horizontal and vertical directions:
 	 * 不整除的部份忽略不做，多做的feature也不見得好 
 	 */
@@ -41,6 +42,7 @@ void HOG( Matrix *img, char *outFileName,
 	int blockV = cellV - BCratio + 1; /* overlapping blocks */
 	int blockH = cellH - BCratio + 1; /* overlapping blocks */
 	int blockNum = blockV * blockH;
+	float norm;
 
 	/*** [0] Pre-processing ***/
 	/* Generate Gaussian filter */
@@ -80,7 +82,8 @@ void HOG( Matrix *img, char *outFileName,
 					}
 					assert( ang >= 0 && ang < 360.f );
 					/* convert angle into orientation bin */
-					bin = (int)roundf( ang ) / binSize;
+					bin = (int)ang / binSize;
+					assert( bin >= 0 && bin < binNum );
 					gradBin.data[ 0 ][ row ][ col ] = bin;	
 					/* printf( "layer%d: (%.0f,%.0f): mag = %f, ang = %.0f, bin = %d\n",
 						i, Fh, Fv, mag, ang, bin ); */
@@ -89,12 +92,14 @@ void HOG( Matrix *img, char *outFileName,
 			}
 		}
 	}
+	//full_dump( &gradBin, "gradBin", ALL, INT );
+
 	
 	/*** [2] Weighted vote into spatial & orientation cells ***/
 	zeros( &tempMag, cellSize, cellSize, 1 );
 	zeros( &tempBin, cellSize, cellSize, 1 );
-	zeros( &tempBlock, BCratio * BCratio, binNum, 1 );
-	i = 0; // cell count
+	zeros( &tempBlock, BCratioSquare, binNum, 1 );
+	i = 0; // cell count (for debugging)
 	for ( row = 0, Vcount = 0; Vcount < blockV; row += cellSize, Vcount++ ) {
 		for ( col = 0, Hcount = 0; Hcount < blockH; col += cellSize, Hcount++ ) {
 			/* for each (overlapping) block of BCratio x BCratio cell array: */
@@ -129,19 +134,42 @@ void HOG( Matrix *img, char *outFileName,
 				}
 			}
 
-			full_dump( &tempBlock, "tempBlock", ALL, FLOAT );
-			/* Still in the "for each block" loop */
+			/** Still in the "for each block" loop **/
 			/*** [3] Contrast normalize over overlapping spatial blocks ***/
-
+			switch ( scheme ) {
+				case L2_norm:
+					norm = v_norm2( &tempBlock );
+					s_mul( &tempBlock, 1.f / sqrt( norm * norm + epsilon * epsilon ) );
+					break;
+				case L2_Hys:
+				case L1_norm:
+				case L1_sqrt:
+					error( "Sorry. This normalization scheme is not yet supported." );
+					break;
+				default:
+					error( "hog(): Unexpected error." );
+			}
+			//full_dump( &tempBlock, "tempBlock", ALL, FLOAT );
 
 			/*** [4] Collect HOG's over detection window ***/
+			k = 1;
+			fprintf( fout, "%s ", label );
+			for ( bRow = 0; bRow < BCratioSquare; bRow++ ) {
+				for ( bCol = 0; bCol < binNum; bCol++ ) {
+					fprintf( fout, " %d:%f", k, tempBlock.data[ 0 ][ bRow ][ bCol ] );
+					k++;
+				}
+			}
+			fprintf( fout, "\n" );
+			assert( k - 1 == BCratioSquare * binNum );
 
+			/* end of each block: */
 			/* clear tempBlock (restart from 0) */
 			clear( &tempBlock );
 		}
 	}
-	printf( "blockNum = %d, cellNum = %d\n", blockNum, i );
-	assert( i == blockNum * BCratio * BCratio );
+	//printf( "blockNum = %d, cellNum = %d\n", blockNum, i );
+	assert( i == blockNum * BCratioSquare );
 	
 
 	/* free memory space */
@@ -154,50 +182,57 @@ void HOG( Matrix *img, char *outFileName,
 	freeMatrix( &Gauss ); freeMatrix( &tempBlock );
 }
 
-int trainEach( char *fileName, int pathLen, 
+int extractEach( char *inputName, int pathLen, char *label, char *outputName,
 	bool centered, int binNum, int cellSize, int blockSize, float sigma, NORMALIZE scheme, float epsilon ) {
 
-	FILE *ftest;
+	FILE *ftest, *fout;
 	Matrix img;
 	char D1, D2, D3; /* each from '0' ~ '9' */
 	int imgCount = 0;
 
+	/* output file test */
+	if ( !( fout = fopen( outputName, "a" ) ) ) {
+		error( "hog(): Output file open error." );
+	}
 	/* for each image: */
-	for ( D1 = '0'; D1 <= '0'; D1++ ) {
-		for ( D2 = '0'; D2 <= '0'; D2++ ) {
-			for ( D3 = '0'; D3 <= '0'; D3++ ) {
-				fileName[ pathLen + 5 ] = D1;
-				fileName[ pathLen + 6 ] = D2;
-				fileName[ pathLen + 7 ] = D3;
+	for ( D1 = '0'; D1 <= '9'; D1++ ) {
+		for ( D2 = '0'; D2 <= '9'; D2++ ) {
+			for ( D3 = '0'; D3 <= '9'; D3++ ) {
+				inputName[ pathLen + 5 ] = D1;
+				inputName[ pathLen + 6 ] = D2;
+				inputName[ pathLen + 7 ] = D3;
 				/* termination condition */
-				if ( !( ftest = fopen( fileName, "r" ) ) ) {
+				if ( !( ftest = fopen( inputName, "r" ) ) ) {
 					return imgCount;
 				}
 				else {
 					fclose( ftest );
 					/* imread(), HOG(), freeMatrix() */
-					imread( fileName, &img );
-					/***** second argument should change into file pointer *****/
-					HOG( &img, "pics/output/HOG_train.txt", 
-						centered, binNum, cellSize, blockSize, sigma, scheme, epsilon );
+					imread( inputName, &img );
+					HOG( &img, label, fout, centered, binNum, 
+						cellSize, blockSize, sigma, scheme, epsilon );
 					imgCount++;
-					printf( "%s extracted.\n", fileName );
+					printf( "%s extracted.\n", inputName );
 					freeMatrix( &img );
 				}
 			}
 		}
 	}
+
+	fclose( fout );
 	return imgCount;
 }
 
 int main( int argc, char *argv[] ) {
-	/* Usage: ./run "XX/YY",
-	 * then the program will train using all pictures in directory
-	 *   XX/YY
+	/* Usage: ./run "class" "XX/YY",
+	 * then the program will extract features using all pictures in directory
+	 *   XX/YY, 
+	 * then label them "class"( +1, -1, 0, 1, 2, etc. )
 	 * image file format: trainDDD.bmp, D from [0,9]
 	 * must start from train000.bmp and have no gap in the numbers
 	 */
 	char fileName[ 60 ];
+	char label[ 10 ];
 	int pathLen, imgCount;
 	clock_t tic, toc;
 
@@ -221,10 +256,11 @@ int main( int argc, char *argv[] ) {
 	assert( !( 360 % binNum ) ); // binNum must divide 360
 	assert( !( blockSize % cellSize ) ); // cellSize must divide blockSize
 
-	if ( argc != 2 ) {
-		error( "Usage: ./run \"XX/YY\" (directory path)" );
+	if ( argc != 3 ) {
+		error( "Usage: ./run class \"XX/YY\"(directory path)" );
 	}
-	strcpy( fileName, argv[ 1 ] );
+	strcpy( label, argv[ 1 ] );
+	strcpy( fileName, argv[ 2 ] );
 	pathLen = strlen( fileName );
 	/* append '/' if necessary (unix) */
 	if ( fileName[ pathLen - 1 ] != '/' ) {
@@ -234,8 +270,8 @@ int main( int argc, char *argv[] ) {
 	sprintf( fileName, "%strain000.bmp", fileName );
 	
 	tic = clock();
-	/* training of each image */
-	imgCount = trainEach( fileName, pathLen, 
+	/*** feature extraction of each image ***/
+	imgCount = extractEach( fileName, pathLen, label, "output/HOG_feature.txt",
 		centered, binNum, cellSize, blockSize, sigma, L2_norm, epsilon );
 	toc = clock();
 	printf( "HOG: feature extraction of %d images completed.\n", imgCount );
