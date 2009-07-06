@@ -222,14 +222,27 @@ void s_mul( Matrix *source, float number ) {
 	}
 }
 
-void s_pow( Matrix *source, float number ) {
+void s_pow( Matrix *source, float power ) {
 	int row, col, layer;
-	int M = source->size1, N = source->size2, L = source->size3;
-	for ( layer = 0; layer < L; layer++ ) {
-		for ( row = 0; row < M; row++ ) {
-			for ( col = 0; col < N; col++ ) {
+	int size1 = source->size1, size2 = source->size2, size3 = source->size3;
+	for ( layer = 0; layer < size3; layer++ ) {
+		for ( row = 0; row < size1; row++ ) {
+			for ( col = 0; col < size2; col++ ) {
 				float value = source->data[ layer ][ row ][ col ];
-				source->data[ layer ][ row ][ col ] = pow( value, number );
+				source->data[ layer ][ row ][ col ] = pow( value, power );
+			}
+		}
+	}
+}
+
+void s_sqrt( Matrix *source ) {
+	int row, col, layer;
+	int size1 = source->size1, size2 = source->size2, size3 = source->size3;
+	for ( layer = 0; layer < size3; layer++ ) {
+		for ( row = 0; row < size1; row++ ) {
+			for ( col = 0; col < size2; col++ ) {
+				float value = source->data[ layer ][ row ][ col ];
+				source->data[ layer ][ row ][ col ] = sqrt( value );
 			}
 		}
 	}
@@ -655,6 +668,22 @@ void change_0_to_1( Matrix *source ) {
 	}
 }
 
+/* 把整個矩陣當作vector取2-norm */
+float v_norm2( Matrix *source ) {
+	int size1 = source->size1, size2 = source->size2, size3 = source->size3;
+	int row, col, layer;
+	float norm = 0.f;
+	for ( layer = 0; layer < size3; layer++ ) {
+		for ( row = 0; row < size1; row++ ) {
+			for ( col = 0; col < size2; col++ ) {
+				float value = source->data[ layer ][ row ][ col ];
+				norm += value * value;
+			}
+		}
+	}
+	return sqrt( norm );
+}
+
 #if DEBUG
 int main() {
 	Matrix A, B, C, D, E, F, G, Gauss, H, H2, I, Ra, Rb, Rc, Rd;
@@ -766,6 +795,9 @@ int main() {
 	full_dump( &Gauss, "Gauss( 8, 1 )", ALL, FLOAT );
 	printf( "sum of Gauss = %f\n", m_sum( &Gauss ) );
 
+	s_mul( &H, 1.5 ); /* H was ones( 5, 5, 1 ); */
+	printf( "norm2( H ) = %f\n", v_norm2( &H ) );
+
 	toc = clock();
 	runningTime( tic, toc );
 
@@ -773,7 +805,7 @@ int main() {
 	freeMatrix( &A ); freeMatrix( &B ); freeMatrix( &C ); freeMatrix( &D ); freeMatrix( &E );
 	freeMatrix( &F ); freeMatrix( &G ); freeMatrix( &H ); freeMatrix( &H2 );
 	freeMatrix( &I ); freeMatrix( &Ra ); freeMatrix( &Rb ); 
-	freeMatrix( &Rc ); freeMatrix( &Rd );
+	freeMatrix( &Rc ); freeMatrix( &Rd ); 
 
 	return 0;
 }
