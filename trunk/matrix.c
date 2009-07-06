@@ -33,7 +33,7 @@ void full_dump( Matrix *source, char *name, COLOR color, TYPE type ) {
 				if ( type == INT )
 					printf( "%4d", (int) source->data[ layer ][ row ][ col ] );
 				else if ( type == FLOAT )
-					printf( "%7.2f", source->data[ layer ][ row ][ col ] );
+					printf( "%7.3f", source->data[ layer ][ row ][ col ] );
 				else
 					error( "dump(): Parameter TYPE error." );
 			}
@@ -73,7 +73,7 @@ void part_dump( Matrix *source, char *name, COLOR color, int rowBegin, int rowEn
 				if ( type == INT )
 					printf( "%4d", (int) source->data[ layer ][ row ][ col ] );
 				else if ( type == FLOAT )
-					printf( "%7.2f", source->data[ layer ][ row ][ col ] );
+					printf( "%7.3f", source->data[ layer ][ row ][ col ] );
 				else
 					error( "dump(): Parameter TYPE error." );
 			}
@@ -159,6 +159,32 @@ void RAND( Matrix *source, int size1, int size2, int size3, int lower, int upper
 			}
 		}
 	}
+}
+
+void Gaussian( Matrix *dest, int size, float sigma ) {
+    /* 2D Gaussian filter with 0 mean and sigma stddev:
+     *                      1                x^2 + y^2 
+     * Gauss( x, y ) = ------------ * exp( - --------- )
+     *                 2*pi*sigma^2          2*sigma^2 
+     *
+	 * Need to adjust to make the sum = 1
+     */
+	 int x, y;
+	 float center = ( size - 1 ) / 2.f;
+	 float sum;
+	 zeros( dest, size, size, 1 );
+
+	 for ( x = 0; x < size; x++ ) {
+		 float xVal = x - center;
+		 for ( y = 0; y < size; y++ ) {
+			float yVal = y - center;
+			/* skip the denominator, because we'll normalize the matrix, anyway. */
+			dest->data[ 0 ][ x ][ y ] = exp( -( xVal*xVal + yVal*yVal ) / ( 2.f*sigma*sigma ) );
+		 }
+	 }
+	 /* adjust to make the sum = 1 */
+	 sum = m_sum( dest );
+	 s_mul( dest, 1.f / sum );
 }
 
 /***** scalar operations *****/
@@ -578,14 +604,28 @@ void map_0_255( Matrix *source ) {
 void ABS( Matrix *source ) {
 	int size1 = source->size1, size2 = source->size2, size3 = source->size3;
 	int row, col, layer;
-	for ( row = 0; row < size1; row++ ) {
-		for ( col = 0; col < size2; col++ ) {
-			for ( layer = 0; layer < size3; layer++ ) {
+	for ( layer = 0; layer < size3; layer++ ) {
+		for ( row = 0; row < size1; row++ ) {
+			for ( col = 0; col < size2; col++ ) {
 				source->data[ layer ][ row ][ col ] =
 					fabs( source->data[ layer ][ row ][ col ] );
 			}
 		}
 	}
+}
+
+float m_sum( Matrix *source ) {
+	int size1 = source->size1, size2 = source->size2, size3 = source->size3;
+	int row, col, layer;
+	float sum = 0.f;
+	for ( layer = 0; layer < size3; layer++ ) {
+		for ( row = 0; row < size1; row++ ) {
+			for ( col = 0; col < size2; col++ ) {
+				sum += source->data[ layer ][ row ][ col ];
+			}
+		}
+	}
+	return sum;
 }
 
 void change_0_to_1( Matrix *source ) {
@@ -605,7 +645,7 @@ void change_0_to_1( Matrix *source ) {
 
 #if DEBUG
 int main() {
-	Matrix A, B, C, D, E, F, G, H, H2, I, Ra, Rb, Rc, Rd, Re;
+	Matrix A, B, C, D, E, F, G, Gauss, H, H2, I, Ra, Rb, Rc, Rd;
 	int row, col, count = 0;
 	float max, min;
 	float array[ 11 * 13 ] = {
@@ -707,6 +747,13 @@ int main() {
 	gradient( &F, &G, vertical, true );
 	full_dump( &G, "grad[-1,0,1]T", ALL, INT );
 
+	Gaussian( &Gauss, 8, 8 );
+	full_dump( &Gauss, "Gauss( 8, 8 )", ALL, FLOAT );
+	printf( "sum of Gauss = %f\n", m_sum( &Gauss ) );
+	Gaussian( &Gauss, 8, 1 );
+	full_dump( &Gauss, "Gauss( 8, 1 )", ALL, FLOAT );
+	printf( "sum of Gauss = %f\n", m_sum( &Gauss ) );
+
 	toc = clock();
 	runningTime( tic, toc );
 
@@ -714,7 +761,7 @@ int main() {
 	freeMatrix( &A ); freeMatrix( &B ); freeMatrix( &C ); freeMatrix( &D ); freeMatrix( &E );
 	freeMatrix( &F ); freeMatrix( &G ); freeMatrix( &H ); freeMatrix( &H2 );
 	freeMatrix( &I ); freeMatrix( &Ra ); freeMatrix( &Rb ); 
-	freeMatrix( &Rc ); freeMatrix( &Rd ); freeMatrix( &Re );
+	freeMatrix( &Rc ); freeMatrix( &Rd );
 
 	return 0;
 }

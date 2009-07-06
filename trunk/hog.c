@@ -9,7 +9,6 @@
  **/
 
 #include "image.h"
-#define DEBUG 1
 
 /*** HOG Parameters:
  * [A] centered/uncentered gradients
@@ -84,7 +83,6 @@ void HOG( Matrix *img, char *outFileName, bool centered, int binNum, int cellSiz
 	freeMatrix( &gradBin );
 }
 
-#if DEBUG
 int trainEach( char *fileName, int pathLen, bool centered, int binNum, int cellSize, float sigma ) {
 	FILE *ftest;
 	Matrix img;
@@ -106,9 +104,10 @@ int trainEach( char *fileName, int pathLen, bool centered, int binNum, int cellS
 					fclose( ftest );
 					/* imread(), HOG(), freeMatrix() */
 					imread( fileName, &img );
+					/***** second argument should change into file pointer *****/
 					HOG( &img, "pics/output/HOG_train.txt", centered, binNum, cellSize, sigma );
 					imgCount++;
-					printf( "%s trained.\n", fileName );
+					printf( "%s extracted.\n", fileName );
 					freeMatrix( &img );
 				}
 			}
@@ -157,9 +156,8 @@ int main( int argc, char *argv[] ) {
 	/* training of each image */
 	imgCount = trainEach( fileName, pathLen, centered, binNum, cellSize, sigma );
 	toc = clock();
-	printf( "HOG: training of %d images completed.\n", imgCount );
+	printf( "HOG: feature extraction of %d images completed.\n", imgCount );
 	runningTime( tic, toc );
 
 	return 0;
 }
-#endif
