@@ -6,7 +6,6 @@
  **/
 
 #include "image.h"
-#define DEBUG 0
 
 /* Hough Transform with several parameters :
  * [1], [2], [3] 代表步驟
@@ -140,42 +139,41 @@ void hough( Matrix *img, char *nameIn,
 	freeMatrix( &vote );
 }
 
-#if DEBUG
 int main() {
 	clock_t tic, toc;
 	Matrix img; /* original image */
 	/* test case begins */
 	imread( "pics/hough/line.bmp", &img );
 	tic = clock();
-	hough( &img, "pics/output/line", Laplace, 30.f, 0.5 );
+	hough( &img, "output/line", Laplace, 30.f, 0.5 );
 	toc = clock();
 	printf( "line.bmp: " );
 	runningTime( tic, toc );
 	/* next test case */
 	imread( "pics/hough/paint.bmp", &img );
 	tic = clock();
-	hough( &img, "pics/output/paint", Sobel, 30.f, 0.2 );
+	hough( &img, "output/paint", Sobel, 30.f, 0.2 );
 	toc = clock();
 	printf( "paint.bmp: " );
 	runningTime( tic, toc );
 	/* next test case */
 	imread( "pics/cars/car00.bmp", &img );
 	tic = clock();
-	hough( &img, "pics/output/car", Gradient, 20.f, 0.28 );
+	hough( &img, "output/car", Gradient, 20.f, 0.28 );
 	toc = clock();
 	printf( "car.bmp: " );
 	runningTime( tic, toc );
 	/* next test case */
 	imread( "pics/road1.bmp", &img );
 	tic = clock();
-	hough( &img, "pics/output/road1", Gradient, 20.f, 0.3 );
+	hough( &img, "output/road1", Gradient, 20.f, 0.3 );
 	toc = clock();
 	printf( "road1.bmp: " );
 	runningTime( tic, toc );
 	/* next test case */
 	imread( "pics/road2.bmp", &img );
 	tic = clock();
-	hough( &img, "pics/output/road2", Sobel, 18, 0.4 );
+	hough( &img, "output/road2", Sobel, 18, 0.4 );
 	toc = clock();
 	printf( "road2.bmp: " );
 	runningTime( tic, toc );
@@ -184,4 +182,3 @@ int main() {
 
 	return 0;
 }
-#endif

@@ -34,6 +34,8 @@ void ones( Matrix *dest, int size1, int size2, int size3 ); // 產生全1的矩�
 void eye( Matrix *dest, int size ); // 產生2D Identity矩陣
 void RAND( Matrix *dest, int size1, int size2, int size3, int lower, int upper );
 // 產生整數亂數[lower,upper]矩陣
+void Gaussian( Matrix *dest, int size, float sigma );
+// 產生2D Gaussian filter，weight的總和是1
 void freeMatrix( Matrix *source ); // 清除矩陣的記憶體空間
 
 /* scalar operations */
@@ -56,7 +58,9 @@ void part_assign( Matrix *source, Matrix *dest,
 // 指定row, col, layer範圍的matrix assignment，兩者皆已malloc過。
 void ABS( Matrix *source );
 // 整個矩陣取絕對值
-void max_min( Matrix *image, float *maxRet, float *minRet );
+float m_sum( Matrix *source );
+// 求整個matrix的總和
+void max_min( Matrix *source, float *maxRet, float *minRet );
 // 求2D矩陣的最大值和最小值，只求值不求index
 void map_0_255( Matrix *source );  
 // 將範圍線性對應到[0, 255]

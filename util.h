@@ -17,5 +17,3 @@ void runningTime( clock_t tic, clock_t toc ); // 計時
 void cos_sin_table( float COS[], float SIN[] ); // cos, sin的建表函式
 void cot_csc_table( float COT[], float CSC[], float COS[], float SIN[] );
 // cot, csc的建表函式：用建好的COS, SIN來除
-void Gaussian( float ***GAUSS, float sigma, int size );
-// 2D Gaussian filter 的建表函式

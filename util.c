@@ -35,29 +35,6 @@ void cot_csc_table( float COT[], float CSC[], float COS[], float SIN[] ) {
 	}
 }
 
-void Gaussian( float ***GAUSS, float sigma, int size ) {
-	/* 2D Gaussian filter with 0 mean and sigma stddev:
-	 *                      1                x^2 + y^2 
-	 * Gauss( x, y ) = ------------ * exp( - --------- )
-	 *                 2*pi*sigma^2          2*sigma^2 
-	 *
-	 * may remove the denominator to make Gauss( 0, 0 ) = 1
-	 */
-	int x, y;
-	float center = ( size - 1 ) / 2.f;
-	/* malloc a 2D array and compute Gaussian values */
-	*GAUSS = (float **)malloc( sizeof( float * ) * size );
-	for ( x = 0; x < size; x++ ) {
-		float xVal = x - center;
-		(*GAUSS)[ x ] = (float *)malloc( sizeof( float ) * size );
-		for ( y = 0; y < size; y++ ) {
-			float yVal = y - center;
-			(*GAUSS)[ x ][ y ] = exp( -( xVal*xVal + yVal*yVal ) / ( 2.f*sigma*sigma ) );
-				//( 2*M_PI*sigma*sigma );
-		}
-	}
-}
-
 #if DEBUG
 int main() {
 	clock_t tic, toc;
@@ -70,7 +47,7 @@ int main() {
     cos_sin_table( COS, SIN );
 	cot_csc_table( COT, CSC, COS, SIN );
 	/* generate 2D Gaussian function */
-	Gaussian( &GAUSS, 8.f, 15 );
+	Gaussian( &GAUSS, 8.f, 8 );
 
 	toc = clock();
 	runningTime( tic, toc );
@@ -82,10 +59,10 @@ int main() {
 	printf( "cot( 135 ) = %f\n", COT[ 135 ] );
 	printf( "csc( 30 ) = %f\n", CSC[ 30 ] );
 
-	printf( "15x15 Gauss( 0, 8 ):\n" );
-	for ( i = 0; i < 15; i++ ) {
-		for ( j = 0; j < 15; j++ ) {
-			printf( "%.3f ", GAUSS[ i ][ j ] );
+	printf( "8x8 Gauss( 0, 8 ):\n" );
+	for ( i = 0; i < 8; i++ ) {
+		for ( j = 0; j < 8; j++ ) {
+			printf( "%f ", GAUSS[ i ][ j ] );
 		}
 		printf( "\n" );
 	}
