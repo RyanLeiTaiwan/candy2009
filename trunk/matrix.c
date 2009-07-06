@@ -103,6 +103,18 @@ void zeros( Matrix *source, int size1, int size2, int size3 ) {
 	}
 }
 
+void clear( Matrix *source ) {
+	int size1 = source->size1, size2 = source->size2, size3 = source->size3;
+	int row, col, layer;
+	for ( layer = 0; layer < size3; layer++ ) {
+		for ( row = 0; row < size1; row++ ) {
+			for ( col = 0; col < size2; col++ ) {
+				source->data[ layer ][ row ][ col ] = 0.f;
+			}
+		}
+	}
+}
+
 void ones( Matrix *source, int size1, int size2, int size3 ) {
 	int row, col, layer;
 	/* set dimensions */
