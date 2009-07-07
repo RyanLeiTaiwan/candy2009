@@ -1,7 +1,7 @@
 /** File: hog.c
  ** Author: Ryan Lei
  ** Creation: 2009/07/05
- ** Modification: XXXX/XX/XX
+ ** Modification: 2009/07/07
  ** Description: 
  **   feature extraction based on
  **   HOG: Histogram of Oriented Gradients.
