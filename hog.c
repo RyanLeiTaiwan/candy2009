@@ -100,6 +100,8 @@ void HOG( Matrix *img, char *label, FILE *fout, bool centered, int binNum,
 	zeros( &tempBin, cellSize, cellSize, 1 );
 	zeros( &tempBlock, BCratioSquare, binNum, 1 );
 	i = 0; // cell count (for debugging)
+	k = 1; // dimension count of each image
+	fprintf( fout, "%s ", label ); /* write the label first */
 	for ( row = 0, Vcount = 0; Vcount < blockV; row += cellSize, Vcount++ ) {
 		for ( col = 0, Hcount = 0; Hcount < blockH; col += cellSize, Hcount++ ) {
 			/* for each (overlapping) block of BCratio x BCratio cell array: */
@@ -152,24 +154,23 @@ void HOG( Matrix *img, char *label, FILE *fout, bool centered, int binNum,
 			//full_dump( &tempBlock, "tempBlock", ALL, FLOAT );
 
 			/*** [4] Collect HOG's over detection window ***/
-			k = 1;
-			fprintf( fout, "%s ", label );
 			for ( bRow = 0; bRow < BCratioSquare; bRow++ ) {
 				for ( bCol = 0; bCol < binNum; bCol++ ) {
 					fprintf( fout, " %d:%f", k, tempBlock.data[ 0 ][ bRow ][ bCol ] );
 					k++;
 				}
 			}
-			fprintf( fout, "\n" );
-			assert( k - 1 == BCratioSquare * binNum );
 
 			/* end of each block: */
 			/* clear tempBlock (restart from 0) */
 			clear( &tempBlock );
 		}
 	}
-	//printf( "blockNum = %d, cellNum = %d\n", blockNum, i );
+	fprintf( fout, "\n" );
+
 	assert( i == blockNum * BCratioSquare );
+	assert( k - 1 == blockNum * BCratioSquare * binNum );
+	//printf( "blockNum = %d, cellNum = %d\n", blockNum, i );
 	
 
 	/* free memory space */
@@ -232,7 +233,7 @@ int extractEach( char *inputName, int pathLen, char *label, char *outputName,
 }
 
 int main( int argc, char *argv[] ) {
-	/* Usage: ./run "class" "XX/YY" "AA/BB.txt",
+	/* Usage: ./hog "class" "XX/YY" "AA/BB.txt",
 	 * then the program will extract features using all pictures in directory
 	 *   XX/YY, 
 	 * then label them "class"( +1, -1, 0, 1, 2, etc. ),
@@ -266,7 +267,7 @@ int main( int argc, char *argv[] ) {
 	assert( !( blockSize % cellSize ) ); // cellSize must divide blockSize
 
 	if ( argc != 4 ) {
-		error( "Usage: ./run class \"XX/YY\"(input directory) \"AA/BB\"(output file) " );
+		error( "Usage: ./hog class \"XX/YY\"(input directory) \"AA/BB\"(output file) " );
 	}
 	strcpy( label, argv[ 1 ] );
 	strcpy( inputName, argv[ 2 ] );
