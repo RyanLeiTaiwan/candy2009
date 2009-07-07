@@ -11,7 +11,7 @@
 #include "image.h"
 
 /* enum: normalization scheme */
-typedef enum { L2_norm, L2_Hys, L1_norm, L1_sqrt } NORMALIZE;
+typedef enum { No_norm, L2_norm, L2_Hys, L1_norm, L1_sqrt } NORMALIZE;
 /*** HOG Parameters:
  * [A] centered/uncentered gradients
  * [B] # of orientation bins
@@ -139,6 +139,8 @@ void HOG( Matrix *img, char *label, FILE *fout, bool centered, int binNum,
 			/** Still in the "for each block" loop **/
 			/*** [3] Contrast normalize over overlapping spatial blocks ***/
 			switch ( scheme ) {
+				case No_norm:
+					break;
 				case L2_norm:
 					norm = v_norm2( &tempBlock );
 					s_mul( &tempBlock, 1.f / sqrt( norm * norm + epsilon * epsilon ) );
