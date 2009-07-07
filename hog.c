@@ -22,14 +22,15 @@ typedef enum { L2_norm, L2_Hys, L1_norm, L1_sqrt } NORMALIZE;
  * [E] sigma, the Gaussian stddev, for the weighted vote
  * [F] normalization scheme: L2-norm
  * [G] epsilon: a very small constant in normalization (to avoid div-by-0)
+ * Note: [E]的部分改成直接丟Gaussian filter進來，因為用的都是一樣的不需要一直gen.
 ***/
 void HOG( Matrix *img, char *label, FILE *fout, bool centered, int binNum, 
-	int cellSize, int blockSize, float sigma, NORMALIZE scheme, float epsilon ) {
+	int cellSize, int blockSize, Matrix *Gauss, NORMALIZE scheme, float epsilon ) {
 
 	Matrix RGBimg[ 3 ]; /* array of 2D matrices, each being the RGB components of img */
 	/* Hor: horizontal, Ver: vertical, Mag: magnitude, Bin: orientation bin */
 	Matrix gradHor[ 3 ], gradVer[ 3 ], gradMag, gradBin;
-	Matrix Gauss, tempMag, tempVote, tempBin, tempBlock;
+	Matrix tempMag, tempVote, tempBin, tempBlock;
 	int M = img->size1, N = img->size2;
 	int i, j, k, row, col, Hcount, Vcount, HH, VV, cRow, cCol, bRow, bCol;
 	int BCratio = blockSize / cellSize; /* the "r" in comment [D] */
@@ -45,8 +46,7 @@ void HOG( Matrix *img, char *label, FILE *fout, bool centered, int binNum,
 	float norm;
 
 	/*** [0] Pre-processing ***/
-	/* Generate Gaussian filter */
-	Gaussian( &Gauss, cellSize, sigma );
+	/* Nothing? */
 
 	/*** [1] Compute gradients ***/
 	/* Separate img into RGBimg[ 0~2 ].
@@ -118,7 +118,7 @@ void HOG( Matrix *img, char *label, FILE *fout, bool centered, int binNum,
 					part_assign( &gradBin, &tempBin, rowBeg, rowEnd, colBeg, colEnd, 0, 0,
 						0, cellSize - 1, 0, cellSize - 1, 0, 0 );
 					/* ".*" the Gaussian weight */
-					e_mul( &tempMag, &Gauss, &tempVote );
+					e_mul( &tempMag, Gauss, &tempVote );
 					/* count the vote for corresponding bin and record it */
 					for ( cRow = 0; cRow < cellSize; cRow++ ) {
 						for ( cCol = 0; cCol < cellSize; cCol++ ) {
@@ -179,14 +179,14 @@ void HOG( Matrix *img, char *label, FILE *fout, bool centered, int binNum,
 		freeMatrix( &gradVer[ i ] );
 	}
 	freeMatrix( &gradMag ); freeMatrix( &gradBin ); freeMatrix( &tempMag ); freeMatrix( &tempBin );
-	freeMatrix( &Gauss ); freeMatrix( &tempBlock );
+	freeMatrix( &tempBlock );
 }
 
 int extractEach( char *inputName, int pathLen, char *label, char *outputName,
 	bool centered, int binNum, int cellSize, int blockSize, float sigma, NORMALIZE scheme, float epsilon ) {
 
 	FILE *ftest, *fout;
-	Matrix img;
+	Matrix img, Gauss;
 	char D1, D2, D3; /* each from '0' ~ '9' */
 	int imgCount = 0;
 
@@ -194,6 +194,11 @@ int extractEach( char *inputName, int pathLen, char *label, char *outputName,
 	if ( !( fout = fopen( outputName, "a" ) ) ) {
 		error( "hog(): Output file open error." );
 	}
+
+	/* generate Gaussian filter for HOG */
+	Gaussian( &Gauss, cellSize, sigma );
+	
+
 	/* for each image: */
 	for ( D1 = '0'; D1 <= '9'; D1++ ) {
 		for ( D2 = '0'; D2 <= '9'; D2++ ) {
@@ -203,6 +208,8 @@ int extractEach( char *inputName, int pathLen, char *label, char *outputName,
 				inputName[ pathLen + 7 ] = D3;
 				/* termination condition */
 				if ( !( ftest = fopen( inputName, "r" ) ) ) {
+					freeMatrix( &Gauss );
+					fclose( fout );
 					return imgCount;
 				}
 				else {
@@ -210,7 +217,7 @@ int extractEach( char *inputName, int pathLen, char *label, char *outputName,
 					/* imread(), HOG(), freeMatrix() */
 					imread( inputName, &img );
 					HOG( &img, label, fout, centered, binNum, 
-						cellSize, blockSize, sigma, scheme, epsilon );
+						cellSize, blockSize, &Gauss, scheme, epsilon );
 					imgCount++;
 					printf( "%s extracted.\n", inputName );
 					freeMatrix( &img );
@@ -219,19 +226,21 @@ int extractEach( char *inputName, int pathLen, char *label, char *outputName,
 		}
 	}
 
+	freeMatrix( &Gauss );
 	fclose( fout );
 	return imgCount;
 }
 
 int main( int argc, char *argv[] ) {
-	/* Usage: ./run "class" "XX/YY",
+	/* Usage: ./run "class" "XX/YY" "AA/BB.txt",
 	 * then the program will extract features using all pictures in directory
 	 *   XX/YY, 
-	 * then label them "class"( +1, -1, 0, 1, 2, etc. )
+	 * then label them "class"( +1, -1, 0, 1, 2, etc. ),
+	 * then write the feature data to the file AA/BB.txt
 	 * image file format: trainDDD.bmp, D from [0,9]
 	 * must start from train000.bmp and have no gap in the numbers
 	 */
-	char fileName[ 60 ];
+	char inputName[ 60 ];
 	char label[ 10 ];
 	int pathLen, imgCount;
 	clock_t tic, toc;
@@ -256,22 +265,22 @@ int main( int argc, char *argv[] ) {
 	assert( !( 360 % binNum ) ); // binNum must divide 360
 	assert( !( blockSize % cellSize ) ); // cellSize must divide blockSize
 
-	if ( argc != 3 ) {
-		error( "Usage: ./run class \"XX/YY\"(directory path)" );
+	if ( argc != 4 ) {
+		error( "Usage: ./run class \"XX/YY\"(input directory) \"AA/BB\"(output file) " );
 	}
 	strcpy( label, argv[ 1 ] );
-	strcpy( fileName, argv[ 2 ] );
-	pathLen = strlen( fileName );
+	strcpy( inputName, argv[ 2 ] );
+	pathLen = strlen( inputName );
 	/* append '/' if necessary (unix) */
-	if ( fileName[ pathLen - 1 ] != '/' ) {
-		fileName[ pathLen++ ] = '/';
-		fileName[ pathLen ] = '\0';
+	if ( inputName[ pathLen - 1 ] != '/' ) {
+		inputName[ pathLen++ ] = '/';
+		inputName[ pathLen ] = '\0';
 	}
-	sprintf( fileName, "%strain000.bmp", fileName );
+	sprintf( inputName, "%strain000.bmp", inputName );
 	
 	tic = clock();
 	/*** feature extraction of each image ***/
-	imgCount = extractEach( fileName, pathLen, label, "output/HOG_feature.txt",
+	imgCount = extractEach( inputName, pathLen, label, argv[ 3 ],
 		centered, binNum, cellSize, blockSize, sigma, L2_norm, epsilon );
 	toc = clock();
 	printf( "HOG: feature extraction of %d images completed.\n", imgCount );
