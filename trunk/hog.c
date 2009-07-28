@@ -82,6 +82,9 @@ void HOG( Matrix *img, char *label, FILE *fout, bool centered, int binNum,
 					}
 					assert( ang >= 0 && ang < 360.f );
 					/* convert angle into orientation bin */
+					/* 2009.07.28: 避免角度落在兩個bin之間的boundary effects，不該直接轉成bin，
+					 * 而要用SIFT Sec.6.1說的"trilinear interpolation"把票分配給鄰近的兩個bin。
+					 */ 
 					bin = (int)ang / binSize;
 					assert( bin >= 0 && bin < binNum );
 					gradBin.data[ 0 ][ row ][ col ] = bin;	
