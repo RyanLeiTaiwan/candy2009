@@ -1,11 +1,11 @@
 /** File: hough.c
  ** Author: snowm, ryanlei
  ** Creation: 2009/04/01
- ** Modification: 2009/07/04
+ ** Modification: 2009/09/11
  ** Description: Hough Transform, the Rho-Theta Version
  **/
 
-#include "image.h"
+#include "../include/image.h"
 
 /* Hough Transform with several parameters :
  * [1], [2], [3] 代表步驟

@@ -1,11 +1,11 @@
 /** File: image.c
  ** Author: ryanlei snowm
  ** Creation: 2009/03/29
- ** Modification: 2009/07/05
+ ** Modification: 2009/09/11
  ** Description: Implementation of image operations.
                  Handled in "Little-Endian".
  **/
-#include "image.h"
+#include "../include/image.h"
 #define DEBUG 0
 
 /*** Important Note:

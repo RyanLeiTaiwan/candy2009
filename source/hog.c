@@ -1,14 +1,14 @@
 /** File: hog.c
  ** Author: Ryan Lei
  ** Creation: 2009/07/05
- ** Modification: 2009/07/07
+ ** Modification: 2009/09/11
  ** Description: 
  **   feature extraction based on
  **   HOG: Histogram of Oriented Gradients.
  **   the features vectors are then fed to NTU LibSVM
  **/
 
-#include "image.h"
+#include "../include/image.h"
 
 /* enum: normalization scheme */
 typedef enum { No_norm, L2_norm, L2_Hys, L1_norm, L1_sqrt } NORMALIZE;
