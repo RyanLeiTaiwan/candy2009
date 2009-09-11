@@ -1,10 +1,10 @@
 /** File: util.h
  ** Author: iopic, ryanlei
  ** Creation : 2009/03/23
- ** Modification: 2009/07/05
+ ** Modification: 2009/09/11
  ** Description: utility functions
  **/
-#include "util.h"
+#include "../include/util.h"
 
 #define DEBUG 0
 
