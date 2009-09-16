@@ -52,6 +52,8 @@ void e_mul( Matrix *source1, Matrix *source2, Matrix *dest );
 // 元素對應相乘，sources不可和dest相同，假設dest尚未malloc。
 void m_mul( Matrix *source1, Matrix *source2, COLOR color1, COLOR color2, Matrix *dest );
 // 2D矩陣相乘，sources皆可指定用哪些layer，sources不可和dest相同。
+void copy( Matrix *source, Matrix *dest );
+// 一模一樣的矩陣複製，假設dest尚未malloc。
 void full_assign( Matrix *source, Matrix *dest, COLOR sColor, COLOR dColor );
 // 全範圍的matrix assignment，可指定兩者的layer。假設皆已malloc過。
 void part_assign( Matrix *source, Matrix *dest,
@@ -81,6 +83,6 @@ inline float ii_eval( Matrix *ii, int row, int col );
 // integral()用到的DP查表
 float recSum( Matrix *ii, int rowBeg, int colBeg, int rowEnd, int colEnd );
 // 指定四角的rectangular sum，必須傳入integral matrix
-void mean_var_normalize( Matrix *source, Matrix *ii, Matrix *ii2 );
+void mean_variance_normalize( Matrix *source, Matrix *ii, Matrix *ii2 );
 // Chen-and-Chen paper提到的 mean and variance normalization，
 // 需傳入原始矩陣，數值和與平方和的integral image(加速用)，結果直接寫回ii。
