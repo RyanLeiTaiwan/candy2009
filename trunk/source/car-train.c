@@ -152,7 +152,7 @@ void extract_image( char *fileName, int Iid, Feature ***POOL, int d_width, int d
 	int b_width, b_height; /* block width, block height */
 	int x_beg, x_end, y_beg, y_end; /* x, y coordinates */
 	int Bid = 0; /* block id */
-	Matrix img;
+	Matrix img, ii, img2, ii2; /* original image, integral image their "square" versions */
 	printf( "Extracting %s ... ", fileName );
 	/* Read the image and transform it into gray-scale */
 	imread( fileName, &img );
@@ -161,7 +161,13 @@ void extract_image( char *fileName, int Iid, Feature ***POOL, int d_width, int d
 		printf( "\nDetection window size: %d x %d.\n", d_width, d_height );
 		error( "extract_single(): Image size should be consistent with detection window size." );
 	}
-	color2Gray( &img );
+	color2Gray( &img ); /* transform into gray-scale */
+	zeros( &img2, img.size1, img.size2, img.size3 );
+	full_assign( &img, &img2, ALL, ALL ); /* make a copy of img1 to img2 */
+	s_pow( &img2, 2.f );
+	/* compute normal/square integral images */
+	integral( &img, &ii );
+	integral( &img2, &ii2 );
 
 	/* try all possible sizes and positions within the image */
 	for ( b_width = b_size_min; b_width <= d_width; b_width += b_size_step ) {
@@ -170,29 +176,29 @@ void extract_image( char *fileName, int Iid, Feature ***POOL, int d_width, int d
 				x_beg += b_pos_step, x_end = x_beg + b_height - 1 ) {
 				for ( y_beg = 0, y_end = x_beg + b_width - 1; y_end < d_width; 
 					y_beg += b_pos_step, y_end = y_beg + b_width - 1 ) {
-					/* extract features of this block */
-					extract_block( Bid++, POOL, &img, x_beg, y_beg, b_height, b_width );
+					/* Note: vertical first for convention */
+#if 1
+					 printf( "%d x %d: (%d,%d) to (%d,%d)\n", b_height, b_width, 
+						x_beg, y_beg, x_end, y_end );
+#endif
+					/** extract features of this block (car-extract.c) **/
+					extract_block( Iid, Bid++, POOL, &img, &ii, x_beg, y_beg, x_end, y_end );
 				}
 			}
 		}
 	}
 	printf( "done\n" );
+	
+	/* free memory */
+	freeMatrix( &img ); freeMatrix( &img2 ); freeMatrix( &ii ); freeMatrix( &ii2 );
 }
 
-/*** feature extraction of a single block 
- *** the ACTUAL EXTRACTION part ***/
-void extract_block( int Bid, Feature ***POOL, Matrix *img, 
-	int x_beg, int y_beg, int b_height, int b_width ) {
-
-
-
-}
 
 /********************************     start of main     **********************************/
 int main( int argc, char *argv[] ) {
 	/* F means false-positive rate; d means detection rate */
 	/* A means AdaBoost stage; M means meta stage */
-	float F_target; /* target overall false positive rate */
+	float F_target; /* target overall faGlse positive rate */
 	float F_current = 1.0; /* current overall false positive rate */
 	float d_minA; /* minimum acceptable detection rate per AdaBoost stage */
 	float f_maxA; /* maximum acceptable false positive rate per AdaBoost stage */
@@ -201,6 +207,7 @@ int main( int argc, char *argv[] ) {
 	/* parameters ni, j */
 	int ni = 1, j;
 	FILE *ftest;
+	clock_t tic, toc;
 	/* Feature pools for POS and NEG data */
 	Feature **POS = NULL, **NEG = NULL;
 
@@ -225,13 +232,16 @@ int main( int argc, char *argv[] ) {
 	d_minA = atof( argv[ 5 ] );
 	f_maxA = atof( argv[ 6 ] );
 	d_minM = atof( argv[ 7 ] );
+	/* start timer */
+	tic = clock();
 
 	/*** the feature extraction process ***/
 	printf( "Start of feature extraction...\n" );
 	extract_all_images( argv[ 1 ], &POS );
 	printf( "Extraction of POS data completed.\n" );
-	//extract_all_images( argv[ 2 ], &NEG );
-	//printf( "Extraction of NEG data completed.\n" );
+	getchar();
+	extract_all_images( argv[ 2 ], &NEG );
+	printf( "Extraction of NEG data completed.\n" );
 
 	/*****  pseudo-code from the Chen-and-Chen paper  *****/
 
@@ -255,6 +265,10 @@ int main( int argc, char *argv[] ) {
 #endif
 		i++;
 	}
+
+	/* stop timer */
+	toc = clock();
+	runningTime( tic, toc );
 
 	return 0;
 }

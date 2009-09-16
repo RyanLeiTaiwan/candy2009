@@ -1,14 +1,13 @@
 /** File: car-train.h
  ** Author: Ryan Lei
  ** Creation: 2009/09/11
- ** Modification: 2009/09/13
+ ** Modification: 2009/09/16
  ** Description: Function prototypes of the car-training program
  **/
 #include "../include/image.h"
 
 /*** data structure of a block feature ***/
 typedef struct {
-	unsigned Bid;
 	float REC[ 5 ]; /* 5 rectangle features => actually 10 */
 	float EOH[ 9 ]; /* 9 EOH features */
 	float ED;
@@ -32,7 +31,7 @@ int count_blocks( int d_width, int d_height, int b_size_min, int b_size_step, in
 void extract_image( char *fileName, int Iid, Feature ***POOL, int d_width, int d_height,
 	int b_size_min, int b_size_step, int b_pos_step ); 
 /* feature extraction of a single block */
-void extract_block( int Bid, Feature ***POOL, Matrix *img,
-	int x_beg, int y_beg, int b_height, int b_width );
+void extract_block( int Iid, int Bid, Feature ***POOL, Matrix *img, Matrix *ii,
+	int rowBeg, int colBeg, int rowEnd, int colEnd );
 
 

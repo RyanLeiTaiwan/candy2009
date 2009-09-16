@@ -1,7 +1,7 @@
 /** File: matrix.h
  ** Author: ryanlei
  ** Creation : 2009/03/21
- ** Modification: 2009/09/14
+ ** Modification: 2009/09/16
  ** Description: matrix data structure
  **/
 #include "util.h"
@@ -81,3 +81,6 @@ inline float ii_eval( Matrix *ii, int row, int col );
 // integral()用到的DP查表
 float recSum( Matrix *ii, int rowBeg, int colBeg, int rowEnd, int colEnd );
 // 指定四角的rectangular sum，必須傳入integral matrix
+void mean_var_normalize( Matrix *source, Matrix *ii, Matrix *ii2 );
+// Chen-and-Chen paper提到的 mean and variance normalization，
+// 需傳入原始矩陣，數值和與平方和的integral image(加速用)，結果直接寫回ii。
