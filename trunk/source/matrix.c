@@ -361,6 +361,19 @@ void m_mul( Matrix *source1, Matrix *source2, COLOR color1, COLOR color2, Matrix
 	}
 }
 
+void copy( Matrix *source, Matrix *dest ) {
+	int row, col, layer;
+	int size1 = source->size1, size2 = source->size2, size3 = source->size3;
+	zeros( dest, size1, size2, size3 );
+	for ( layer = 0; layer < size3; layer++ ) {
+		for ( row = 0; row < size1; row++ ) {
+			for ( col = 0; col < size2; col++ ) {
+				dest->data[ layer ][ row ][ col ] = source->data[ layer ][ row ][ col ];
+			}
+		}
+	}
+}
+
 void full_assign( Matrix *source, Matrix *dest, COLOR sColor, COLOR dColor ) {
 	int row, col, sLayer, dLayer;
 	int sLayerBeg = (int)sColor, sLayerEnd = (int)sColor;
@@ -737,9 +750,10 @@ void mean_variance_normalize( Matrix *source, Matrix *ii, Matrix *ii2 ) {
 	int N = size1 * size2;
 	float EPSILON = 1e-9; /* small constant to prevent fromdivision-by-zero */
 	mean = ii->data[ 0 ][ size1-1 ][ size2-1 ] / N;
-	printf( "mean = %f\n", mean );
 	stdev = sqrt( ( ii2->data[ 0 ][ size1-1 ][ size2-1 ] - N * mean * mean ) / ( N - 1 ) );
-	printf( "stdev = %f\n", stdev );
+#if 0
+	printf( "mean = %f, stdev = %f\n", mean, stdev );
+#endif
 	/* normalization */
 	s_add( source, -mean );
 	s_mul( source, 1.f / ( stdev + EPSILON ) );
@@ -871,8 +885,7 @@ int main() {
 	RAND( &Rd, 10, 10, 1, 0, 99 );
 	full_dump( &Rd, "Rd", ALL, INT );
 	integral( &Rd, &ii );
-	zeros( &Rd2, 10, 10, 1 );
-	full_assign( &Rd, &Rd2, ALL, ALL );
+	copy( &Rd, &Rd2 );
 	s_pow( &Rd2, 2.f );
 	integral( &Rd2, &ii2 );
 	mean_variance_normalize( &Rd, &ii, &ii2 );

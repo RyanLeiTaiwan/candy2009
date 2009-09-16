@@ -4,7 +4,7 @@
  ** Modification: 2009/09/16
  ** Description: Function prototypes of the car-training program
  **/
-#include "../include/image.h"
+#include "image.h"
 
 /*** data structure of a block feature ***/
 typedef struct {

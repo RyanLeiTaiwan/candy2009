@@ -152,7 +152,8 @@ void extract_image( char *fileName, int Iid, Feature ***POOL, int d_width, int d
 	int b_width, b_height; /* block width, block height */
 	int x_beg, x_end, y_beg, y_end; /* x, y coordinates */
 	int Bid = 0; /* block id */
-	Matrix img, ii, img2, ii2; /* original image, integral image their "square" versions */
+	 /* original image, image after normalization, integral image, and their "square" versions */
+	Matrix img, img2, ii, ii2, img_norm, ii_norm;
 	printf( "Extracting %s ... ", fileName );
 	/* Read the image and transform it into gray-scale */
 	imread( fileName, &img );
@@ -162,13 +163,17 @@ void extract_image( char *fileName, int Iid, Feature ***POOL, int d_width, int d
 		error( "extract_single(): Image size should be consistent with detection window size." );
 	}
 	color2Gray( &img ); /* transform into gray-scale */
-	zeros( &img2, img.size1, img.size2, img.size3 );
-	full_assign( &img, &img2, ALL, ALL ); /* make a copy of img1 to img2 */
+	copy( &img, &img2 );
+	copy( &img, &img_norm );
 	s_pow( &img2, 2.f );
 	/* compute normal/square integral images */
 	integral( &img, &ii );
 	integral( &img2, &ii2 );
-
+	/* mean and variance normalization using integral image */
+	mean_variance_normalize( &img_norm, &ii, &ii2 );
+	/* compute integral image of img_norm */
+	integral( &img_norm, &ii_norm );
+	
 	/* try all possible sizes and positions within the image */
 	for ( b_width = b_size_min; b_width <= d_width; b_width += b_size_step ) {
 		for ( b_height = b_size_min; b_height <= d_height; b_height += b_size_step ) {
@@ -177,12 +182,13 @@ void extract_image( char *fileName, int Iid, Feature ***POOL, int d_width, int d
 				for ( y_beg = 0, y_end = x_beg + b_width - 1; y_end < d_width; 
 					y_beg += b_pos_step, y_end = y_beg + b_width - 1 ) {
 					/* Note: vertical first for convention */
-#if 1
+#if 0
 					 printf( "%d x %d: (%d,%d) to (%d,%d)\n", b_height, b_width, 
 						x_beg, y_beg, x_end, y_end );
 #endif
 					/** extract features of this block (car-extract.c) **/
-					extract_block( Iid, Bid++, POOL, &img, &ii, x_beg, y_beg, x_end, y_end );
+					extract_block( Iid, Bid++, POOL, &img_norm, &ii_norm, 
+						x_beg, y_beg, x_end, y_end );
 				}
 			}
 		}
@@ -191,6 +197,7 @@ void extract_image( char *fileName, int Iid, Feature ***POOL, int d_width, int d
 	
 	/* free memory */
 	freeMatrix( &img ); freeMatrix( &img2 ); freeMatrix( &ii ); freeMatrix( &ii2 );
+	freeMatrix( &img_norm ); freeMatrix( &ii_norm );
 }
 
 
