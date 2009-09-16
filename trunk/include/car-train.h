@@ -8,7 +8,7 @@
 
 /*** data structure of a block feature ***/
 typedef struct {
-	unsigned id;
+	unsigned Bid;
 	float REC[ 5 ]; /* 5 rectangle features => actually 10 */
 	float EOH[ 9 ]; /* 9 EOH features */
 	float ED;
@@ -25,13 +25,14 @@ void weak_select();
 /* count # of images in the directory */
 int count_images( char *fileName, int pathLen ); 
 /* feature extraction of a whole directory */
-void extract_all( bool label, char *directory, Feature * POOL );
+void extract_all_images( char *directory, Feature ***POOL );
 /* count # of blocks in the window */
-int count_blocks( int d_width, int d_height, float HW_min, float HW_max, int b_width_min, 
-	int b_size_step, int b_pos_step ); 
+int count_blocks( int d_width, int d_height, int b_size_min, int b_size_step, int b_pos_step ); 
 /* feature extraction of a single image */
-void extract_single( bool label, char *fileName, int d_width, int d_height,
-	float HW_min, float HW_max, int b_width_min, int b_size_step, int b_pos_step ); 
-
+void extract_image( char *fileName, int Iid, Feature ***POOL, int d_width, int d_height,
+	int b_size_min, int b_size_step, int b_pos_step ); 
+/* feature extraction of a single block */
+void extract_block( int Bid, Feature ***POOL, Matrix *img,
+	int x_beg, int y_beg, int b_height, int b_width );
 
 

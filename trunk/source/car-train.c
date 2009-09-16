@@ -68,7 +68,7 @@ int count_images( char *fileName, int pathLen ) {
 	return -1;
 }
 
-void extract_all( bool label, char *directory, Feature *POOL ) {
+void extract_all_images( char *directory, Feature ***POOL ) {
 	/** max # of images: 1000 **/
 	char fileName[ 80 ];
 	int pathLen;
@@ -76,13 +76,12 @@ void extract_all( bool label, char *directory, Feature *POOL ) {
 	char D1, D2, D3;
 	int imgCount = 0;
 	int blockCount = 0;
+	int Iid; /* image id */
 	/** Some self-defined feature extraction parameters: **/
 	const int d_width = 128; /* detection window width */
 	const int d_height = 128; /* detection window height */
-	const float HW_min = 1/3; /* minimum Height-Width ratio */
-	const float HW_max = 5/4; /* maxmimum Height-Width ratio */
-	const int b_width_min = 64; /* minumum block width */
-	const int b_size_step = 16; /* block size increment */
+	const int b_size_min = 8; /* minumum block size */
+	const int b_size_step = 8; /* block size increment */
 	const int b_pos_step = 8; /* block position increment */
 	strcpy( fileName, directory );
 	pathLen = strlen( fileName );
@@ -97,11 +96,16 @@ void extract_all( bool label, char *directory, Feature *POOL ) {
 	imgCount = count_images( fileName, pathLen );
 	/* count the number of blocks per image, 
 	 * and allocate the feature pool memory (2-D array) for the entire data set */
-	blockCount = count_blocks( d_width, d_height, HW_min, HW_max, b_width_min, b_size_step, b_pos_step );
+	blockCount = count_blocks( d_width, d_height, b_size_min, b_size_step, b_pos_step );
 	printf( "# of blocks per image: %d.\n", blockCount );
-
+	getchar();
+	*POOL = (Feature **) malloc( imgCount * sizeof( Feature * ) );
+	for ( Iid = 0; Iid < imgCount; Iid++ ) {
+		(*POOL)[ Iid ] = (Feature *) malloc( blockCount * sizeof( Feature ) );
+	}
 
 	/* extract each image */
+	Iid = 0;
 	for ( D1 = '0'; D1 <= '9'; D1++ ) {
 		for ( D2 = '0'; D2 <= '9'; D2++ ) {
 			for ( D3 = '0'; D3 <= '9'; D3++ ) {
@@ -114,29 +118,28 @@ void extract_all( bool label, char *directory, Feature *POOL ) {
 				}
 				else {
 					fclose( ftest );
-					extract_single( label, fileName, d_width, d_height, HW_min, HW_max,
-						b_width_min, b_size_step, b_pos_step );
+					extract_image( fileName, Iid++, POOL, d_width, d_height, 
+						b_size_min, b_size_step, b_pos_step );
 				}
 			}
 		}
 	}
 }
 
-int count_blocks( int d_width, int d_height, float HW_min, float HW_max, 
-	int b_width_min, int b_size_step, int b_pos_step ) {
+int count_blocks( int d_width, int d_height, int b_size_min, int b_size_step, int b_pos_step ) {
 	int ret = 0;
 	int b_width, b_height, x_beg, x_end, y_beg, y_end;
 	/* try all possible sizes and positions within the image */
-	for ( b_width = b_width_min; b_width <= d_width; b_width += b_size_step ) {
-		int b_height_lower = b_width * HW_min;
-		int b_height_upper = b_width * HW_max;
-		for ( b_height = b_height_lower; b_height <= d_height && b_height <= b_height_upper;
-			b_height += b_size_step ) {
+	for ( b_width = b_size_min; b_width <= d_width; b_width += b_size_step ) {
+		for ( b_height = b_size_min; b_height <= d_height; b_height += b_size_step ) {
 			for ( x_beg = 0, x_end = x_beg + b_height - 1; x_end < d_height; 
 				x_beg += b_pos_step, x_end = x_beg + b_height - 1 ) {
 				for ( y_beg = 0, y_end = x_beg + b_width - 1; y_end < d_width; 
 					y_beg += b_pos_step, y_end = y_beg + b_width - 1 ) {
 					ret++;
+					/* Note: vertical first for convention */
+					/* printf( "%d x %d: (%d,%d) to (%d,%d)\n", b_height, b_width, 
+						x_beg, y_beg, x_end, y_end ); */
 				}
 			}
 		}
@@ -144,10 +147,11 @@ int count_blocks( int d_width, int d_height, float HW_min, float HW_max,
 	return ret;
 }
 
-void extract_single( bool label, char *fileName, int d_width, int d_height, 
-	float HW_min, float HW_max, int b_width_min, int b_size_step, int b_pos_step ) {
+void extract_image( char *fileName, int Iid, Feature ***POOL, int d_width, int d_height, 
+	int b_size_min, int b_size_step, int b_pos_step ) {
 	int b_width, b_height; /* block width, block height */
 	int x_beg, x_end, y_beg, y_end; /* x, y coordinates */
+	int Bid = 0; /* block id */
 	Matrix img;
 	printf( "Extracting %s ... ", fileName );
 	/* Read the image and transform it into gray-scale */
@@ -160,22 +164,28 @@ void extract_single( bool label, char *fileName, int d_width, int d_height,
 	color2Gray( &img );
 
 	/* try all possible sizes and positions within the image */
-	for ( b_width = b_width_min; b_width <= d_width; b_width += b_size_step ) {
-		int b_height_lower = b_width * HW_min;
-		int b_height_upper = b_width * HW_max;
-		for ( b_height = b_height_lower; b_height <= d_height && b_height <= b_height_upper;
-			b_height += b_size_step ) {
+	for ( b_width = b_size_min; b_width <= d_width; b_width += b_size_step ) {
+		for ( b_height = b_size_min; b_height <= d_height; b_height += b_size_step ) {
 			for ( x_beg = 0, x_end = x_beg + b_height - 1; x_end < d_height; 
 				x_beg += b_pos_step, x_end = x_beg + b_height - 1 ) {
 				for ( y_beg = 0, y_end = x_beg + b_width - 1; y_end < d_width; 
 					y_beg += b_pos_step, y_end = y_beg + b_width - 1 ) {
 					/* extract features of this block */
-
+					extract_block( Bid++, POOL, &img, x_beg, y_beg, b_height, b_width );
 				}
 			}
 		}
 	}
 	printf( "done\n" );
+}
+
+/*** feature extraction of a single block 
+ *** the ACTUAL EXTRACTION part ***/
+void extract_block( int Bid, Feature ***POOL, Matrix *img, 
+	int x_beg, int y_beg, int b_height, int b_width ) {
+
+
+
 }
 
 /********************************     start of main     **********************************/
@@ -192,7 +202,7 @@ int main( int argc, char *argv[] ) {
 	int ni = 1, j;
 	FILE *ftest;
 	/* Feature pools for POS and NEG data */
-	Feature *POS = NULL, *NEG = NULL;
+	Feature **POS = NULL, **NEG = NULL;
 
 	/* Usage: car-train POS NEG output F_target d_minA f_maxA d_minM
 	 * POS: directory of positive training data
@@ -218,10 +228,10 @@ int main( int argc, char *argv[] ) {
 
 	/*** the feature extraction process ***/
 	printf( "Start of feature extraction...\n" );
-	extract_all( true, argv[ 1 ], POS );
+	extract_all_images( argv[ 1 ], &POS );
 	printf( "Extraction of POS data completed.\n" );
-	extract_all( false, argv[ 2 ], NEG );
-	printf( "Extraction of NEG data completed.\n" );
+	//extract_all_images( argv[ 2 ], &NEG );
+	//printf( "Extraction of NEG data completed.\n" );
 
 	/*****  pseudo-code from the Chen-and-Chen paper  *****/
 
