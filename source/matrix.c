@@ -727,9 +727,27 @@ float recSum( Matrix *ii, int rowBeg, int colBeg, int rowEnd, int colEnd ) {
 		- ii_eval( ii, rowBeg-1, colEnd ) - ii_eval( ii, rowEnd, colBeg-1 );
 }
 
+/* Chen-and-Chen paper提到的 mean and variance normalization
+ * 需傳入原始矩陣，數值和與平方和的integral image(加速用)，結果直接寫回ii。
+ * 標準差使用"樣本標準差"。
+ */
+void mean_variance_normalize( Matrix *source, Matrix *ii, Matrix *ii2 ) {
+	float mean, stdev;
+	int size1 = ii->size1, size2 = ii->size2;
+	int N = size1 * size2;
+	float EPSILON = 1e-9; /* small constant to prevent fromdivision-by-zero */
+	mean = ii->data[ 0 ][ size1-1 ][ size2-1 ] / N;
+	printf( "mean = %f\n", mean );
+	stdev = sqrt( ( ii2->data[ 0 ][ size1-1 ][ size2-1 ] - N * mean * mean ) / ( N - 1 ) );
+	printf( "stdev = %f\n", stdev );
+	/* normalization */
+	s_add( source, -mean );
+	s_mul( source, 1.f / ( stdev + EPSILON ) );
+}
+
 #if DEBUG
 int main() {
-	Matrix A, B, C, D, E, F, G, Gauss, H, H2, I, I2, ii, Ra, Rb, Rc, Rd;
+	Matrix A, B, C, D, E, F, G, Gauss, H, H2, I, J, ii, ii2, Ra, Rb, Rc, Rd, Rd2;
 	int row, col, count = 0;
 	float max, min;
 	float array[ 11 * 13 ] = {
@@ -791,10 +809,6 @@ int main() {
 	full_dump( &Rc, "Rc", ALL, INT );
 	max_min( &Rc, &max, &min );
 	printf( "Rc: max = %d; min = %d\n", (int) max, (int) min );
-	RAND( &Rd, 11, 9, 1, 0, 999 );
-	full_dump( &Rd, "Rc", ALL, INT );
-	max_min( &Rd, &max, &min );
-	printf( "Rc: max = %d; min = %d\n", (int) max, (int) min );
 
 	/* 4 gradient filter variants */
 	zeros( &H2, 3, 3, 1 );
@@ -841,16 +855,28 @@ int main() {
 	s_mul( &H, 1.5 ); /* H was ones( 5, 5, 1 ); */
 	printf( "norm2( H ) = %f\n", v_norm2( &H ) );
 
-	/* integral() and recSum() */
-	ones( &I2, 8, 10, 1 );
-	full_dump( &I2, "I2", ALL, INT );
-	integral( &I2, &ii );
-	full_dump( &ii, "integral( &I2 )", ALL, INT );
+	/* integral(), recSum(), and mean_variance_normalize() */
+	ones( &J, 8, 10, 1 );
+	s_mul( &J, 2.f );
+	full_dump( &J, "J", ALL, INT );
+	integral( &J, &ii );
+	full_dump( &ii, "integral( J )", ALL, INT );
 	printf( "recSum((0,0),(7,9)) = %d\n", (int)recSum( &ii, 0, 0, 7, 9 ) );
 	printf( "recSum((5,5),(5,5)) = %d\n", (int)recSum( &ii, 5, 5, 5, 5 ) );
 	printf( "recSum((0,0),(3,2)) = %d\n", (int)recSum( &ii, 0, 0, 3, 2 ) );
 	printf( "recSum((3,3),(7,7)) = %d\n", (int)recSum( &ii, 3, 3, 7, 7 ) );
 	printf( "recSum((4,0),(4,9)) = %d\n", (int)recSum( &ii, 4, 0, 4, 9 ) );
+	freeMatrix( &ii );
+
+	RAND( &Rd, 10, 10, 1, 0, 99 );
+	full_dump( &Rd, "Rd", ALL, INT );
+	integral( &Rd, &ii );
+	zeros( &Rd2, 10, 10, 1 );
+	full_assign( &Rd, &Rd2, ALL, ALL );
+	s_pow( &Rd2, 2.f );
+	integral( &Rd2, &ii2 );
+	mean_variance_normalize( &Rd, &ii, &ii2 );
+	full_dump( &Rd, "mean_var_normalize( Rd )", ALL, FLOAT );
 
 	toc = clock();
 	runningTime( tic, toc );
@@ -858,8 +884,8 @@ int main() {
 	/* free memory space */
 	freeMatrix( &A ); freeMatrix( &B ); freeMatrix( &C ); freeMatrix( &D ); freeMatrix( &E );
 	freeMatrix( &F ); freeMatrix( &G ); freeMatrix( &H ); freeMatrix( &H2 );
-	freeMatrix( &I ); freeMatrix( &I2 ); freeMatrix( &ii ); freeMatrix( &Ra ); freeMatrix( &Rb ); 
-	freeMatrix( &Rc ); freeMatrix( &Rd ); 
+	freeMatrix( &I ); freeMatrix( &J ); freeMatrix( &ii ); freeMatrix( &ii2 );
+	freeMatrix( &Ra ); freeMatrix( &Rb ); freeMatrix( &Rc ); freeMatrix( &Rd ); freeMatrix( &Rd2 );
 
 	return 0;
 }
