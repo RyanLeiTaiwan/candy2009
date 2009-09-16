@@ -1,7 +1,7 @@
 /** File: matrix.c
  ** Author: ryanlei
  ** Creation : 2009/03/21
- ** Modification: 2009/09/11
+ ** Modification: 2009/09/16
  ** Description: matrix data structure
  **/
 #include "../include/matrix.h"
@@ -684,9 +684,52 @@ float v_norm2( Matrix *source ) {
 	return sqrt( norm );
 }
 
+/* 對2D矩陣取integral(自左上方的累積量值)
+ * Recursion:
+ * ii(x,y) = ii(x-1,y) + ii(x,y-1) - ii(x-1,y-1) + i(x,y)
+ * base case: ii(-,y) = 0; ii(x,-) = 0
+ */
+void integral( Matrix *source, Matrix *dest ) {
+	int size1 = source->size1, size2 = source->size2;
+	int row, col;
+	/* check it is 2-D */
+	if ( source->size3 != 1 ) {
+		error( "integral(): must be 2-D" );
+	}
+
+	zeros( dest, size1, size2, 1 );
+	for ( row = 0; row < size1; row++ ) {
+		for ( col = 0; col < size2; col++ ) {
+			dest->data[ 0 ][ row ][ col ] = ii_eval( dest, row-1, col ) + ii_eval( dest, row, col-1 ) 
+				- ii_eval( dest, row-1, col-1 ) + source->data[ 0 ][ row ][ col ];
+		}
+	}
+}
+inline float ii_eval( Matrix *ii, int row, int col ) {
+	return ( row < 0 || col < 0 ) ? 0.f : ii->data[ 0 ][ row ][ col ];
+}
+
+/* rectangular sum of 4 corners 
+ * if upper-left(beginning): (x1,y1), bottom-right(ending): (x2,y2)
+ * => recsum = ii(x2,y2) + ii(x1-1,y1-1) - ii(x1-1,y2) - ii(x2,y1-1)
+ */
+float recSum( Matrix *ii, int rowBeg, int colBeg, int rowEnd, int colEnd ) {
+	/* check for valid range */
+	if ( rowBeg < 0 || rowEnd >= ii->size1 || colBeg < 0 || colEnd >= ii->size2 ) {
+		error( "recSum(): Invalid specified endpoints." );
+	}
+	/* make sure the argument points are upper-left, then bottom-right */
+	if ( rowBeg > rowEnd || colBeg > colEnd ) {
+		error( "recSum(): Should be recSum( &ii, upper-left point, bottom-right point )." );
+	}
+
+	return ii_eval( ii, rowEnd, colEnd ) + ii_eval( ii, rowBeg-1, colBeg-1)
+		- ii_eval( ii, rowBeg-1, colEnd ) - ii_eval( ii, rowEnd, colBeg-1 );
+}
+
 #if DEBUG
 int main() {
-	Matrix A, B, C, D, E, F, G, Gauss, H, H2, I, Ra, Rb, Rc, Rd;
+	Matrix A, B, C, D, E, F, G, Gauss, H, H2, I, I2, ii, Ra, Rb, Rc, Rd;
 	int row, col, count = 0;
 	float max, min;
 	float array[ 11 * 13 ] = {
@@ -798,13 +841,24 @@ int main() {
 	s_mul( &H, 1.5 ); /* H was ones( 5, 5, 1 ); */
 	printf( "norm2( H ) = %f\n", v_norm2( &H ) );
 
+	/* integral() and recSum() */
+	ones( &I2, 8, 10, 1 );
+	full_dump( &I2, "I2", ALL, INT );
+	integral( &I2, &ii );
+	full_dump( &ii, "integral( &I2 )", ALL, INT );
+	printf( "recSum((0,0),(7,9)) = %d\n", (int)recSum( &ii, 0, 0, 7, 9 ) );
+	printf( "recSum((5,5),(5,5)) = %d\n", (int)recSum( &ii, 5, 5, 5, 5 ) );
+	printf( "recSum((0,0),(3,2)) = %d\n", (int)recSum( &ii, 0, 0, 3, 2 ) );
+	printf( "recSum((3,3),(7,7)) = %d\n", (int)recSum( &ii, 3, 3, 7, 7 ) );
+	printf( "recSum((4,0),(4,9)) = %d\n", (int)recSum( &ii, 4, 0, 4, 9 ) );
+
 	toc = clock();
 	runningTime( tic, toc );
 
 	/* free memory space */
 	freeMatrix( &A ); freeMatrix( &B ); freeMatrix( &C ); freeMatrix( &D ); freeMatrix( &E );
 	freeMatrix( &F ); freeMatrix( &G ); freeMatrix( &H ); freeMatrix( &H2 );
-	freeMatrix( &I ); freeMatrix( &Ra ); freeMatrix( &Rb ); 
+	freeMatrix( &I ); freeMatrix( &I2 ); freeMatrix( &ii ); freeMatrix( &Ra ); freeMatrix( &Rb ); 
 	freeMatrix( &Rc ); freeMatrix( &Rd ); 
 
 	return 0;

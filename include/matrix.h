@@ -1,7 +1,7 @@
 /** File: matrix.h
  ** Author: ryanlei
  ** Creation : 2009/03/21
- ** Modification: 2009/07/04
+ ** Modification: 2009/09/14
  ** Description: matrix data structure
  **/
 #include "util.h"
@@ -75,3 +75,9 @@ void gradient( Matrix *source, Matrix *dest, DIRECTION dir, bool centered );
 // gradient filters: horizontal/vertical, centered/uncentered，dest is not yet malloced
 float v_norm2( Matrix *source );
 // 把整個矩陣當作vector取2-norm
+void integral( Matrix *source, Matrix *dest );
+// 對2D矩陣取integral(自左上方的累積量值)，dest尚未malloc。
+inline float ii_eval( Matrix *ii, int row, int col );
+// integral()用到的DP查表
+float recSum( Matrix *ii, int rowBeg, int colBeg, int rowEnd, int colEnd );
+// 指定四角的rectangular sum，必須傳入integral matrix
