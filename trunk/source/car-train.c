@@ -152,8 +152,13 @@ void extract_image( char *fileName, int Iid, Feature ***POOL, int d_width, int d
 	int b_width, b_height; /* block width, block height */
 	int x_beg, x_end, y_beg, y_end; /* x, y coordinates */
 	int Bid = 0; /* block id */
+	int row, col, size1, size2;
 	 /* original image, image after normalization, integral image, and their "square" versions */
 	Matrix img, img2, ii, ii2, img_norm, ii_norm;
+	/* vertical/horizontal gradients, gradient magnitude/angle */
+	const int binNum = 9; /* parameter: # of EOH bins */
+	Matrix Gv, Gh, Gmag; /* Gmag is a 3D matrix with binNum layers */
+
 	printf( "Extracting %s ... ", fileName );
 	/* Read the image and transform it into gray-scale */
 	imread( fileName, &img );
@@ -163,6 +168,7 @@ void extract_image( char *fileName, int Iid, Feature ***POOL, int d_width, int d
 		error( "extract_single(): Image size should be consistent with detection window size." );
 	}
 	color2Gray( &img ); /* transform into gray-scale */
+	/* [1] for rectangle features: */
 	copy( &img, &img2 );
 	copy( &img, &img_norm );
 	s_pow( &img2, 2.f );
@@ -173,6 +179,40 @@ void extract_image( char *fileName, int Iid, Feature ***POOL, int d_width, int d
 	mean_variance_normalize( &img_norm, &ii, &ii2 );
 	/* compute integral image of img_norm */
 	integral( &img_norm, &ii_norm );
+
+	/* [2] for EOH and ED features: */
+	/* compute gradient magnitude Gmag and gradient angle Gang */
+	gradient( &img, &Gv, vertical, true );
+	gradient( &img, &Gh, horizontal, true ); 
+	size1 = img.size1; size2 = img.size2;
+	zeros( &Gmag, size1, size2, binNum );
+	for ( row = 0; row < size1; row++ ) {
+		for ( col = 0; col < size2; col++ ) {
+			/* temp gradient data */
+			float Fv = Gv.data[ 0 ][ row ][ col ];
+			float Fh = Gh.data[ 0 ][ row ][ col ];
+			float Fm = sqrt( Fv * Fv + Fh * Fh );
+			float ang = atan( Fv / Fh ) * 180.f / M_PI;
+			float binSize = 360.f / binNum;
+			
+			/** Need to ADJUST the angle into II, III, IV quadrants **/
+            if ( Fh < 0 ) { /* II, III */
+                ang += 180.f;
+            }
+            else if ( Fv < 0 ) { /* IV */
+                ang += 360.f;
+            }
+            assert( ang >= 0 && ang < 360.f );
+            /* convert angle into orientation bin */
+            /* 2009.07.28: 避免角度落在兩個bin之間的boundary effects，不該直接轉成bin，
+             * 而要用SIFT Sec.6.1說的"trilinear interpolation"把票分配給鄰近的兩個bin。
+             */
+			/* [a] Find left bin-center */
+
+			/* [b] Find right bin-center */
+			/* [c] Compute the weights and distribute the magnitude */
+		}
+	}
 	
 	/* try all possible sizes and positions within the image */
 	for ( b_width = b_size_min; b_width <= d_width; b_width += b_size_step ) {
