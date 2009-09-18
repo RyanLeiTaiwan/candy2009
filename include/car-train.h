@@ -31,7 +31,7 @@ int count_blocks( int d_width, int d_height, int b_size_min, int b_size_step, in
 void extract_image( char *fileName, int Iid, Feature ***POOL, int d_width, int d_height,
 	int b_size_min, int b_size_step, int b_pos_step ); 
 /* feature extraction of a single block */
-void extract_block( int Iid, int Bid, Feature ***POOL, Matrix *img_norm, Matrix *ii_norm,
-	int rowBeg, int colBeg, int rowEnd, int colEnd );
+void extract_block( int Iid, int Bid, Feature ***POOL, Matrix *ii_norm,
+	Matrix *ii_ED, int rowBeg, int colBeg, int rowEnd, int colEnd );
 
 

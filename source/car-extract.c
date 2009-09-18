@@ -10,8 +10,8 @@
  **/
 #include "../include/car-train.h"
 
-void extract_block( int Iid, int Bid, Feature ***POOL, Matrix *img_norm, Matrix *ii_norm, 
-	int rowBeg, int colBeg, int rowEnd, int colEnd ) {
+void extract_block( int Iid, int Bid, Feature ***POOL, Matrix *ii_norm, 
+	Matrix *ii_ED, int rowBeg, int colBeg, int rowEnd, int colEnd ) {
 	/* define row and col middle, 1st quarter, 3rd quarter points */
 	const int rowMid = ( rowBeg + rowEnd ) / 2;
 	const int rowQ1 = ( rowBeg + rowMid ) / 2;
@@ -19,6 +19,7 @@ void extract_block( int Iid, int Bid, Feature ***POOL, Matrix *img_norm, Matrix 
 	const int colMid = ( colBeg + colEnd ) / 2;
 	const int colQ1 = ( colBeg + colMid ) / 2;
 	const int colQ3 = ( colMid+1 + colEnd ) / 2;
+	const int area = ( rowEnd - rowBeg + 1 ) * ( colEnd - colBeg + 1 );
 	/* [1.1] 5 rectangle features, normal version */
 	(*POOL)[ Iid ][ Bid ].REC[ 0 ] = 
 		recSum( ii_norm, rowBeg, colBeg, rowMid, colEnd ) -
@@ -48,5 +49,6 @@ void extract_block( int Iid, int Bid, Feature ***POOL, Matrix *img_norm, Matrix 
 	/* [2] 9 EOH features */
 
 	/* [3] 1 ED feature */
-
+	(*POOL)[ Iid ][ Bid ].ED =
+		recSum( ii_ED, rowBeg, colBeg, rowEnd, colEnd ) / (float)area;
 }
