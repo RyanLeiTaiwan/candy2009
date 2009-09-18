@@ -157,7 +157,7 @@ void extract_image( char *fileName, int Iid, Feature ***POOL, int d_width, int d
 	Matrix img, img2, ii, ii2, img_norm, ii_norm;
 	/* vertical/horizontal gradients, gradient magnitude/angle */
 	const int binNum = 9; /* parameter: # of EOH bins */
-	Matrix Gv, Gh, Gmag; /* Gmag is a 3D matrix with binNum layers */
+	Matrix Gv, Gh, GmEOH, GmED, ii_ED; /* GmEOH is a 3D matrix with binNum layers */
 
 	printf( "Extracting %s ... ", fileName );
 	/* Read the image and transform it into gray-scale */
@@ -168,35 +168,45 @@ void extract_image( char *fileName, int Iid, Feature ***POOL, int d_width, int d
 		error( "extract_single(): Image size should be consistent with detection window size." );
 	}
 	color2Gray( &img ); /* transform into gray-scale */
-	/* [1] for rectangle features: */
 	copy( &img, &img2 );
 	copy( &img, &img_norm );
 	s_pow( &img2, 2.f );
-	/* compute normal/square integral images */
+	/* [1] for rectangle features, compute usual/square integral images */
 	integral( &img, &ii );
 	integral( &img2, &ii2 );
-	/* mean and variance normalization using integral image */
-	mean_variance_normalize( &img_norm, &ii, &ii2 );
-	/* compute integral image of img_norm */
-	integral( &img_norm, &ii_norm );
-
-	/* [2] for EOH and ED features: */
-	/* compute gradient magnitude Gmag and gradient angle Gang */
+	freeMatrix( &img2 );
+	/* [2] for EOH and ED features, compute the vertical/horizontal gradients */
 	gradient( &img, &Gv, vertical, true );
 	gradient( &img, &Gh, horizontal, true ); 
+	freeMatrix( &img );
+	/* mean and variance normalization using integral image */
+	mean_variance_normalize( &img_norm, &ii, &ii2 );
+	freeMatrix( &ii ); freeMatrix( &ii2 );
+	/* compute integral image of img_norm */
+	integral( &img_norm, &ii_norm );
+	freeMatrix( &img_norm );
+
 	size1 = img.size1; size2 = img.size2;
-	zeros( &Gmag, size1, size2, binNum );
+	zeros( &GmEOH, size1, size2, binNum );
+	zeros( &GmED, size1, size2, 1 );
+	/* Next, compute gradient magnitude and angle for each pixel */
 	for ( row = 0; row < size1; row++ ) {
 		for ( col = 0; col < size2; col++ ) {
 			/* temp gradient data */
 			float Fv = Gv.data[ 0 ][ row ][ col ];
 			float Fh = Gh.data[ 0 ][ row ][ col ];
-			float Fm = sqrt( Fv * Fv + Fh * Fh );
-			float ang = atan( Fv / Fh ) * 180.f / M_PI;
+			float Fm = sqrt( Fv * Fv + Fh * Fh ); /* gradient magnitude */
+			float ang = atan( Fv / Fh ) * 180.f / M_PI; /* gradient angle */
 			float binSize = 360.f / binNum;
-			
+			/* write directly to the GmED matrix, and ED is done */
+			GmED.data[ 0 ][ row ][ col ] = Fm;
+
 			/** Need to ADJUST the angle into II, III, IV quadrants **/
-            if ( Fh < 0 ) { /* II, III */
+			if ( Fh == 0 && Fv == 0 ) {
+				/* special case: zero magnitude */
+				ang = 0.f;
+			}
+            else if ( Fh < 0 ) { /* II, III */
                 ang += 180.f;
             }
             else if ( Fv < 0 ) { /* IV */
@@ -213,6 +223,11 @@ void extract_image( char *fileName, int Iid, Feature ***POOL, int d_width, int d
 			/* [c] Compute the weights and distribute the magnitude */
 		}
 	}
+	freeMatrix( &Gv ); freeMatrix( &Gh );
+
+	/* compute the ii_ED */
+	integral( &GmED, &ii_ED );
+	freeMatrix( &GmED );
 	
 	/* try all possible sizes and positions within the image */
 	for ( b_width = b_size_min; b_width <= d_width; b_width += b_size_step ) {
@@ -227,7 +242,7 @@ void extract_image( char *fileName, int Iid, Feature ***POOL, int d_width, int d
 						x_beg, y_beg, x_end, y_end );
 #endif
 					/** extract features of this block (car-extract.c) **/
-					extract_block( Iid, Bid++, POOL, &img_norm, &ii_norm, 
+					extract_block( Iid, Bid++, POOL, &ii_norm, &ii_ED,
 						x_beg, y_beg, x_end, y_end );
 				}
 			}
@@ -235,9 +250,8 @@ void extract_image( char *fileName, int Iid, Feature ***POOL, int d_width, int d
 	}
 	printf( "done\n" );
 	
-	/* free memory */
-	freeMatrix( &img ); freeMatrix( &img2 ); freeMatrix( &ii ); freeMatrix( &ii2 );
-	freeMatrix( &img_norm ); freeMatrix( &ii_norm );
+	/* free remaining matrices */
+	freeMatrix( &ii_norm ); freeMatrix( &ii_ED );
 }
 
 
