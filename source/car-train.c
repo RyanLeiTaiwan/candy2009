@@ -1,7 +1,7 @@
 /** File: car-train.c
  ** Author: Ryan Lei
  ** Creation: 2009/09/11
- ** Modification: 2009/09/13
+ ** Modification: 2009/09/19
  ** Description: The car-training program based on the paper:
     Fast Human Detection Using a Novel Boosted Cascading Structure With Meta Stages, Chen and Chen, 2008.
 	Important techniques / concepts:
@@ -153,11 +153,16 @@ void extract_image( char *fileName, int Iid, Feature ***POOL, int d_width, int d
 	int x_beg, x_end, y_beg, y_end; /* x, y coordinates */
 	int Bid = 0; /* block id */
 	int row, col, size1, size2;
-	 /* original image, image after normalization, integral image, and their "square" versions */
+	/* original image, image after normalization, integral image, and their "square" versions */
 	Matrix img, img2, ii, ii2, img_norm, ii_norm;
 	/* vertical/horizontal gradients, gradient magnitude/angle */
 	const int binNum = 9; /* parameter: # of EOH bins */
-	Matrix Gv, Gh, GmEOH, GmED, ii_ED; /* GmEOH is a 3D matrix with binNum layers */
+	const int binSize = 360 / binNum;
+	const int halfBinSize = binSize / 2;
+	int dist = 0; /* distance from bin's central value */
+	float weight;
+	Matrix Gv, Gh, GmEOH, GmED, ii_EOH, ii_ED; /* GmEOH is a 3D matrix with binNum layers */
+	assert( !( 360 % ( binNum * 2 ) ) ); /* binNum*2 should divide 360 */
 
 	printf( "Extracting %s ... ", fileName );
 	/* Read the image and transform it into gray-scale */
@@ -196,36 +201,76 @@ void extract_image( char *fileName, int Iid, Feature ***POOL, int d_width, int d
 			float Fv = Gv.data[ 0 ][ row ][ col ];
 			float Fh = Gh.data[ 0 ][ row ][ col ];
 			float Fm = sqrt( Fv * Fv + Fh * Fh ); /* gradient magnitude */
-			float ang = atan( Fv / Fh ) * 180.f / M_PI; /* gradient angle */
-			float binSize = 360.f / binNum;
+			float ang_float = atan( Fv / Fh ) * 180.f / M_PI; /* gradient angle */
+			int ang;
+			int bin; /* the bin it falls into */
+
 			/* write directly to the GmED matrix, and ED is done */
 			GmED.data[ 0 ][ row ][ col ] = Fm;
 
 			/** Need to ADJUST the angle into II, III, IV quadrants **/
 			if ( Fh == 0 && Fv == 0 ) {
 				/* special case: zero magnitude */
-				ang = 0.f;
+				ang_float = 0;
 			}
             else if ( Fh < 0 ) { /* II, III */
-                ang += 180.f;
+                ang_float += 180;
             }
             else if ( Fv < 0 ) { /* IV */
-                ang += 360.f;
+                ang_float += 360;
             }
-            assert( ang >= 0 && ang < 360.f );
-            /* convert angle into orientation bin */
+            assert( ang_float >= 0 && ang_float < 360 );
+			ang = (int)ang_float;
+			//printf( "Fv: %f, Fh: %f, Fm: %f, ang: %d\n", Fv, Fh, Fm, ang );
+            /* convert angle into orientation bins */
             /* 2009.07.28: 避免角度落在兩個bin之間的boundary effects，不該直接轉成bin，
              * 而要用SIFT Sec.6.1說的"trilinear interpolation"把票分配給鄰近的兩個bin。
              */
-			/* [a] Find left bin-center */
-
-			/* [b] Find right bin-center */
-			/* [c] Compute the weights and distribute the magnitude */
+			/* [a.1] Special case: exactly central values */
+			if ( !( ( ang - halfBinSize ) % binSize ) ) {
+				bin = ( ang - halfBinSize ) / binSize;
+				GmEOH.data[ bin ][ row ][ col ] = Fm;
+			}
+			/* [a.2] Special case: first half-bin region */
+			else if ( ang >= 0 && ang < halfBinSize ) {
+				dist = ang + halfBinSize;
+				weight = 1 - abs( dist ) / (float)binSize;
+				GmEOH.data[ binNum-1 ][ row ][ col ] = Fm * ( weight );
+				GmEOH.data[ 0 ][ row ][ col ] = Fm * ( 1 - weight );
+			}
+			/* [a.3] Special case: last half-bin region */
+			else if ( ang >= 360 - halfBinSize && ang < 360 ) {
+				dist = ang - 360 + halfBinSize;
+				weight = 1 - abs( dist ) / (float)binSize;
+				GmEOH.data[ binNum-1 ][ row ][ col ] = Fm * ( weight );
+				GmEOH.data[ 0 ][ row ][ col ] = Fm * ( 1 - weight );
+			}
+			else {
+				/* [b] Find bin-center to the LEFT and compute the weight */
+				bin = ( ang - halfBinSize ) / binSize;
+				dist = ang - ( bin * binSize + halfBinSize);
+				weight = 1 - abs( dist ) / (float)binSize;
+				GmEOH.data[ bin ][ row ][ col ] = Fm * ( weight );
+				/* [c] The bin-center to the RIGHT and weight are automatically determined */
+				GmEOH.data[ bin+1 ][ row ][ col ] = Fm * ( 1 - weight );
+			}
+			assert( abs( dist ) < binSize );
+#if 0
+			printf( "Fv: %f, Fh: %f, Gm: %f, ang: %d\n", Fv, Fh, Fm, ang );
+			int i;
+			printf( "b0: %.3f", GmEOH.data[ 0 ][ row ][ col ] );
+			for ( i = 1; i < binNum; i++ ) {
+				printf( ", b%d: %.3f", i, GmEOH.data[ i ][ row ][ col ] );
+			}
+			printf( "\n" );
+#endif
 		}
 	}
 	freeMatrix( &Gv ); freeMatrix( &Gh );
 
-	/* compute the ii_ED */
+	/* compute the ii_EOH, ii_ED */
+	integral( &GmEOH, &ii_EOH );
+	freeMatrix( &GmEOH );
 	integral( &GmED, &ii_ED );
 	freeMatrix( &GmED );
 	
@@ -242,7 +287,7 @@ void extract_image( char *fileName, int Iid, Feature ***POOL, int d_width, int d
 						x_beg, y_beg, x_end, y_end );
 #endif
 					/** extract features of this block (car-extract.c) **/
-					extract_block( Iid, Bid++, POOL, &ii_norm, &ii_ED,
+					extract_block( Iid, Bid++, POOL, &ii_norm, &ii_EOH, &ii_ED,
 						x_beg, y_beg, x_end, y_end );
 				}
 			}
@@ -251,7 +296,7 @@ void extract_image( char *fileName, int Iid, Feature ***POOL, int d_width, int d
 	printf( "done\n" );
 	
 	/* free remaining matrices */
-	freeMatrix( &ii_norm ); freeMatrix( &ii_ED );
+	freeMatrix( &ii_norm ); freeMatrix( &ii_EOH ); freeMatrix( &ii_ED );
 }
 
 
@@ -300,7 +345,6 @@ int main( int argc, char *argv[] ) {
 	printf( "Start of feature extraction...\n" );
 	extract_all_images( argv[ 1 ], &POS );
 	printf( "Extraction of POS data completed.\n" );
-	getchar();
 	extract_all_images( argv[ 2 ], &NEG );
 	printf( "Extraction of NEG data completed.\n" );
 

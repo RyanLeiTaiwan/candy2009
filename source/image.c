@@ -1,7 +1,7 @@
 /** File: image.c
  ** Author: ryanlei snowm
  ** Creation: 2009/03/29
- ** Modification: 2009/09/11
+ ** Modification: 2009/09/20
  ** Description: Implementation of image operations.
                  Handled in "Little-Endian".
  **/
@@ -260,7 +260,8 @@ void color2Gray( Matrix *source ) {
 				source->data[ 0 ][ row ][ col ] + 
 				source->data[ 1 ][ row ][ col ] +
 				source->data[ 2 ][ row ][ col ];
-			source->data[ 0 ][ row ][ col ] /= 3;
+			/* 2009.09.19: 除3以後需要round成整數 */
+			source->data[ 0 ][ row ][ col ] = roundf( source->data[ 0 ][ row ][ col ] / 3 );
 		}
     }
 

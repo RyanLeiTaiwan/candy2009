@@ -78,10 +78,10 @@ void gradient( Matrix *source, Matrix *dest, DIRECTION dir, bool centered );
 float v_norm2( Matrix *source );
 // 把整個矩陣當作vector取2-norm
 void integral( Matrix *source, Matrix *dest );
-// 對2D矩陣取integral(自左上方的累積量值)，dest尚未malloc。
-inline float ii_eval( Matrix *ii, int row, int col );
+// 對2D矩陣取integral(自左上方的累積量值)，第三維layer by layer，dest尚未malloc。
+inline float ii_eval( Matrix *ii, int layer, int row, int col );
 // integral()用到的DP查表
-float recSum( Matrix *ii, int rowBeg, int colBeg, int rowEnd, int colEnd );
+float recSum( Matrix *ii, int layer, int rowBeg, int colBeg, int rowEnd, int colEnd );
 // 指定四角的rectangular sum，必須傳入integral matrix
 void mean_variance_normalize( Matrix *source, Matrix *ii, Matrix *ii2 );
 // Chen-and-Chen paper提到的 mean and variance normalization，

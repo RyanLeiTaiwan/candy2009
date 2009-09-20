@@ -1,7 +1,7 @@
 /** File: util.h
  ** Author: iopic, ryanlei
  ** Creation : 2009/03/23
- ** Modification: 2009/07/05
+ ** Modification: 2009/09/19
  ** Description: utility functions
  **/
 #include <stdio.h>
@@ -10,6 +10,7 @@
 #include <time.h>
 #include <string.h>
 #include <assert.h>
+#define EPSILON 1e-9 /* a small positive number to prevent from division-by-zero */
 
 typedef enum { false, true } bool; // define 'bool' type
 void error( char *msg ); // 錯誤訊息，並中斷程式
