@@ -697,36 +697,35 @@ float v_norm2( Matrix *source ) {
 	return sqrt( norm );
 }
 
-/* 對2D矩陣取integral(自左上方的累積量值)
+/* 對2D矩陣取integral(自左上方的累積量值)，第三維layer by layer。
  * Recursion:
  * ii(x,y) = ii(x-1,y) + ii(x,y-1) - ii(x-1,y-1) + i(x,y)
  * base case: ii(-,y) = 0; ii(x,-) = 0
  */
 void integral( Matrix *source, Matrix *dest ) {
-	int size1 = source->size1, size2 = source->size2;
-	int row, col;
-	/* check it is 2-D */
-	if ( source->size3 != 1 ) {
-		error( "integral(): must be 2-D" );
-	}
+	int size1 = source->size1, size2 = source->size2, size3 = source->size3;
+	int row, col, layer;
 
-	zeros( dest, size1, size2, 1 );
-	for ( row = 0; row < size1; row++ ) {
-		for ( col = 0; col < size2; col++ ) {
-			dest->data[ 0 ][ row ][ col ] = ii_eval( dest, row-1, col ) + ii_eval( dest, row, col-1 ) 
-				- ii_eval( dest, row-1, col-1 ) + source->data[ 0 ][ row ][ col ];
+	zeros( dest, size1, size2, size3 );
+	for ( layer = 0; layer < size3; layer++ ) {
+		for ( row = 0; row < size1; row++ ) {
+			for ( col = 0; col < size2; col++ ) {
+				dest->data[ layer ][ row ][ col ] = ii_eval( dest, layer, row-1, col ) + 
+					ii_eval( dest, layer, row, col-1 ) - ii_eval( dest, layer, row-1, col-1 ) + 
+					source->data[ layer ][ row ][ col ];
+			}
 		}
 	}
 }
-inline float ii_eval( Matrix *ii, int row, int col ) {
-	return ( row < 0 || col < 0 ) ? 0.f : ii->data[ 0 ][ row ][ col ];
+inline float ii_eval( Matrix *ii, int layer, int row, int col ) {
+	return ( row < 0 || col < 0 ) ? 0.f : ii->data[ layer ][ row ][ col ];
 }
 
 /* rectangular sum of 4 corners 
  * if upper-left(beginning): (x1,y1), bottom-right(ending): (x2,y2)
  * => recsum = ii(x2,y2) + ii(x1-1,y1-1) - ii(x1-1,y2) - ii(x2,y1-1)
  */
-float recSum( Matrix *ii, int rowBeg, int colBeg, int rowEnd, int colEnd ) {
+float recSum( Matrix *ii, int layer, int rowBeg, int colBeg, int rowEnd, int colEnd ) {
 	/* check for valid range */
 	if ( rowBeg < 0 || rowEnd >= ii->size1 || colBeg < 0 || colEnd >= ii->size2 ) {
 		error( "recSum(): Invalid specified endpoints." );
@@ -736,8 +735,8 @@ float recSum( Matrix *ii, int rowBeg, int colBeg, int rowEnd, int colEnd ) {
 		error( "recSum(): Should be recSum( &ii, upper-left point, bottom-right point )." );
 	}
 
-	return ii_eval( ii, rowEnd, colEnd ) + ii_eval( ii, rowBeg-1, colBeg-1)
-		- ii_eval( ii, rowBeg-1, colEnd ) - ii_eval( ii, rowEnd, colBeg-1 );
+	return ii_eval( ii, layer, rowEnd, colEnd ) + ii_eval( ii, layer, rowBeg-1, colBeg-1)
+		- ii_eval( ii, layer, rowBeg-1, colEnd ) - ii_eval( ii, layer, rowEnd, colBeg-1 );
 }
 
 /* Chen-and-Chen paper提到的 mean and variance normalization
@@ -748,7 +747,6 @@ void mean_variance_normalize( Matrix *source, Matrix *ii, Matrix *ii2 ) {
 	float mean, stdev;
 	int size1 = ii->size1, size2 = ii->size2;
 	int N = size1 * size2;
-	float EPSILON = 1e-9; /* small constant to prevent fromdivision-by-zero */
 	mean = ii->data[ 0 ][ size1-1 ][ size2-1 ] / N;
 	stdev = sqrt( ( ii2->data[ 0 ][ size1-1 ][ size2-1 ] - N * mean * mean ) / ( N - 1 ) );
 #if 0
