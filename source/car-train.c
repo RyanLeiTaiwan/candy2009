@@ -1,7 +1,7 @@
 /** File: car-train.c
  ** Author: Ryan Lei
  ** Creation: 2009/09/11
- ** Modification: 2009/09/19
+ ** Modification: 2009/09/23
  ** Description: The car-training program based on the paper:
     Fast Human Detection Using a Novel Boosted Cascading Structure With Meta Stages, Chen and Chen, 2008.
 	Important techniques / concepts:
@@ -12,37 +12,6 @@
  **/
 #include "../include/car-train.h"
 #define META 0
-
-/* learn AdaBoost stage A[i,j] */
-void learnA( int i, int j, float *F_current, float d_minA, float f_maxA ) {
-	float f_local = 1.0;
-	printf( "Learning stage A[%d,%d]...\n", i, j );
-	/** [0] Randomly select NEG examples from the bootstrap set **/
-	select_neg();
-	while ( f_local > f_maxA ) {
-		/* [1] Add a weak learner h to the strong classifier A[i,j] */
-		weak_select();
-		/* [2] Modify the threshold of A[i,j] to fulfill d_minA */
-		/* [3] Calculate f_local of A[i,j] */
-		f_local = 0.49;
-	}
-	*F_current *= f_local;
-	printf( "f_local: %f, F_current: %f\n", f_local, *F_current );
-}
-
-/* Learn Meta stage M[i] */
-void learnM( int i, float *F_current, float d_minM ) {
-	printf( "Learning stage M[%d]...\n", i );
-}
-	
-/* Randomly select negative examples from the bootstrap */
-void select_neg() {
-}
-
-/* Select a weak learner h to the strong classifier A[i,j] */
-void weak_select() {
-
-}
 
 int count_images( char *fileName, int pathLen ) {
 	FILE *ftest;
@@ -68,15 +37,13 @@ int count_images( char *fileName, int pathLen ) {
 	return -1;
 }
 
-void extract_all_images( char *directory, Feature ***POOL ) {
+void extract_all_images( char *directory, float ****POOL, int *imgCount, int *blockCount ) {
 	/** max # of images: 1000 **/
 	char fileName[ 80 ];
 	int pathLen;
 	FILE *ftest;
 	char D1, D2, D3;
-	int imgCount = 0;
-	int blockCount = 0;
-	int Iid; /* image id */
+	int Iid, Bid; /* image id, block id */
 	/** Some self-defined feature extraction parameters: **/
 	const int d_width = 128; /* detection window width */
 	const int d_height = 128; /* detection window height */
@@ -93,15 +60,18 @@ void extract_all_images( char *directory, Feature ***POOL ) {
 	sprintf( fileName, "%strain000.bmp", fileName );
 
 	/* count the number of images */
-	imgCount = count_images( fileName, pathLen );
+	*imgCount = count_images( fileName, pathLen );
 	/* count the number of blocks per image, 
 	 * and allocate the feature pool memory (2-D array) for the entire data set */
-	blockCount = count_blocks( d_width, d_height, b_size_min, b_size_step, b_pos_step );
-	printf( "# of blocks per image: %d.\n", blockCount );
+	*blockCount = count_blocks( d_width, d_height, b_size_min, b_size_step, b_pos_step );
+	printf( "# of blocks per image: %d.\n", *blockCount );
 	getchar();
-	*POOL = (Feature **) malloc( imgCount * sizeof( Feature * ) );
-	for ( Iid = 0; Iid < imgCount; Iid++ ) {
-		(*POOL)[ Iid ] = (Feature *) malloc( blockCount * sizeof( Feature ) );
+	*POOL = (float ***) malloc( (*imgCount) * sizeof( float ** ) );
+	for ( Iid = 0; Iid < *imgCount; Iid++ ) {
+		(*POOL)[ Iid ] = (float **) malloc( (*blockCount) * sizeof( float * ) );
+		for ( Bid = 0; Bid < *blockCount; Bid++ ) {
+			(*POOL)[ Iid ][ Bid ] = (float *) malloc( FEATURE_COUNT * sizeof( float ) );
+		}
 	}
 
 	/* extract each image */
@@ -118,7 +88,7 @@ void extract_all_images( char *directory, Feature ***POOL ) {
 				}
 				else {
 					fclose( ftest );
-					extract_image( fileName, Iid++, POOL, d_width, d_height, 
+					extract_image( fileName, Iid++, *POOL, d_width, d_height, 
 						b_size_min, b_size_step, b_pos_step );
 				}
 			}
@@ -147,7 +117,7 @@ int count_blocks( int d_width, int d_height, int b_size_min, int b_size_step, in
 	return ret;
 }
 
-void extract_image( char *fileName, int Iid, Feature ***POOL, int d_width, int d_height, 
+void extract_image( char *fileName, int Iid, float ***POOL, int d_width, int d_height, 
 	int b_size_min, int b_size_step, int b_pos_step ) {
 	int b_width, b_height; /* block width, block height */
 	int x_beg, x_end, y_beg, y_end; /* x, y coordinates */
@@ -309,13 +279,19 @@ int main( int argc, char *argv[] ) {
 	float d_minA; /* minimum acceptable detection rate per AdaBoost stage */
 	float f_maxA; /* maximum acceptable false positive rate per AdaBoost stage */
 	float d_minM; /* minimum acceptable detection rate per meta-stage */
-	int i = 1; /* AdaBoost stage counter */
+	int posCount, negCount, blockCount; /* count # of images and # of blocks */
+	int i = 1, j; /* AdaBoost stage counter */
+	int m;
 	/* parameters ni, j */
-	int ni = 1, j;
+	const int ni = 1;
 	FILE *ftest;
 	clock_t tic, toc;
 	/* Feature pools for POS and NEG data */
-	Feature **POS = NULL, **NEG = NULL;
+	float ***POS = NULL, ***NEG = NULL;
+	/* image rejection record */
+	bool *rejected;
+	Ada *H = NULL; /* H is the strong classifier A(i,j) consisting of many AdaWeak objects */
+
 
 	/* Usage: car-train POS NEG output F_target d_minA f_maxA d_minM
 	 * POS: directory of positive training data
@@ -343,34 +319,43 @@ int main( int argc, char *argv[] ) {
 
 	/*** the feature extraction process ***/
 	printf( "Start of feature extraction...\n" );
-	extract_all_images( argv[ 1 ], &POS );
+	extract_all_images( argv[ 1 ], &POS, &posCount, &blockCount );
 	printf( "Extraction of POS data completed.\n" );
-	extract_all_images( argv[ 2 ], &NEG );
+	extract_all_images( argv[ 2 ], &NEG, &negCount, &blockCount );
 	printf( "Extraction of NEG data completed.\n" );
 
 	/*****  pseudo-code from the Chen-and-Chen paper  *****/
-
+	srand( time( NULL ) );
 	printf( "Start of car-train...\n" );
+	/* allocate rejection table */
+	rejected = (bool *)malloc( negCount * sizeof( bool ) );
+	for ( m = 0; m < negCount; m++ ) {
+		rejected[ m ] = false;
+	}
 	/*** A[1,j] stage as an exception ***/
 	for ( j = 1; j <= ni + 1; j++ ) {
-		learnA( i, j, &F_current, d_minA, f_maxA );
+		printf( "\nLearning stage A[%d,%d]...\n", i, j );
+		learnA( posCount, negCount, blockCount, rejected, POS, NEG, H, &F_current, d_minA, f_maxA );
 	}
 #if META
-	learnM( i, &F_current, d_minM );
+	learnM( i, posCount, negCount, rejected, &F_current, d_minM );
 #endif
 	i++;
 
 	/*** Other A[i,j] stages ***/
 	while ( F_current > F_target ) {
 		for ( j = 1; j <= ni; j++ ) {
-			learnA( i, j, &F_current, d_minA, f_maxA );
+			printf( "\nLearning stage A[%d,%d]...\n", i, j );
+			learnA( posCount, negCount, blockCount, rejected, POS, NEG, H, &F_current, d_minA, f_maxA );
 		}
 #if META
-		learnM( i, &F_current, d_minM );
+		learnM( i, posCount, negCount, rejected, &F_current, d_minM );
 #endif
 		i++;
 	}
 
+	/* free memory */
+	free( rejected );
 	/* stop timer */
 	toc = clock();
 	runningTime( tic, toc );
