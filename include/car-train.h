@@ -11,37 +11,24 @@
 #define EOH_BEGIN 5
 #define ED_BEGIN 14
 
-/*** data structure of a block feature ***/
-#if 0
 typedef struct {
-	float REC[ REC_features ]; /* 5 rectangle features => actually 10 */
-	float EOH[ EOH_features ]; /* 9 EOH features */
-	float ED;
-} Feature;
-typedef enum { F_REC, F_EOH, F_ED } FeatureType;
-#endif
-
-typedef struct {
-	float alpha; /* the weight of this weak classifier */
 	int Bid;
 	int Fid;
-	float thr; /* classification threshold */
-	float d_weak; /* detection rate */
-
+	short parity;
+	float decision; /* classification threshold */
+	float alpha; /* the weight of this weak classifier */
 } Ada;
 
 /* learn an AdaBoost stage */
-void learnA( int posCount, int negCount, int blockCount, bool rejected[], float ***POS, float ***NEG,
-	Ada *strong, float *F_current, float d_minA, float f_maxA );
+void learnA( int posCount, int negCount, int blockCount, int *rejectCount, bool rejected[], 
+	float ***POS, float ***NEG, Ada *strong, float *F_current, float d_minA, float f_maxA );
 /* learn Meta stage M[i] */
 void learnM( int i, int posCount, int negCount, bool rejected[], float *F_current, float d_minM );
 /* randomly select neg examples from the bootstrap */
 void select_neg( int posCount, int negCount, bool rejected[], int selectTable[] ); 
-/* select a weak learner to the strong classifier */
-void weak_select( int posCount, int negCount, int blockCount, float ***POS, float ***NEG, Ada *strong );
-/* weak-classify based on one feature */
-void classify( int posCount, int negCount, float ***POS, float ***NEG, Ada *H, 
-	int Bid, int Fid );
+/* Add a weak learner to the strong classifier */
+void addWeak( int posCount, int negCount, int blockCount, int selectTable[],
+	float ***POS, float ***NEG, Matrix *posWeight, Matrix *negWeight, Ada *strong, int *hUsed );
 /* count # of images in the directory */
 int count_images( char *fileName, int pathLen ); 
 /* feature extraction of a whole directory */

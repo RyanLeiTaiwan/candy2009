@@ -1,7 +1,7 @@
 /** File: matrix.c
  ** Author: ryanlei
  ** Creation : 2009/03/21
- ** Modification: 2009/09/16
+ ** Modification: 2009/09/24
  ** Description: matrix data structure
  **/
 #include "../include/matrix.h"
@@ -19,7 +19,7 @@ void full_dump( Matrix *source, char *name, COLOR color, TYPE type ) {
 		case GG: layer_start = 1; layer_end = 1; break;
 		case BB: layer_start = 2; layer_end = 2; break;
 		case ALL: layer_start = 0; layer_end = source->size3 - 1 ; break;
-		default: error( "dump(): Parameter COLOR error." );
+		default: error( "full_dump(): Parameter COLOR error." );
 	}
 	/* check fake layers */
 	if ( source->size3 == 1 && ( color == GG || color == BB ) ) {
@@ -35,7 +35,7 @@ void full_dump( Matrix *source, char *name, COLOR color, TYPE type ) {
 				else if ( type == FLOAT )
 					printf( "%7.3f", source->data[ layer ][ row ][ col ] );
 				else
-					error( "dump(): Parameter TYPE error." );
+					error( "full_dump(): Parameter TYPE error." );
 			}
 			printf( "\n" );
 		}
@@ -54,15 +54,15 @@ void part_dump( Matrix *source, char *name, COLOR color, int rowBegin, int rowEn
 		case GG: layer_start = 1; layer_end = 1; break;
 		case BB: layer_start = 2; layer_end = 2; break;
 		case ALL: layer_start = 0; layer_end = source->size3 - 1 ; break;
-		default: error( "dump(): Parameter COLOR error." );
+		default: error( "part_dump(): Parameter COLOR error." );
 	}
 	/* check row, col range */
 	if ( rowBegin < 0 || rowEnd >= source->size1 || colBegin < 0 || colEnd >= source->size2 ) {
-		error( "dump(): Parameters row or col out of range." );
+		error( "part_dump(): Parameters row or col out of range." );
 	}
 	/* check fake layers */
 	if ( source->size3 == 1 && ( color == GG || color == BB ) ) {
-		error( "dump(): source has only one layer." );
+		error( "part_dump(): source has only one layer." );
 	}
 
 
@@ -75,7 +75,7 @@ void part_dump( Matrix *source, char *name, COLOR color, int rowBegin, int rowEn
 				else if ( type == FLOAT )
 					printf( "%7.3f", source->data[ layer ][ row ][ col ] );
 				else
-					error( "dump(): Parameter TYPE error." );
+					error( "part_dump(): Parameter TYPE error." );
 			}
 			printf( "\n" );
 		}
@@ -235,6 +235,19 @@ void s_pow( Matrix *source, float power ) {
 	}
 }
 
+void s_expRaise( Matrix *source ) {
+	int row, col, layer;
+	int size1 = source->size1, size2 = source->size2, size3 = source->size3;
+	for ( layer = 0; layer < size3; layer++ ) {
+		for ( row = 0; row < size1; row++ ) {
+			for ( col = 0; col < size2; col++ ) {
+				float value = source->data[ layer ][ row ][ col ];
+				source->data[ layer ][ row ][ col ] = exp( value );
+			}
+		}
+	}
+}
+
 void s_sqrt( Matrix *source ) {
 	int row, col, layer;
 	int size1 = source->size1, size2 = source->size2, size3 = source->size3;
@@ -261,6 +274,21 @@ void freeMatrix( Matrix *source ) {
 
 
 /***** matrix operations *****/
+
+void m_trans( Matrix *source, Matrix *dest ) {
+	int size1 = source->size1, size2 = source->size2, size3 = source->size3;
+	int row, col, layer;
+
+	zeros( dest, size2, size1, size3 );
+	for ( layer = 0; layer < size3; layer++ ) {
+		for ( row = 0; row < size1; row++ ) {
+			for ( col = 0; col < size2; col++ ) {
+				/* transpose */
+				dest->data[ layer ][ col ][ row ] = source->data[ layer ][ row ][ col ];
+			}
+		}
+	}
+}
 
 void m_add( Matrix *source1, Matrix *source2, Matrix *dest ) {
 	int row, col, layer;
@@ -291,24 +319,25 @@ void m_add( Matrix *source1, Matrix *source2, Matrix *dest ) {
 
 void e_mul( Matrix *source1, Matrix *source2, Matrix *dest ) {
 	int row, col, layer;
-	int size1 = source1->size1;
-	int size2 = source1->size2;
-	int size3 = source1->size3;
+	int size11 = source1->size1, size12 = source1->size2, size13 = source1->size3;
+	int size21 = source2->size1, size22 = source2->size2, size23 = source2->size3;
+	int size31 = dest->size1, size32 = dest->size2, size33 = dest->size3;
+
 	/* check dimensions */
-	if ( size1 != source2->size1 || size1 != source2->size2 || size3 != source2->size3 )
-		error( "e_mul(): Dimensions disagree." );
-	/* set dimensions */
-	dest->size1 = size1;
-	dest->size2 = size2;
-	dest->size3 = size3;
-	/* memory allocation */
-	dest->data = (float ***) malloc( size3 * sizeof( float ** ) );
-	for ( layer = 0; layer < size3; layer++ ) {
-		dest->data[ layer ] = (float **) malloc( size1 * sizeof( float * ) );
-		for ( row = 0; row < size1; row++ ) {
-			dest->data[ layer ][ row ] = malloc( size2 * sizeof( float ) );
-			/* addition */
-			for ( col = 0; col < size2; col++ ) {
+	if ( size11 != size21 || size12 != size22 || size13 != size23 ) {
+		error( "e_mul(): Dimensions of source1 and source2 disagree." );
+	}
+	if ( size11 != size31 || size12 != size32 || size13 != size33 ) {
+		error( "e_mul(): Dimensions of source1 and dest disagree." );
+	}
+	if ( size21 != size31 || size22 != size32 || size23 != size33 ) {
+		error( "e_mul(): Dimensions of source2 and dest disagree." );
+	}
+
+	for ( layer = 0; layer < size13; layer++ ) {
+		for ( row = 0; row < size11; row++ ) {
+			/* multiplication */
+			for ( col = 0; col < size12; col++ ) {
 				dest->data[ layer ][ row ][ col ] =
 					source1->data[ layer ][ row ][ col ] * source2->data[ layer ][ row ][ col ];
 			}
