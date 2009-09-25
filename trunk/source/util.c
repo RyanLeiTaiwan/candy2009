@@ -1,7 +1,7 @@
 /** File: util.h
  ** Author: iopic, ryanlei
  ** Creation : 2009/03/23
- ** Modification: 2009/09/11
+ ** Modification: 2009/09/24
  ** Description: utility functions
  **/
 #include "../include/util.h"
@@ -33,6 +33,10 @@ void cot_csc_table( float COT[], float CSC[], float COS[], float SIN[] ) {
     	COT[ i ] = COS[ i ] / SIN[ i ];
       	CSC[ i ] = 1.f / SIN[ i ];
 	}
+}
+
+inline short sign( float num ) {
+	return ( num > 0 ) ? +1 : ( num < 0 ) ? -1 : 0;
 }
 
 #if DEBUG

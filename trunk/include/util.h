@@ -1,7 +1,7 @@
 /** File: util.h
  ** Author: iopic, ryanlei
  ** Creation : 2009/03/23
- ** Modification: 2009/09/19
+ ** Modification: 2009/09/24
  ** Description: utility functions
  **/
 #include <stdio.h>
@@ -18,3 +18,4 @@ void runningTime( clock_t tic, clock_t toc ); // 計時
 void cos_sin_table( float COS[], float SIN[] ); // cos, sin的建表函式
 void cot_csc_table( float COT[], float CSC[], float COS[], float SIN[] );
 // cot, csc的建表函式：用建好的COS, SIN來除
+inline short sign( float num ); /* sign of the value: +1 or -1 or 0 */

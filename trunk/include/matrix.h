@@ -1,7 +1,7 @@
 /** File: matrix.h
  ** Author: ryanlei
  ** Creation : 2009/03/21
- ** Modification: 2009/09/16
+ ** Modification: 2009/09/24
  ** Description: matrix data structure
  **/
 #include "util.h"
@@ -43,13 +43,17 @@ void freeMatrix( Matrix *source ); // 清除矩陣的記憶體空間
 void s_add( Matrix *source, float number ); // 元素加上一個純量
 void s_mul( Matrix *source, float number ); // 元素乘上一個純量（係數積）
 void s_pow( Matrix *source, float power ); // 元素的純量次方
+void s_expRaise( Matrix *source ); // exp( 原矩陣 )
 void s_sqrt( Matrix *source ); // 元素開根號，是s_pow的特例。
 
 /* matrix or element-wise operations */
+void m_trans( Matrix *source, Matrix *dest );
+// matrix transpose，第三維layer by layer，dest尚未malloc。
 void m_add( Matrix *source1, Matrix *source2, Matrix *dest );
 // 元素對應相加，sources不可和dest相同。
 void e_mul( Matrix *source1, Matrix *source2, Matrix *dest );
-// 元素對應相乘，sources不可和dest相同，假設dest尚未malloc。
+// 元素對應相乘，sources不可和dest相同。
+// 2009.09.24: 改成dest已經malloc。
 void m_mul( Matrix *source1, Matrix *source2, COLOR color1, COLOR color2, Matrix *dest );
 // 2D矩陣相乘，sources皆可指定用哪些layer，sources不可和dest相同。
 void copy( Matrix *source, Matrix *dest );
