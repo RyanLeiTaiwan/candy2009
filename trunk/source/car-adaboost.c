@@ -1,7 +1,7 @@
 /** File: car-adaboost.c
  ** Author: Ryan Lei
  ** Creation: 2009/09/20
- ** Modification: 2009/09/25
+ ** Modification: 2009/09/27
  ** Description: AdaBoost learning details.
  **   This learning algorithm is based on the Chen-and-Chen paper,
  **   which is "real" AdaBoost in a "cascaded" structure.
@@ -82,7 +82,7 @@ void addWeak( int posCount, int negCount, int blockCount, int selectTable[],
 			POS_mean /= posCount;
 			NEG_mean /= negCount;
 
-			/* default threshold: avg of POS_mean and NEG_mean */
+			/* default decision threshold: avg of POS_mean and NEG_mean */
 			decision = ( POS_mean + NEG_mean ) / 2.f;
 			if ( POS_mean < NEG_mean ) {
 				parity = -1; /* toggle: ... POS_mean ... | ... NEG_mean ... */
@@ -168,7 +168,7 @@ void addWeak( int posCount, int negCount, int blockCount, int selectTable[],
 
 /* learn AdaBoost stage A[i,j] */
 void learnA( int posCount, int negCount, int blockCount, int *rejectCount, bool rejected[], 
-	float ***POS, float ***NEG, Ada *H, float *F_current, float d_minA, float f_maxA ) {
+	float ***POS, float ***NEG, Ada *H, float *F_current, float d_minA, float f_maxA, FILE *fout ) {
 
 	int selectTable[ posCount ]; /* image selection table */
 	int imgCount = posCount * 2;
@@ -179,11 +179,13 @@ void learnA( int posCount, int negCount, int blockCount, int *rejectCount, bool 
 	int Pid, t;
     float f_local = 1.f;
 	float threshold = 0.f; /* threshold of the strong classifier A[i,j], should be recorded */
-	short negResultSign[ posCount ]; /* sign( negResult ) */
+	Matrix posResult, negResult;
 
 	ones( &posWeight, 1, posCount, 1 );
 	ones( &negWeight, 1, posCount, 1 );
 	H = (Ada *)malloc( hAllocated * sizeof( Ada ) );
+	zeros( &posResult, 1, posCount, 1 );
+	zeros( &negResult, 1, posCount, 1 );
 
 	/* Initialize the data weight */
 	s_mul( &posWeight, initialW );
@@ -192,6 +194,7 @@ void learnA( int posCount, int negCount, int blockCount, int *rejectCount, bool 
 	 * Report an error if NEG images are not enough
 	 */
 	if ( posCount + (*rejectCount) > negCount ) {
+		fprintf( fout, "Warning: Not enough NEG images.\n" );
 		error( "learnA(): Not enough NEG images." );
 	}
     select_neg( posCount, negCount, rejected, selectTable );
@@ -210,80 +213,80 @@ void learnA( int posCount, int negCount, int blockCount, int *rejectCount, bool 
         addWeak( posCount, negCount, blockCount, selectTable, 
 			POS, NEG, &posWeight, &negWeight, H, &hUsed );
 
-
 		threshold = 0.f; /*** Adjust by the threshold ONLY WHEN NECESSARY ***/
-		while ( d_local < d_minA ) {
-			float minPosResult = 0.f; /* minimum value of the positive result */
-			int detect = 0; /* detection count */
-			fpCount = 0;
 
-			/* [2.1] Use the H(x) so far to trial-classify 
-			 * H(x) = sign( sum[alpha_t * h_t(x)] )
-			 * Process the POS and NEG together in one loop
-			 */
-#if 1
-			printf( "threshold: %f\n", threshold );
-#endif
-			for ( Pid = 0; Pid < posCount; Pid++ ) {
-				float posResult = 0.f;
-				float negResult = 0.f;
-				for ( t = 0; t < hUsed; t++ ) {
-					int Bid = H[ t ].Bid;
-					int Fid = H[ t ].Fid;
-					short parity = H[ t ].parity;
-					float decision = H[ t ].decision;
-					float alpha = H[ t ].alpha;
-					/* determine that positive is positive */
-					if ( parity * POS[ Pid ][ Bid ][ Fid ] >= parity * decision ) {
-						posResult += alpha;	
-					}
-					/* determine that positive is negative */
-					else {
-						posResult -= alpha;
-					}
-					/* determine that negative is positive */
-					if ( parity * NEG[ selectTable[ Pid ] ][ Bid ][ Fid ] >= parity * decision ) {
-						negResult += alpha;	
-					}
-					/* determine that negative is negative */
-					else {
-						negResult -= alpha;
-					}
-				} /* end of loop "t" */
-			
-				/* Adjust by the threshold */
-				posResult -= threshold;
-				negResult -= threshold;
+		float minPosResult = 0.f; /* minimum value of the positive result */
+		int detect = 0; /* detection count */
+		fpCount = 0;
 
-				if ( posResult < minPosResult ) {
-					minPosResult = posResult;
+		/* [2.1] Use the H(x) so far to trial-classify 
+		 * H(x) = sign( sum[alpha_t * h_t(x)] )
+		 * Process the POS and NEG together in one loop
+		 */
+		for ( Pid = 0; Pid < posCount; Pid++ ) {
+			float posTemp = 0.f;
+			float negTemp = 0.f;
+			for ( t = 0; t < hUsed; t++ ) {
+				int Bid = H[ t ].Bid;
+				int Fid = H[ t ].Fid;
+				short parity = H[ t ].parity;
+				float decision = H[ t ].decision;
+				float alpha = H[ t ].alpha;
+				/* determine that positive is positive */
+				if ( parity * POS[ Pid ][ Bid ][ Fid ] >= parity * decision ) {
+					posTemp += alpha;	
 				}
-
-#if 0
-				printf( "POS[ %d ]: %f, NEG[ %d ]: %f\n", Pid, posResult, Pid, negResult );
-#endif
-				/* count detections and false positives */
-				if ( posResult >= 0.f ) {
-					detect++;
+				/* determine that positive is negative */
+				else {
+					posTemp -= alpha;
 				}
-				if ( negResult >= 0.f ) {
-					fpCount++;
+				/* determine that negative is positive */
+				if ( parity * NEG[ selectTable[ Pid ] ][ Bid ][ Fid ] >= parity * decision ) {
+					negTemp += alpha;	
 				}
-				/* Record signs of all negResults for later rejection */
-				negResultSign[ Pid ] = sign( negResult );
-
-			} /* end of loop "Pid" */
+				/* determine that negative is negative */
+				else {
+					negTemp -= alpha;
+				}
+			} /* end of loop "t" */
 		
-			d_local = (float)detect / (float)posCount;
-			printf( "Detection rate: %f ( %d / %d )\n", d_local, detect, posCount );
+			/* Record into posResult or negResult, and collect min( posResult ) */
+			posResult.data[ 0 ][ 0 ][ Pid ] = posTemp;
+			negResult.data[ 0 ][ 0 ][ Pid ] = negTemp;
+			if ( posTemp < minPosResult ) {
+				minPosResult = posTemp;
+			}
 
-	        /* [2.2] Modify the threshold of H(x) to fulfill d_minA 
-			 * Let result + min( posResult ) so that all POS data are
-			 * determined as positive, i.e., detection rate = 100% 
-			 */
+		} /* end of loop "Pid" */
+		
+        /* [2.2] Modify the threshold of H(x) to fulfill d_minA 
+		 * If min( posResult ) < 0, then let
+		 * result = result - min( posResult ) so that all POS data are
+		 * determined as positive, i.e., detection rate = 100% 
+		 */
+		if ( minPosResult < 0.f ) {
 			threshold = minPosResult;
+			s_add( &posResult, -threshold );
+			s_add( &negResult, -threshold );
+		}
+		printf( "threshold: %f\n", threshold );
+#if 0
+		full_dump( &posResult, "posResult", ALL, FLOAT );
+		full_dump( &negResult, "negResult", ALL, FLOAT );
+#endif
 
-		} /* end of loop "d_local < d_minA" */ 
+		/* count for detections and false positives */
+		for ( Pid = 0; Pid < posCount; Pid++ ) {
+			if ( posResult.data[ 0 ][ 0 ][ Pid ] >= 0.f ) {
+				detect++;
+			}
+			if ( negResult.data[ 0 ][ 0 ][ Pid ] >= 0.f ) {
+				fpCount++;
+			}
+		}
+		d_local = (float)detect / (float)posCount;
+		printf( "Detection rate: %f ( %d / %d )\n", d_local, detect, posCount );
+		assert( d_local > d_minA );
 
         /* [3] Calculate f_local of H(x) */
 		f_local = (float)fpCount / (float)posCount;
@@ -294,20 +297,30 @@ void learnA( int posCount, int negCount, int blockCount, int *rejectCount, bool 
     *F_current *= f_local;
 	printf( "\nWeak learners used: %d\n", hUsed );
     printf( "Overall false positive rate: %f\n", *F_current );
-	getchar();
 
 	/* [4] Put in the "rejection list" the negative images rejected by H(x) */
 	for ( Pid = 0; Pid < posCount; Pid++ ) {
-		if ( negResultSign[ Pid ] < 0.f ) {
+		if ( negResult.data[ 0 ][ 0 ][ Pid ] < 0.f ) {
 			rejected[ selectTable[ Pid ] ] = true;
 			(*rejectCount)++;
 		}
 	}
+	printf( "Rejected %d negative images in total.\n", *rejectCount );
+	getchar();
 
 	/* [5] Output H(x) information to file */
+	fprintf( fout, "%d %f\n", hUsed, threshold );
+	for ( t = 0; t < hUsed; t++ ) {
+		fprintf( fout, "%d %d %d %f %f\n", 
+			H[ t ].Bid, H[ t ].Fid, H[ t ].parity, H[ t ].decision, H[ t ].alpha );
+	}
+
+	/* Free memory space */
 	freeMatrix( &posWeight );
 	freeMatrix( &negWeight );
 	free( H );
+	freeMatrix( &posResult );
+	freeMatrix( &negResult );
 }
 
 /* Learn Meta stage M[i] */

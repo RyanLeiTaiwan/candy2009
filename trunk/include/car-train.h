@@ -21,7 +21,7 @@ typedef struct {
 
 /* learn an AdaBoost stage */
 void learnA( int posCount, int negCount, int blockCount, int *rejectCount, bool rejected[], 
-	float ***POS, float ***NEG, Ada *strong, float *F_current, float d_minA, float f_maxA );
+	float ***POS, float ***NEG, Ada *strong, float *F_current, float d_minA, float f_maxA, FILE *fout );
 /* learn Meta stage M[i] */
 void learnM( int i, int posCount, int negCount, bool rejected[], float *F_current, float d_minM );
 /* randomly select neg examples from the bootstrap */
