@@ -27,7 +27,7 @@ int main( int argc, char *argv[] ) {
 	int m;
 	/* parameters ni, j */
 	const int ni = 1;
-	FILE *ftest;
+	FILE *fout;
 	clock_t tic, toc;
 	/* Feature pools for POS and NEG data */
 	float ***POS = NULL, ***NEG = NULL;
@@ -49,10 +49,9 @@ int main( int argc, char *argv[] ) {
 		"Example: ./car-train pics/INRIA/train_car pics/INRIA/train_nocar train.txt 0.001 0.999 0.50 1.00" );
 	}
 	/* check file open */
-	if ( !( ftest = fopen( argv[ 3 ], "w" ) ) ) {
+	if ( !( fout = fopen( argv[ 3 ], "w" ) ) ) {
 		error( "car-train(): Output file open error." );
 	}
-	fclose( ftest );
 	/* get arguments */
 	F_target = atof( argv[ 4 ] );
 	d_minA = atof( argv[ 5 ] );
@@ -78,11 +77,12 @@ int main( int argc, char *argv[] ) {
 	for ( m = 0; m < negCount; m++ ) {
 		rejected[ m ] = false;
 	}
+
 	/*** A[1,j] stage as an exception ***/
 	for ( j = 1; j <= ni + 1; j++ ) {
 		printf( "\nLearning stage A[%d,%d]...\n", i, j );
 		learnA( posCount, negCount, blockCount, &rejectCount, rejected, 
-			POS, NEG, H, &F_current, d_minA, f_maxA );
+			POS, NEG, H, &F_current, d_minA, f_maxA, fout );
 	}
 #if META
 	learnM( i, posCount, negCount, rejected, &F_current, d_minM );
@@ -94,7 +94,7 @@ int main( int argc, char *argv[] ) {
 		for ( j = 1; j <= ni; j++ ) {
 			printf( "\nLearning stage A[%d,%d]...\n", i, j );
 			learnA( posCount, negCount, blockCount, &rejectCount, 
-				rejected, POS, NEG, H, &F_current, d_minA, f_maxA );
+				rejected, POS, NEG, H, &F_current, d_minA, f_maxA, fout );
 		}
 #if META
 		learnM( i, posCount, negCount, rejected, &F_current, d_minM );
@@ -102,11 +102,15 @@ int main( int argc, char *argv[] ) {
 		i++;
 	}
 
-	/* free memory */
-	free( rejected );
+	/* Write "0 0" to mark the end of file */
+	fprintf( fout, "0 0\n" );
+
 	/* stop timer */
 	toc = clock();
 	runningTime( tic, toc );
+
+	fclose( fout );
+	free( rejected );
 
 	return 0;
 }
