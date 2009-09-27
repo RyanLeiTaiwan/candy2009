@@ -1,0 +1,21 @@
+## This file describes the output format of the AdaBoost car learning.
+## Author: Ryan Lei
+## Creation: 2009/09/27
+## Modification: XXXX/XX/XX
+
+# of weak classifiers (m), threshold of H1(x)
+h11's Bid, Fid, parity, decision, alpha
+h12's Bid, Fid, parity, decision, alpha
+......
+h1m's Bid, Fid, parity, decision, alpha
+# of weak classifiers (n) ,threshold of H2(x)
+h21's Bid, Fid, parity, decision, alpha
+h22's Bid, Fid, parity, decision, alpha
+......
+h2n's Bid, Fid, parity, decision, alpha
+# of weak classifiers (k), threshold of H2(x)
+h31's Bid, Fid, parity, decision, alpha
+h32's Bid, Fid, parity, decision, alpha
+......
+h3k's Bid, Fid, parity, decision, alpha
+0 0

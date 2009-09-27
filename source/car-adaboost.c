@@ -21,15 +21,15 @@ void select_neg( int posCount, int negCount, bool rejected[], int selectTable[] 
 	}
 
 	for ( i = 0; i < posCount; i++ ) {
-		int Pid;
+		int Iid;
 		/* Randomly select an image that is not yet REJECTED or SELECTED 
 		 * by the AdaBoost learning */
 		do {
-			Pid = rand() % negCount;
+			Iid = rand() % negCount;
 		}
-		while ( rejected[ Pid ] || selected[ Pid ] );
-		selected[ Pid ] = true;
-		selectTable[ i ] = Pid;
+		while ( rejected[ Iid ] || selected[ Iid ] );
+		selected[ Iid ] = true;
+		selectTable[ i ] = Iid;
 	}
 
 	free( selected );
@@ -39,7 +39,7 @@ void select_neg( int posCount, int negCount, bool rejected[], int selectTable[] 
 void addWeak( int posCount, int negCount, int blockCount, int selectTable[],
 	float ***POS, float ***NEG, Matrix *posWeight, Matrix *negWeight, Ada *strong, int *hUsed ) {
 	/* For all possible features (Bid, FeatureType, Fid) */
-	int Pid, Bid, Fid;
+	int Iid, Bid, Fid;
 	Matrix posCorrect, negCorrect, ONES; /* classification correctness matrices */
 	Matrix bestPosCorrect, bestNegCorrect;
 	float bestError = 1.f;
@@ -75,9 +75,9 @@ void addWeak( int posCount, int negCount, int blockCount, int selectTable[],
 			full_assign( &ONES, &negCorrect, ALL, ALL );
 
 			/* [1] Compute the POS & NEG mean feature value */
-			for ( Pid = 0; Pid < posCount; Pid++ ) {
-				POS_mean += POS[ Pid ][ Bid ][ Fid ];
-				NEG_mean += NEG[ selectTable[ Pid ] ][ Bid ][ Fid ];
+			for ( Iid = 0; Iid < posCount; Iid++ ) {
+				POS_mean += POS[ Iid ][ Bid ][ Fid ];
+				NEG_mean += NEG[ selectTable[ Iid ] ][ Bid ][ Fid ];
 			}
 			POS_mean /= posCount;
 			NEG_mean /= negCount;
@@ -92,16 +92,16 @@ void addWeak( int posCount, int negCount, int blockCount, int selectTable[],
 #endif
 
 			/* [2] Classification and compute the WEIGHTED error rate */
-			for ( Pid = 0; Pid < posCount; Pid++ ) {
+			for ( Iid = 0; Iid < posCount; Iid++ ) {
 				/* positive & wrong */
-				if ( parity * POS[ Pid ][ Bid ][ Fid ] < parity * decision ) {
-					error += posWeight->data[ 0 ][ 0 ][ Pid ];
-					posCorrect.data[ 0 ][ 0 ][ Pid ] = -1.f;
+				if ( parity * POS[ Iid ][ Bid ][ Fid ] < parity * decision ) {
+					error += posWeight->data[ 0 ][ 0 ][ Iid ];
+					posCorrect.data[ 0 ][ 0 ][ Iid ] = -1.f;
 				}
 				/* negative & wrong */
-				if ( parity * NEG[ selectTable[ Pid ] ][ Bid ][ Fid ] > parity * decision ) {
-					error += negWeight->data[ 0 ][ 0 ][ Pid ];
-					negCorrect.data[ 0 ][ 0 ][ Pid ] = -1.f;
+				if ( parity * NEG[ selectTable[ Iid ] ][ Bid ][ Fid ] > parity * decision ) {
+					error += negWeight->data[ 0 ][ 0 ][ Iid ];
+					negCorrect.data[ 0 ][ 0 ][ Iid ] = -1.f;
 				}
 			}
 #if SHOWAVGERROR
@@ -176,7 +176,7 @@ void learnA( int posCount, int negCount, int blockCount, int *rejectCount, bool 
 	Matrix posWeight, negWeight; /* data weight in AdaBoost */
 	int hAllocated = 10;
 	int hUsed = 0;
-	int Pid, t;
+	int Iid, t;
     float f_local = 1.f;
 	float threshold = 0.f; /* threshold of the strong classifier A[i,j], should be recorded */
 	Matrix posResult, negResult;
@@ -223,7 +223,7 @@ void learnA( int posCount, int negCount, int blockCount, int *rejectCount, bool 
 		 * H(x) = sign( sum[alpha_t * h_t(x)] )
 		 * Process the POS and NEG together in one loop
 		 */
-		for ( Pid = 0; Pid < posCount; Pid++ ) {
+		for ( Iid = 0; Iid < posCount; Iid++ ) {
 			float posTemp = 0.f;
 			float negTemp = 0.f;
 			for ( t = 0; t < hUsed; t++ ) {
@@ -233,7 +233,7 @@ void learnA( int posCount, int negCount, int blockCount, int *rejectCount, bool 
 				float decision = H[ t ].decision;
 				float alpha = H[ t ].alpha;
 				/* determine that positive is positive */
-				if ( parity * POS[ Pid ][ Bid ][ Fid ] >= parity * decision ) {
+				if ( parity * POS[ Iid ][ Bid ][ Fid ] >= parity * decision ) {
 					posTemp += alpha;	
 				}
 				/* determine that positive is negative */
@@ -241,7 +241,7 @@ void learnA( int posCount, int negCount, int blockCount, int *rejectCount, bool 
 					posTemp -= alpha;
 				}
 				/* determine that negative is positive */
-				if ( parity * NEG[ selectTable[ Pid ] ][ Bid ][ Fid ] >= parity * decision ) {
+				if ( parity * NEG[ selectTable[ Iid ] ][ Bid ][ Fid ] >= parity * decision ) {
 					negTemp += alpha;	
 				}
 				/* determine that negative is negative */
@@ -251,13 +251,13 @@ void learnA( int posCount, int negCount, int blockCount, int *rejectCount, bool 
 			} /* end of loop "t" */
 		
 			/* Record into posResult or negResult, and collect min( posResult ) */
-			posResult.data[ 0 ][ 0 ][ Pid ] = posTemp;
-			negResult.data[ 0 ][ 0 ][ Pid ] = negTemp;
+			posResult.data[ 0 ][ 0 ][ Iid ] = posTemp;
+			negResult.data[ 0 ][ 0 ][ Iid ] = negTemp;
 			if ( posTemp < minPosResult ) {
 				minPosResult = posTemp;
 			}
 
-		} /* end of loop "Pid" */
+		} /* end of loop "Iid" */
 		
         /* [2.2] Modify the threshold of H(x) to fulfill d_minA 
 		 * If min( posResult ) < 0, then let
@@ -276,11 +276,11 @@ void learnA( int posCount, int negCount, int blockCount, int *rejectCount, bool 
 #endif
 
 		/* count for detections and false positives */
-		for ( Pid = 0; Pid < posCount; Pid++ ) {
-			if ( posResult.data[ 0 ][ 0 ][ Pid ] >= 0.f ) {
+		for ( Iid = 0; Iid < posCount; Iid++ ) {
+			if ( posResult.data[ 0 ][ 0 ][ Iid ] >= 0.f ) {
 				detect++;
 			}
-			if ( negResult.data[ 0 ][ 0 ][ Pid ] >= 0.f ) {
+			if ( negResult.data[ 0 ][ 0 ][ Iid ] >= 0.f ) {
 				fpCount++;
 			}
 		}
@@ -299,9 +299,9 @@ void learnA( int posCount, int negCount, int blockCount, int *rejectCount, bool 
     printf( "Overall false positive rate: %f\n", *F_current );
 
 	/* [4] Put in the "rejection list" the negative images rejected by H(x) */
-	for ( Pid = 0; Pid < posCount; Pid++ ) {
-		if ( negResult.data[ 0 ][ 0 ][ Pid ] < 0.f ) {
-			rejected[ selectTable[ Pid ] ] = true;
+	for ( Iid = 0; Iid < posCount; Iid++ ) {
+		if ( negResult.data[ 0 ][ 0 ][ Iid ] < 0.f ) {
+			rejected[ selectTable[ Iid ] ] = true;
 			(*rejectCount)++;
 		}
 	}
