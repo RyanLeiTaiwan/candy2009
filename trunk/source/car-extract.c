@@ -1,14 +1,14 @@
-﻿/** File: car-train.c
+﻿/** File: car-extract.c
  ** Author: Ryan Lei
  ** Creation: 2009/09/11
- ** Modification: 2009/09/23
- ** Description: The ACTUAL feature extraction of a block
+ ** Modification: 2009/09/28
+ ** Description: The function implementations of feature extraction
     Features:
 	  1. Rectangle features -- Integral image, 45'-tilted-version techniques
 	  2. Edge Orientation Histograms (EOH) -- Integral histogram
 	  3. Edge Density (ED) -- Integral image
  **/
-#include "../include/car-train.h"
+#include "../include/car-extract.h"
 
 int count_images( char *fileName, int pathLen ) {
 	FILE *ftest;
@@ -34,7 +34,7 @@ int count_images( char *fileName, int pathLen ) {
 	return -1;
 }
 
-int count_blocks( int d_width, int d_height, int b_size_min, int b_size_step, int b_pos_step ) {
+int count_blocks() {
 	int ret = 0;
 	int b_width, b_height, x_beg, x_end, y_beg, y_end;
 	/* try all possible sizes and positions within the image */
@@ -63,12 +63,7 @@ void extract_all_images( char *directory, float ****POOL, int *imgCount, int *bl
 	FILE *ftest;
 	char D1, D2, D3;
 	int Iid, Bid; /* image id, block id */
-	/** Some self-defined feature extraction parameters: **/
-	const int d_width = 128; /* detection window width */
-	const int d_height = 128; /* detection window height */
-	const int b_size_min = 8; /* minumum block size */
-	const int b_size_step = 8; /* block size increment */
-	const int b_pos_step = 8; /* block position increment */
+
 	strcpy( fileName, directory );
 	pathLen = strlen( fileName );
     /* append '/' if necessary (unix) */
@@ -81,8 +76,8 @@ void extract_all_images( char *directory, float ****POOL, int *imgCount, int *bl
 	/* count the number of images */
 	*imgCount = count_images( fileName, pathLen );
 	/* count the number of blocks per image, 
-	 * and allocate the feature pool memory (2-D array) for the entire data set */
-	*blockCount = count_blocks( d_width, d_height, b_size_min, b_size_step, b_pos_step );
+	 * and allocate the feature pool memory (3-D array) for the entire data set */
+	*blockCount = count_blocks();
 	*POOL = (float ***) malloc( (*imgCount) * sizeof( float ** ) );
 	for ( Iid = 0; Iid < *imgCount; Iid++ ) {
 		(*POOL)[ Iid ] = (float **) malloc( (*blockCount) * sizeof( float * ) );
@@ -105,16 +100,14 @@ void extract_all_images( char *directory, float ****POOL, int *imgCount, int *bl
 				}
 				else {
 					fclose( ftest );
-					extract_image( fileName, Iid++, *POOL, d_width, d_height, 
-						b_size_min, b_size_step, b_pos_step );
+					extract_image( fileName, Iid++, *POOL );
 				}
 			}
 		}
 	}
 }
 
-void extract_image( char *fileName, int Iid, float ***POOL, int d_width, int d_height, 
-	int b_size_min, int b_size_step, int b_pos_step ) {
+void extract_image( char *fileName, int Iid, float ***POOL ) {
 	int b_width, b_height; /* block width, block height */
 	int x_beg, x_end, y_beg, y_end; /* x, y coordinates */
 	int Bid = 0; /* block id */
