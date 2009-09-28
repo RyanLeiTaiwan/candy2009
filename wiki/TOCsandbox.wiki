@@ -2,4 +2,5 @@
 #labels sandbox
 
   * [sandbox#Introduction Introduction]
+    * [sandbox#Note Note]
   * [sandbox#Details Details]
