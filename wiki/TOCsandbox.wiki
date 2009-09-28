@@ -2,4 +2,4 @@
 #labels sandbox
 
   * [sandbox#Introduction Introduction]
-  * [sandbox#details Details]
+  * [sandbox#Details Details]
