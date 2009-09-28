@@ -1,5 +1,6 @@
 #summary Introdunction to Google Code and Subversion.
 #labels 教學
+#sidebar TOCsvn
 
 = Introduction =
 
