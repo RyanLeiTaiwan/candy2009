@@ -3,9 +3,10 @@
 #sidebar TOCsandbox
 
 = Introduction =
-
 Add your content here.
 
+== Note ==
+Note to Introduction
 
 = Details =
 
