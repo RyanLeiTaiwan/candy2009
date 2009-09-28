@@ -1,6 +1,6 @@
 #summary 程式規範
 #labels 規定
-#sidebar Hi, I'm a sidebar item
+#sidebar TOCprogramming
 
 = Introduction =
 
