@@ -1,7 +1,7 @@
 #summary Table of content for the page "programming"
 #labels TOC
 
-  * [Introduction Introduction]
+  * [Introduction programming#Introduction]
     *[1.1]
     *[1.2]
   * [2]
