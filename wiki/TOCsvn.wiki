@@ -1,7 +1,0 @@
-#summary Table of content page for Subversion
-#labels TOC
-
-  * [Subversion_Introduction home]
-  * [Subversion_Introduction#Introduction 偽Introduction]
-  * [Subversion_Introduction#網路上的基礎文章 網路上的基礎文章]
-  * [Subversion_Introduction#之前在專題板寫的教學文章( 可以對照"基礎文章1."來看 ) 之前在專題板寫的教學文章( 可以對照"基礎文章1."來看 )]
