@@ -1,7 +1,7 @@
 /** File: hog.c
  ** Author: Ryan Lei
  ** Creation: 2009/07/05
- ** Modification: 2009/09/11
+ ** Modification: 2009/11/22
  ** Description: 
  **   feature extraction based on
  **   HOG: Histogram of Oriented Gradients.
@@ -123,7 +123,9 @@ void HOG( Matrix *img, char *label, FILE *fout, bool centered, int binNum,
 					part_assign( &gradBin, &tempBin, rowBeg, rowEnd, colBeg, colEnd, 0, 0,
 						0, cellSize - 1, 0, cellSize - 1, 0, 0 );
 					/* ".*" the Gaussian weight */
-					/** 2009.08.03: Gaussian是對整個block做，不是對cell做 **/
+					/** 2009.08.03: Gaussian weight is to the whole block, not to each cell **/
+					/* Just to make it work before obeying the 2009.08.03 comment */
+					zeros( &tempVote, cellSize, cellSize, 1 );
 					e_mul( &tempMag, Gauss, &tempVote );
 					/* count the vote for corresponding bin and record it */
 					for ( cRow = 0; cRow < cellSize; cRow++ ) {
