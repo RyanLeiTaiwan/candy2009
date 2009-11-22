@@ -1,7 +1,7 @@
 /** File: hog.c
  ** Author: Ryan Lei
  ** Creation: 2009/07/05
- ** Modification: 2009/11/22
+ ** Modification: 2009/11/23
  ** Description: 
  **   feature extraction based on
  **   HOG: Histogram of Oriented Gradients.
@@ -99,37 +99,37 @@ void HOG( Matrix *img, char *label, FILE *fout, bool centered, int binNum,
 
 	
 	/*** [2] Weighted vote into spatial & orientation cells ***/
-	zeros( &tempMag, cellSize, cellSize, 1 );
-	zeros( &tempBin, cellSize, cellSize, 1 );
+	zeros( &tempMag, blockSize, blockSize, 1 );
+	zeros( &tempBin, blockSize, blockSize, 1 );
+	zeros( &tempVote, blockSize, blockSize, 1 );
 	zeros( &tempBlock, BCratioSquare, binNum, 1 );
 	i = 0; // cell count (for debugging)
-	k = 1; // dimension count of each image
+	k = 1; // feature dimension count of each image
 	fprintf( fout, "%s ", label ); /* write the label first */
 	for ( row = 0, Vcount = 0; Vcount < blockV; row += cellSize, Vcount++ ) {
 		for ( col = 0, Hcount = 0; Hcount < blockH; col += cellSize, Hcount++ ) {
 			/* for each (overlapping) block of BCratio x BCratio cell array: */
-			j = 0; // cell count within a block
-			for ( VV = 0; VV < BCratio; VV++ ) {
-				for ( HH = 0; HH < BCratio; HH++ ) {
-					/* for each cell in the block: */
-					int rowBeg = row + VV * cellSize;
-					int rowEnd = rowBeg + cellSize - 1;
-					int colBeg = col + HH * cellSize;
-					int colEnd = colBeg + cellSize - 1;
+			/* Extract the block */
+			part_assign( &gradMag, &tempMag, row, row + blockSize - 1, col, col + blockSize - 1, 
+			0, 0, 0, blockSize - 1, 0, blockSize - 1, 0, 0 );
+			part_assign( &gradBin, &tempBin, row, row + blockSize - 1, col, col + blockSize - 1,
+			0, 0, 0, blockSize - 1, 0, blockSize - 1, 0, 0 );
 
-					/* extract a cell from gradMag, gradBin */
-					part_assign( &gradMag, &tempMag, rowBeg, rowEnd, colBeg, colEnd, 0, 0,
-						0, cellSize - 1, 0, cellSize - 1, 0, 0 );
-					part_assign( &gradBin, &tempBin, rowBeg, rowEnd, colBeg, colEnd, 0, 0,
-						0, cellSize - 1, 0, cellSize - 1, 0, 0 );
-					/* ".*" the Gaussian weight */
-					/** 2009.08.03: Gaussian weight is to the whole block, not to each cell **/
-					/* Just to make it work before obeying the 2009.08.03 comment */
-					zeros( &tempVote, cellSize, cellSize, 1 );
-					e_mul( &tempMag, Gauss, &tempVote );
+			/** Block data ".*" the Gaussian weight **/
+			e_mul( &tempMag, Gauss, &tempVote );
+
+			j = 0; // cell count within a block
+            for ( VV = 0; VV < BCratio; VV++ ) {
+                for ( HH = 0; HH < BCratio; HH++ ) {
+                    /* for each cell in the block: */
+                    int rBeg = VV * cellSize;
+                    int rEnd = rBeg + cellSize - 1;
+                    int cBeg = HH * cellSize;
+                    int cEnd = cBeg + cellSize - 1;	
+
 					/* count the vote for corresponding bin and record it */
-					for ( cRow = 0; cRow < cellSize; cRow++ ) {
-						for ( cCol = 0; cCol < cellSize; cCol++ ) {
+					for ( cRow = rBeg; cRow <= rEnd; cRow++ ) {
+						for ( cCol = cBeg; cCol <= cEnd; cCol++ ) {
 							/* for each pixel in the cell */
 							int bin = tempBin.data[ 0 ][ cRow ][ cCol ];
 							tempBlock.data[ 0 ][ j ][ bin ] += tempVote.data[ 0 ][ cRow ][ cCol ];
@@ -137,8 +137,7 @@ void HOG( Matrix *img, char *label, FILE *fout, bool centered, int binNum,
 					}
 
 					j++; i++;	
-					/* free memory space that was alloated here */
-					freeMatrix( &tempVote );
+					clear( &tempVote );
 				}
 			}
 
@@ -205,7 +204,7 @@ int extractEach( char *inputName, int pathLen, char *label, char *outputName,
 	}
 
 	/* generate Gaussian filter for HOG */
-	Gaussian( &Gauss, cellSize, sigma );
+	Gaussian( &Gauss, blockSize, sigma );
 	
 
 	/* for each image: */
