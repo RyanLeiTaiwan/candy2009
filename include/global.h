@@ -1,13 +1,14 @@
 /** File: global.h
  ** Author: Ryan Lei
  ** Creation: 2009/12/25
- ** Update: XXXX/XX/XX
+ ** Update: 2009/12/26
  ** Description: Constants or Parameters used globally.
  **/
 
 /* Constants */
 
 /* Parameters: may be edited */
-#define WINDOW_SIZE 128
+#define WINDOW_HEIGHT 96
+#define WINDOW_WIDTH 128 /* 3 : 4 */
 
 
