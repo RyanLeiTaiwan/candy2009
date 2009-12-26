@@ -36,16 +36,9 @@
 			PBXWorkspaceStateSaveDate = 283445797;
 		};
 		perUserProjectItems = {
-			2E9DA3AF10E50A71007AC3E5 /* PBXTextBookmark */ = 2E9DA3AF10E50A71007AC3E5 /* PBXTextBookmark */;
-			2E9DA3B010E50A71007AC3E5 /* PBXTextBookmark */ = 2E9DA3B010E50A71007AC3E5 /* PBXTextBookmark */;
-			2E9DA3B610E50AB9007AC3E5 /* PBXTextBookmark */ = 2E9DA3B610E50AB9007AC3E5 /* PBXTextBookmark */;
-			2E9DA3B710E50C0D007AC3E5 /* PBXTextBookmark */ = 2E9DA3B710E50C0D007AC3E5 /* PBXTextBookmark */;
-			2E9DA3DB10E50E0E007AC3E5 /* PBXTextBookmark */ = 2E9DA3DB10E50E0E007AC3E5 /* PBXTextBookmark */;
 			2E9DA3E910E5109F007AC3E5 /* PBXTextBookmark */ = 2E9DA3E910E5109F007AC3E5 /* PBXTextBookmark */;
 			2E9DA3EA10E5109F007AC3E5 /* PBXTextBookmark */ = 2E9DA3EA10E5109F007AC3E5 /* PBXTextBookmark */;
-			2E9DA3EB10E5109F007AC3E5 /* PBXTextBookmark */ = 2E9DA3EB10E5109F007AC3E5 /* PBXTextBookmark */;
-			2E9DA3F310E510BF007AC3E5 /* PBXTextBookmark */ = 2E9DA3F310E510BF007AC3E5 /* PBXTextBookmark */;
-			2E9DA3F410E510EB007AC3E5 /* PBXTextBookmark */ = 2E9DA3F410E510EB007AC3E5 /* PBXTextBookmark */;
+			2E9DA3F810E51483007AC3E5 /* PBXTextBookmark */ = 2E9DA3F810E51483007AC3E5 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 2E9DA3A810E50A34007AC3E5 /* Source Control */;
 		userBuildSettings = {
@@ -53,9 +46,9 @@
 	};
 	08FB7796FE84155DC02AAC07 /* hello.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {723, 832}}";
-			sepNavSelRange = "{992, 0}";
-			sepNavVisRange = "{0, 583}";
+			sepNavIntBoundsRect = "{{0, 0}, {723, 848}}";
+			sepNavSelRange = "{156, 0}";
+			sepNavVisRange = "{0, 607}";
 			sepNavWindowFrame = "{{38, 47}, {1187, 705}}";
 		};
 	};
@@ -103,56 +96,6 @@
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
 	};
-	2E9DA3AF10E50A71007AC3E5 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 08FB7796FE84155DC02AAC07 /* hello.cpp */;
-		name = "hello.cpp: 5";
-		rLen = 0;
-		rLoc = 20;
-		rType = 0;
-		vrLen = 143;
-		vrLoc = 0;
-	};
-	2E9DA3B010E50A71007AC3E5 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 08FB7796FE84155DC02AAC07 /* hello.cpp */;
-		name = "hello.cpp: 5";
-		rLen = 0;
-		rLoc = 20;
-		rType = 0;
-		vrLen = 143;
-		vrLoc = 0;
-	};
-	2E9DA3B610E50AB9007AC3E5 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 08FB7796FE84155DC02AAC07 /* hello.cpp */;
-		name = "hello.cpp: 52";
-		rLen = 0;
-		rLoc = 1257;
-		rType = 0;
-		vrLen = 387;
-		vrLoc = 0;
-	};
-	2E9DA3B710E50C0D007AC3E5 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 08FB7796FE84155DC02AAC07 /* hello.cpp */;
-		name = "hello.cpp: 38";
-		rLen = 0;
-		rLoc = 1003;
-		rType = 0;
-		vrLen = 546;
-		vrLoc = 710;
-	};
-	2E9DA3DB10E50E0E007AC3E5 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 08FB7796FE84155DC02AAC07 /* hello.cpp */;
-		name = "hello.cpp: 5";
-		rLen = 0;
-		rLoc = 97;
-		rType = 0;
-		vrLen = 642;
-		vrLoc = 0;
-	};
 	2E9DA3E910E5109F007AC3E5 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = C6859E8B029090EE04C91782 /* hello.1 */;
@@ -168,39 +111,19 @@
 		fRef = 08FB7796FE84155DC02AAC07 /* hello.cpp */;
 		name = "hello.cpp: 7";
 		rLen = 0;
-		rLoc = 135;
+		rLoc = 136;
 		rType = 0;
 		vrLen = 642;
 		vrLoc = 0;
 	};
-	2E9DA3EB10E5109F007AC3E5 /* PBXTextBookmark */ = {
+	2E9DA3F810E51483007AC3E5 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 08FB7796FE84155DC02AAC07 /* hello.cpp */;
-		name = "hello.cpp: 38";
+		name = "hello.cpp: 9";
 		rLen = 0;
-		rLoc = 1010;
+		rLoc = 156;
 		rType = 0;
-		vrLen = 636;
-		vrLoc = 606;
-	};
-	2E9DA3F310E510BF007AC3E5 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 08FB7796FE84155DC02AAC07 /* hello.cpp */;
-		name = "hello.cpp: 38";
-		rLen = 0;
-		rLoc = 992;
-		rType = 0;
-		vrLen = 601;
-		vrLoc = 583;
-	};
-	2E9DA3F410E510EB007AC3E5 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 08FB7796FE84155DC02AAC07 /* hello.cpp */;
-		name = "hello.cpp: 38";
-		rLen = 0;
-		rLoc = 992;
-		rType = 0;
-		vrLen = 583;
+		vrLen = 607;
 		vrLoc = 0;
 	};
 	8DD76F620486A84900D96B5E /* hello */ = {
