@@ -8,10 +8,16 @@
 #include <iostream.h>
 #include <cxcore.h>
 #include <cv.h>
+#include "global.h"
+using namespace std;
 
 void function( int param1, int param2 );
 
 int main() {
+	
+	cout << "Hello, world" << endl;
+	cout << WINDOW_WIDTH << ", " << WINDOW_HEIGHT << endl;
+	getchar();
 
 	return 0;
 }
