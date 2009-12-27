@@ -5,7 +5,7 @@
  ** Description: Some program.
  **/
 
-#include <iostream.h>
+#include <iostream>
 #include <cxcore.h>
 #include <cv.h>
 #include "global.h"
