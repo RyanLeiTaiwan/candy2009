@@ -1,0 +1,86 @@
+Ttemplate
+v7
+r0
+t283601021.993133
+cCheck dependencies
+cCompileC build/template.build/Debug/template.build/Objects-normal/i386/template.o /Users/ryanlei/candy2009/proj/mac/template/../../../src/template.cpp normal i386 c++ com.apple.compilers.gcc.4_2
+
+N../../../bin/mac/template
+t2
+s0
+
+N/Developer/SDKs/MacOSX10.6.sdk
+c000000004A769DAB00000000000000EE
+t1249287595
+s238
+
+N/Developer/SDKs/MacOSX10.6.sdk/Library/Frameworks/OpenCV.framework/OpenCV
+c000000004B3386640000000000F5AADC
+t1261667940
+s16100060
+
+N/Users/ryanlei/candy2009/proj/mac/template/../../../src/template.cpp
+c000000004B3730F7000000000000014A
+t1261908215
+s330
+i<iostream.h>
+i<cxcore.h>
+i<cv.h>
+
+N/Users/ryanlei/candy2009/proj/mac/template/build/Debug/template
+t2
+s0
+
+N/Users/ryanlei/candy2009/proj/mac/template/build/template.build/Debug/template.build/Objects-normal/i386/template.LinkFileList
+c000000004B3730FD0000000000000074
+t1261908221
+s116
+
+N/Users/ryanlei/candy2009/proj/mac/template/build/template.build/Debug/template.build/Objects-normal/i386/template.o
+t2
+s0
+
+N/Users/ryanlei/candy2009/proj/mac/template/build/template.build/Debug/template.build/Objects-normal/x86_64/main.o
+t2
+s0
+
+N/Users/ryanlei/candy2009/proj/mac/template/build/template.build/Debug/template.build/Objects-normal/x86_64/template.LinkFileList
+c00000000000000000000000000000000
+t2
+s0
+
+N/Users/ryanlei/candy2009/proj/mac/template/main.cpp
+c000000004B372ECC000000000000008F
+t1261907660
+s143
+i<iostream>
+
+CCheck dependencies
+r0
+lSLF07#2@18"Check dependencies283601021#283601021#0(0"0(0#1#0"7947009927035180032#0"0#
+
+CCompileC build/template.build/Debug/template.build/Objects-normal/i386/template.o /Users/ryanlei/candy2009/proj/mac/template/../../../src/template.cpp normal i386 c++ com.apple.compilers.gcc.4_2
+s283601021.972800
+e283601021.993038
+r0
+xCompileC
+xbuild/template.build/Debug/template.build/Objects-normal/i386/template.o
+x/Users/ryanlei/candy2009/proj/mac/template/../../../src/template.cpp
+xnormal
+xi386
+xc++
+xcom.apple.compilers.gcc.4_2
+lSLF07#2@76"Compile /Users/ryanlei/candy2009/proj/mac/template/../../../src/template.cpp283601021#283601021#0(877"In file included from /Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/backward/iostream.h:31,                 from /Users/ryanlei/candy2009/proj/mac/template/../../../src/template.cpp:8:/Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/backward/backward_warning.h:32:2: warning: #warning This file includes at least one deprecated or antiquated header. Please consider using one of the 32 headers found in section 17.4.1.2 of the C++ standard. Examples include substituting the <X> header for the <X.h> header for C++ includes, or <iostream> instead of the deprecated header <iostream.h>. To disable this warning use -Wno-deprecated./Users/ryanlei/candy2009/proj/mac/template/../../../src/template.cpp:9:20: error: cxcore.h: No such file or directory/Users/ryanlei/candy2009/proj/mac/template/../../../src/template.cpp:10:16: error: cv.h: No such file or directory3(22@354"#warning This file includes at least one deprecated or antiquated header. Please consider using one of the 32 headers found in section 17.4.1.2 of the C++ standard. Examples include substituting the <X> header for the <X.h> header for C++ includes, or <iostream> instead of the deprecated header <iostream.h>. To disable this warning use -Wno-deprecated.283601021#193#451#3(7@90"In file included from /Users/ryanlei/candy2009/proj/mac/template/../../../src/template.cpp283601021#18446744073709551615#0#0(6@68"/Users/ryanlei/candy2009/proj/mac/template/../../../src/template.cpp283601015#8#0#8#0#0"0(7@94"In file included from /Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/backward/iostream.h283601021#18446744073709551615#0#0(6@72"/Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/backward/iostream.h264359108#31#0#31#0#0"0(13@438"#warning This file includes at least one deprecated or antiquated header. Please consider using one of the 32 headers found in section 17.4.1.2 of the C++ standard. Examples include substituting the <X> header for the <X.h> header for C++ includes, or <iostream> instead of the deprecated header <iostream.h>. To disable this warning use -Wno-deprecated. in /Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/backward/backward_warning.h283601021#18446744073709551615#0#0(6@80"/Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/backward/backward_warning.h264359108#32#0#32#0#0"0(6@80"/Developer/SDKs/MacOSX10.6.sdk/usr/include/c++/4.2.1/backward/backward_warning.h264359108#32#0#32#0#10"#warning *0(4@35"Cxcore.h: No such file or directory283601021#644#118#0(6@68"/Users/ryanlei/candy2009/proj/mac/template/../../../src/template.cpp283601015#9#0#9#0#28"*: No such file or directory0(4@31"Cv.h: No such file or directory283601021#762#115#0(6@68"/Users/ryanlei/candy2009/proj/mac/template/../../../src/template.cpp283601015#10#0#10#0#28"*: No such file or directory0(0#0#68"/Users/ryanlei/candy2009/proj/mac/template/../../../src/template.cpp7886488416478786560#1402"    cd /Users/ryanlei/candy2009/proj/mac/template    setenv LANG en_US.US-ASCII    /Developer/usr/bin/gcc-4.2 -x c++ -arch i386 -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -fasm-blocks -O0 -Wreturn-type -Wunused-variable -D_GLIBCXX_DEBUG=1 -D_GLIBCXX_DEBUG_PEDANTIC=1 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mfix-and-continue -fvisibility-inlines-hidden -mmacosx-version-min=10.6 -gdwarf-2 -iquote /Users/ryanlei/candy2009/proj/mac/template/build/template.build/Debug/template.build/template-generated-files.hmap -I/Users/ryanlei/candy2009/proj/mac/template/build/template.build/Debug/template.build/template-own-target-headers.hmap -I/Users/ryanlei/candy2009/proj/mac/template/build/template.build/Debug/template.build/template-all-target-headers.hmap -iquote /Users/ryanlei/candy2009/proj/mac/template/build/template.build/Debug/template.build/template-project-headers.hmap -F../../../bin/mac -F/Library/Frameworks -I../../../bin/mac/include -I../../../include -I/Library/Frameworks -I/Users/ryanlei/candy2009/proj/mac/template/build/template.build/Debug/template.build/DerivedSources/i386 -I/Users/ryanlei/candy2009/proj/mac/template/build/template.build/Debug/template.build/DerivedSources -c /Users/ryanlei/candy2009/proj/mac/template/../../../src/template.cpp -o /Users/ryanlei/candy2009/proj/mac/template/build/template.build/Debug/template.build/Objects-normal/i386/template.o1#
+
+CCompileC build/template.build/Debug/template.build/Objects-normal/x86_64/main.o /Users/ryanlei/candy2009/proj/mac/template/main.cpp normal x86_64 c++ com.apple.compilers.gcc.4_2
+r0
+
+CLd ../../../bin/mac/template normal i386
+r0
+
+CLd /Users/ryanlei/candy2009/proj/mac/template/build/Debug/template normal i386
+r0
+
+CLd /Users/ryanlei/candy2009/proj/mac/template/build/Debug/template normal x86_64
+r0
+
