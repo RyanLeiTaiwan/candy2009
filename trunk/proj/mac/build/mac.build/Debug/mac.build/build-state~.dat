@@ -1,0 +1,74 @@
+Tmac
+v7
+r0
+t283608972.325135
+cCheck dependencies
+cCompileC build/mac.build/Debug/mac.build/Objects-normal/i386/main.o /Users/ryanlei/candy2009/proj/mac/main.cpp normal i386 c++ com.apple.compilers.gcc.4_2
+cLd /Users/ryanlei/candy2009/proj/mac/build/Debug/mac normal i386
+
+N/Developer/SDKs/MacOSX10.6.sdk
+c000000004A769DAB00000000000000EE
+t1249287595
+s238
+
+N/Users/ryanlei/candy2009/proj/mac/build/Debug/mac
+t1261916172
+s27648
+
+N/Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/mac.build/Objects-normal/i386/mac.LinkFileList
+c000000004B37500B000000000000005D
+t1261916171
+s93
+
+N/Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/mac.build/Objects-normal/i386/main.o
+t1261916172
+s85692
+
+N/Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/mac.build/Objects-normal/x86_64/mac.LinkFileList
+c00000000000000000000000000000000
+t2
+s0
+
+N/Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/mac.build/Objects-normal/x86_64/main.o
+t2
+s0
+
+N/Users/ryanlei/candy2009/proj/mac/main.cpp
+c000000004B374FFE000000000000008F
+t1261916158
+s143
+i<iostream>
+
+CCheck dependencies
+r0
+lSLF07#2@18"Check dependencies283608971#283608971#0(0"0(0#1#0"7947009927035180032#0"0#
+
+CCompileC build/mac.build/Debug/mac.build/Objects-normal/i386/main.o /Users/ryanlei/candy2009/proj/mac/main.cpp normal i386 c++ com.apple.compilers.gcc.4_2
+s283608971.867147
+e283608972.299810
+r1
+xCompileC
+xbuild/mac.build/Debug/mac.build/Objects-normal/i386/main.o
+x/Users/ryanlei/candy2009/proj/mac/main.cpp
+xnormal
+xi386
+xc++
+xcom.apple.compilers.gcc.4_2
+lSLF07#2@50"Compile /Users/ryanlei/candy2009/proj/mac/main.cpp283608971#283608972#0(0"0(0#0#42"/Users/ryanlei/candy2009/proj/mac/main.cpp7020319304058103808#1205"    cd /Users/ryanlei/candy2009/proj/mac    setenv LANG en_US.US-ASCII    /Developer/usr/bin/gcc-4.2 -x c++ -arch i386 -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -fasm-blocks -O0 -Wreturn-type -Wunused-variable -D_GLIBCXX_DEBUG=1 -D_GLIBCXX_DEBUG_PEDANTIC=1 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mfix-and-continue -fvisibility-inlines-hidden -mmacosx-version-min=10.6 -gdwarf-2 -iquote /Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/mac.build/mac-generated-files.hmap -I/Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/mac.build/mac-own-target-headers.hmap -I/Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/mac.build/mac-all-target-headers.hmap -iquote /Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/mac.build/mac-project-headers.hmap -F/Users/ryanlei/candy2009/proj/mac/build/Debug -I/Users/ryanlei/candy2009/proj/mac/build/Debug/include -I/Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/mac.build/DerivedSources/i386 -I/Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/mac.build/DerivedSources -c /Users/ryanlei/candy2009/proj/mac/main.cpp -o /Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/mac.build/Objects-normal/i386/main.o0#
+
+CCompileC build/mac.build/Debug/mac.build/Objects-normal/x86_64/main.o /Users/ryanlei/candy2009/proj/mac/main.cpp normal x86_64 c++ com.apple.compilers.gcc.4_2
+r0
+
+CLd /Users/ryanlei/candy2009/proj/mac/build/Debug/mac normal i386
+s283608972.299942
+e283608972.325058
+r1
+xLd
+x/Users/ryanlei/candy2009/proj/mac/build/Debug/mac
+xnormal
+xi386
+lSLF07#2@54"Link /Users/ryanlei/candy2009/proj/mac/build/Debug/mac283608972#283608972#0(0"0(0#0#0"4300885448#453"    cd /Users/ryanlei/candy2009/proj/mac    setenv MACOSX_DEPLOYMENT_TARGET 10.6    /Developer/usr/bin/g++-4.2 -arch i386 -isysroot /Developer/SDKs/MacOSX10.6.sdk -L/Users/ryanlei/candy2009/proj/mac/build/Debug -F/Users/ryanlei/candy2009/proj/mac/build/Debug -filelist /Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/mac.build/Objects-normal/i386/mac.LinkFileList -mmacosx-version-min=10.6 -o /Users/ryanlei/candy2009/proj/mac/build/Debug/mac0#
+
+CLd /Users/ryanlei/candy2009/proj/mac/build/Debug/mac normal x86_64
+r0
+
