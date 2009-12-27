@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2E9DA3BB10E50C77007AC3E5 /* OpenCV.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E9DA3BA10E50C77007AC3E5 /* OpenCV.framework */; };
+		2ED757ED10E7BD1A001D3EE5 /* OpenCV.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2ED757EC10E7BD1A001D3EE5 /* OpenCV.framework */; };
 		8DD76F650486A84900D96B5E /* hello.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* hello.cpp */; settings = {ATTRIBUTES = (); }; };
 		8DD76F6A0486A84900D96B5E /* hello.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859E8B029090EE04C91782 /* hello.1 */; };
 /* End PBXBuildFile section */
@@ -27,7 +27,7 @@
 
 /* Begin PBXFileReference section */
 		08FB7796FE84155DC02AAC07 /* hello.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hello.cpp; sourceTree = "<group>"; };
-		2E9DA3BA10E50C77007AC3E5 /* OpenCV.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenCV.framework; path = Library/Frameworks/OpenCV.framework; sourceTree = SDKROOT; };
+		2ED757EC10E7BD1A001D3EE5 /* OpenCV.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenCV.framework; path = Library/Frameworks/OpenCV.framework; sourceTree = SDKROOT; };
 		8DD76F6C0486A84900D96B5E /* hello */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = hello; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6859E8B029090EE04C91782 /* hello.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = hello.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -37,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2E9DA3BB10E50C77007AC3E5 /* OpenCV.framework in Frameworks */,
+				2ED757ED10E7BD1A001D3EE5 /* OpenCV.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -50,7 +50,7 @@
 				08FB7795FE84155DC02AAC07 /* Source */,
 				C6859E8C029090F304C91782 /* Documentation */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
-				2E9DA3BA10E50C77007AC3E5 /* OpenCV.framework */,
+				2ED757EC10E7BD1A001D3EE5 /* OpenCV.framework */,
 			);
 			name = hello;
 			sourceTree = "<group>";

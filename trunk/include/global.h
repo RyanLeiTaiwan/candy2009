@@ -5,12 +5,22 @@
  ** Description: Constants or Parameters used globally.
  **/
 
-/* Constants */
+/** Constants **/
 
-/* Parameters: may be edited */
-#define WINDOW_HEIGHT 96
-#define WINDOW_WIDTH 128 /* 3 : 4 */
-#define LARGE_HEIGHT 768
-#define LARGE_WIDTH 1024 /* 3 : 4, too */
+/** System parameters: may be edited **/
+/* Uncomment either line according to your OS */
+#define Mac 1
+//#define Linux 1
+//#define Windows 1
+#ifdef Mac || Linux
+	#define Unix 1
+#else
+	#define Unix 0
+#endif
+#define MAX_PATH_LENGTH 200
 
-
+/** Project parameters: may be edited **/
+#define WINDOW_WIDTH 128 
+#define WINDOW_HEIGHT 96 // 3 : 4
+#define LARGE_WIDTH 1024 
+#define LARGE_HEIGHT 768 // 3 : 4, too
