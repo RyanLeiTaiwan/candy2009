@@ -14,7 +14,7 @@
 /* Begin PBXFileReference section */
 		08FB7796FE84155DC02AAC07 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		2ED7B33310E7879F0080D7C9 /* OpenCV.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenCV.framework; path = Library/Frameworks/OpenCV.framework; sourceTree = SDKROOT; };
-		2ED7B34910E788300080D7C9 /* global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = global.h; path = ../../include/global.h; sourceTree = SOURCE_ROOT; };
+		2ED7B34910E788300080D7C9 /* parameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = parameters.h; path = ../../include/parameters.h; sourceTree = "<group>"; };
 		2ED7B35110E788BF0080D7C9 /* gen_neg */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = gen_neg; sourceTree = BUILT_PRODUCTS_DIR; };
 		2ED7B35610E7891B0080D7C9 /* gen_neg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gen_neg.cpp; path = ../../src/gen_neg.cpp; sourceTree = SOURCE_ROOT; };
 		2ED7B36210E789A10080D7C9 /* template.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = template.cpp; path = ../../src/template.cpp; sourceTree = SOURCE_ROOT; };
@@ -66,7 +66,7 @@
 		2ED7B34810E788070080D7C9 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
-				2ED7B34910E788300080D7C9 /* global.h */,
+				2ED7B34910E788300080D7C9 /* parameters.h */,
 			);
 			name = Headers;
 			sourceTree = "<group>";

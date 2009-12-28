@@ -20,7 +20,6 @@
 #define MAX_PATH_LENGTH 200
 
 /** Project parameters: may be edited **/
-#define WINDOW_WIDTH 128 
-#define WINDOW_HEIGHT 96 // 3 : 4
-#define LARGE_WIDTH 1024 
-#define LARGE_HEIGHT 768 // 3 : 4, too
+#define WINDOW_WIDTH 128
+#define WINDOW_HEIGHT 96 // 4 : 3
+
