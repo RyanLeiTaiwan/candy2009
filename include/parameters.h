@@ -21,5 +21,8 @@
 
 /** Project parameters: may be edited **/
 #define WINDOW_WIDTH 128
-#define WINDOW_HEIGHT 96 // 4 : 3
+#define WINDOW_HEIGHT 128
+#define BLOCK_MIN_SIZE 8 /* minumum block size */
+#define BLOCK_SIZE_INC 8 /* block size increment */
+#define BLOCK_POS_INC 8 /* block position increment */
 
