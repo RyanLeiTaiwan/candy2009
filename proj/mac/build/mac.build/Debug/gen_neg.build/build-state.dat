@@ -1,14 +1,14 @@
 Tgen_neg
 v7
 r0
-t283632090.150400
+t283677310.462434
 cCheck dependencies
 cCompileC build/mac.build/Debug/gen_neg.build/Objects-normal/i386/gen_neg.o /Users/ryanlei/candy2009/proj/mac/../../src/gen_neg.cpp normal i386 c++ com.apple.compilers.gcc.4_2
 cLd ../../bin/mac/gen_neg normal i386
 
 N../../bin/mac/gen_neg
-t1261939290
-s15620
+t1261984510
+s15808
 
 N/Developer/SDKs/MacOSX10.6.sdk
 c000000004A769DAB00000000000000EE
@@ -192,18 +192,34 @@ i<math.h>
 i<ipl.h>
 i<ipl/ipl.h>
 
+N/Library/Frameworks/OpenCV.framework/Headers/highgui.h
+c000000004B33844100000000000046F5
+t1261667393
+s18165
+i"cxcore.h"
+i<windows.h>
+i<chdl.h>
+i"highgui.hpp"
+
+N/Library/Frameworks/OpenCV.framework/Headers/highgui.hpp
+c000000004B338441000000000000122C
+t1261667393
+s4652
+
 N/Users/ryanlei/candy2009/proj/mac/../../include/global.h
 c000000004B37978D000000000000023C
 t1261934477
 s572
 
 N/Users/ryanlei/candy2009/proj/mac/../../src/gen_neg.cpp
-c000000004B37AA580000000000000BC3
-t1261939288
-s3011
-i<iostream.h>
+c000000004B385AFD0000000000000FC5
+t1261984509
+s4037
+i<iostream>
+i<cstring>
 i<cxcore.h>
 i<cv.h>
+i<highgui.h>
 i<dirent.h>
 i"global.h"
 
@@ -213,16 +229,16 @@ t1261916642
 s100
 
 N/Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/gen_neg.build/Objects-normal/i386/gen_neg.o
-t1261939289
-s72232
+t1261984510
+s73660
 
 CCheck dependencies
 r0
-lSLF07#2@18"Check dependencies283632090#283632090#0(0"0(0#1#0"4300885448#0"0#
+lSLF07#2@18"Check dependencies283677310#283677310#0(0"0(0#1#0"4300885448#0"0#
 
 CCompileC build/mac.build/Debug/gen_neg.build/Objects-normal/i386/gen_neg.o /Users/ryanlei/candy2009/proj/mac/../../src/gen_neg.cpp normal i386 c++ com.apple.compilers.gcc.4_2
-s283632090.118421
-e283632090.119628
+s283677310.369800
+e283677310.371075
 r1
 xCompileC
 xbuild/mac.build/Debug/gen_neg.build/Objects-normal/i386/gen_neg.o
@@ -231,15 +247,15 @@ xnormal
 xi386
 xc++
 xcom.apple.compilers.gcc.4_2
-lSLF07#2@63"Compile /Users/ryanlei/candy2009/proj/mac/../../src/gen_neg.cpp283632090#283632090#0(0"0(0#0#55"/Users/ryanlei/candy2009/proj/mac/../../src/gen_neg.cpp4300885448#1223"    cd /Users/ryanlei/candy2009/proj/mac    setenv LANG en_US.US-ASCII    /Developer/usr/bin/gcc-4.2 -x c++ -arch i386 -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -fasm-blocks -O0 -Wreturn-type -Wunused-variable -isysroot /Developer/SDKs/MacOSX10.6.sdk -mfix-and-continue -fvisibility-inlines-hidden -mmacosx-version-min=10.6 -gdwarf-2 -iquote /Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/gen_neg.build/gen_neg-generated-files.hmap -I/Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/gen_neg.build/gen_neg-own-target-headers.hmap -I/Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/gen_neg.build/gen_neg-all-target-headers.hmap -iquote /Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/gen_neg.build/gen_neg-project-headers.hmap -F../../bin/mac -F/Library/Frameworks -I../../bin/mac/include -I/Library/Frameworks/OpenCV.framework/Headers -I/Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/gen_neg.build/DerivedSources/i386 -I/Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/gen_neg.build/DerivedSources -c /Users/ryanlei/candy2009/proj/mac/../../src/gen_neg.cpp -o /Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/gen_neg.build/Objects-normal/i386/gen_neg.o0#
+lSLF07#2@63"Compile /Users/ryanlei/candy2009/proj/mac/../../src/gen_neg.cpp283677310#283677310#0(0"0(0#0#55"/Users/ryanlei/candy2009/proj/mac/../../src/gen_neg.cpp4300885448#1223"    cd /Users/ryanlei/candy2009/proj/mac    setenv LANG en_US.US-ASCII    /Developer/usr/bin/gcc-4.2 -x c++ -arch i386 -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -fasm-blocks -O0 -Wreturn-type -Wunused-variable -isysroot /Developer/SDKs/MacOSX10.6.sdk -mfix-and-continue -fvisibility-inlines-hidden -mmacosx-version-min=10.6 -gdwarf-2 -iquote /Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/gen_neg.build/gen_neg-generated-files.hmap -I/Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/gen_neg.build/gen_neg-own-target-headers.hmap -I/Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/gen_neg.build/gen_neg-all-target-headers.hmap -iquote /Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/gen_neg.build/gen_neg-project-headers.hmap -F../../bin/mac -F/Library/Frameworks -I../../bin/mac/include -I/Library/Frameworks/OpenCV.framework/Headers -I/Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/gen_neg.build/DerivedSources/i386 -I/Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/gen_neg.build/DerivedSources -c /Users/ryanlei/candy2009/proj/mac/../../src/gen_neg.cpp -o /Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/gen_neg.build/Objects-normal/i386/gen_neg.o0#
 
 CLd ../../bin/mac/gen_neg normal i386
-s283632090.119696
-e283632090.150329
+s283677310.371141
+e283677310.462372
 r1
 xLd
 x../../bin/mac/gen_neg
 xnormal
 xi386
-lSLF07#2@26"Link ../../bin/mac/gen_neg283632090#283632090#0(0"0(0#0#0"4300885448#409"    cd /Users/ryanlei/candy2009/proj/mac    setenv MACOSX_DEPLOYMENT_TARGET 10.6    /Developer/usr/bin/g++-4.2 -arch i386 -isysroot /Developer/SDKs/MacOSX10.6.sdk -L../../bin/mac -F../../bin/mac -F/Library/Frameworks -filelist /Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/gen_neg.build/Objects-normal/i386/gen_neg.LinkFileList -mmacosx-version-min=10.6 -framework OpenCV -o ../../bin/mac/gen_neg0#
+lSLF07#2@26"Link ../../bin/mac/gen_neg283677310#283677310#0(0"0(0#0#0"4300885448#409"    cd /Users/ryanlei/candy2009/proj/mac    setenv MACOSX_DEPLOYMENT_TARGET 10.6    /Developer/usr/bin/g++-4.2 -arch i386 -isysroot /Developer/SDKs/MacOSX10.6.sdk -L../../bin/mac -F../../bin/mac -F/Library/Frameworks -filelist /Users/ryanlei/candy2009/proj/mac/build/mac.build/Debug/gen_neg.build/Objects-normal/i386/gen_neg.LinkFileList -mmacosx-version-min=10.6 -framework OpenCV -o ../../bin/mac/gen_neg0#
 
