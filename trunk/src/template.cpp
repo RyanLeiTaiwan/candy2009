@@ -8,7 +8,7 @@
 #include <iostream>
 #include <cxcore.h>
 #include <cv.h>
-#include "global.h"
+#include "parameters.h"
 using namespace std;
 
 void function( int param1, int param2 );
