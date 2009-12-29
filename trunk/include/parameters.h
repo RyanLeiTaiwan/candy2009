@@ -1,7 +1,7 @@
 /** File: global.h
  ** Author: Ryan Lei
  ** Creation: 2009/12/25
- ** Update: 2009/12/26
+ ** Update: 2009/12/28
  ** Description: Constants or Parameters used globally.
  **/
 

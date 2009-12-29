@@ -10,10 +10,10 @@
 
 #include <iostream>
 #include <cstring>
+#include <dirent.h>
 #include <cxcore.h>
 #include <highgui.h>
 #include <cv.h>
-#include <dirent.h>
 #include "parameters.h"
 using namespace std;
 
@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
 	}
 	
 	if (!(dirin = opendir(argv[ 1 ]))) {
-		cout << "gen_neg(): [INPUT_DIR] does not exist.\n";
+		cout << "gen_neg: [INPUT_DIR] does not exist.\n";
 		exit(EXIT_FAILURE);
 	}
 	/* Set INPUT_PATH_BASE to [INPUT_DIR] and append '/' or '\' */
@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 	sprintf(INPUT_PATH_BASE, "%s%c", INPUT_PATH_BASE, slash);
 	
 	if (!(dirout = opendir(argv[ 2 ]))) {
-		cout << "gen_neg(): [OUTPUT_DIR] does not exist.\n";
+		cout << "gen_neg: [OUTPUT_DIR] does not exist.\n";
 		exit(EXIT_FAILURE);
 	}
 	closedir(dirout); // not needed for output
