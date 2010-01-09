@@ -7,3 +7,4 @@
 
 
 int countImages(const char *PATH);
+void printMat(CvMat *matrix, const char *name);

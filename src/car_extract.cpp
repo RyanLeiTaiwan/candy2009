@@ -95,8 +95,12 @@ int countBlocks(IplImage *img) {
 
 void extractImg(IplImage *img, CvMat *DATA) {
 	/* DATA is a pointer to a single CvMat */
-	
-
+	float val1[] = { 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 2.4, 3.1, 3.2, 3.3, 3.4 };
+	CvMat matrix1 = cvMat(3, 4, CV_32FC1, val1);
+	printMat(&matrix1, "matrix1");
+	int val2[] = { 1, -2, 3, -4, 5, -6, 7, -8, 9, -10, 11, -12 };
+	CvMat matrix2 = cvMat(3, 4, CV_32SC1, val2);
+	printMat(&matrix2, "matrix2");
 
 }
 

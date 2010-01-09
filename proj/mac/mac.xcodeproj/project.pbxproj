@@ -68,8 +68,8 @@
 			children = (
 				2E3CBEB010E8F596004F7109 /* car_adaboost.cpp */,
 				2E3CBEB110E8F596004F7109 /* car_train.cpp */,
-				2E0180FC10F8586A00978B21 /* util.cpp */,
 				2ED7B35610E7891B0080D7C9 /* gen_neg.cpp */,
+				2E0180FC10F8586A00978B21 /* util.cpp */,
 				2E3CBDF810E8EB05004F7109 /* car_extract.cpp */,
 			);
 			name = Source;
