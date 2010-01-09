@@ -1,11 +1,15 @@
 /** File: global.h
  ** Author: Ryan Lei
  ** Creation: 2009/12/25
- ** Update: 2009/12/28
+ ** Update: 2010/01/09
  ** Description: Constants or Parameters used globally.
  **/
 
+/** x is always horizontal, y is always vertical, but since OpenCV data is store in row-major order,
+ ** for loops may have to be in [for y ... for x] order **/
+
 /** Constants **/
+
 
 /** System parameters: may be edited **/
 /* Uncomment either line according to your OS */

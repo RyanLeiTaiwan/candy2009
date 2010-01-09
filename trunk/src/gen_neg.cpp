@@ -27,12 +27,12 @@ int main(int argc, char *argv[]) {
 	char slash = Unix ? '/' : '\\'; // It is '/' or '\' depending on OS
 	
 	if (argc != 3) {
-		cout << "Usage: gen_neg [INPUT_DIR] [OUTPUT_DIR]" << endl;
+		cerr << "Usage: gen_neg [INPUT_DIR] [OUTPUT_DIR]" << endl;
 		exit(EXIT_FAILURE);
 	}
 	
 	if (!(dirin = opendir(argv[ 1 ]))) {
-		cout << "gen_neg: [INPUT_DIR] does not exist.\n";
+		cerr << "gen_neg: [INPUT_DIR] does not exist.\n";
 		exit(EXIT_FAILURE);
 	}
 	/* Set INPUT_PATH_BASE to [INPUT_DIR] and append '/' or '\' */
@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 	sprintf(INPUT_PATH_BASE, "%s%c", INPUT_PATH_BASE, slash);
 	
 	if (!(dirout = opendir(argv[ 2 ]))) {
-		cout << "gen_neg: [OUTPUT_DIR] does not exist.\n";
+		cerr << "gen_neg: [OUTPUT_DIR] does not exist.\n";
 		exit(EXIT_FAILURE);
 	}
 	closedir(dirout); // not needed for output
@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
 	IplImage *img;
 	/* For each image file in [INPUT_DIR] */
 	while (dp = readdir(dirin)) {		
-		/* The full input path is [INPUT_DIR] + "/" + FILENAME */
+		/* The full input path is [INPUT_DIR] + slash + FILENAME */
 		strcpy(INPUT_PATH, INPUT_PATH_BASE);
 		sprintf(INPUT_PATH, "%s%s", INPUT_PATH, dp->d_name);
 		cout << INPUT_PATH << "  ...  ";

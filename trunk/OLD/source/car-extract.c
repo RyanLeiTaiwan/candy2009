@@ -1,7 +1,7 @@
-﻿/** File: car-extract.c
+/** File: car-extract.c
  ** Author: Ryan Lei
  ** Creation: 2009/09/11
- ** Modification: 2009/09/28
+ ** Modification: 2010/01/09
  ** Description: The function implementations of feature extraction
     Features:
 	  1. Rectangle features -- Integral image, 45'-tilted-version techniques
@@ -41,13 +41,14 @@ int count_blocks() {
 	for ( b_width = b_size_min; b_width <= d_width; b_width += b_size_step ) {
 		for ( b_height = b_size_min; b_height <= d_height; b_height += b_size_step ) {
 			for ( x_beg = 0, x_end = x_beg + b_height - 1; x_end < d_height; 
-				x_beg += b_pos_step, x_end = x_beg + b_height - 1 ) {
-				for ( y_beg = 0, y_end = x_beg + b_width - 1; y_end < d_width; 
+				x_beg += b_pos_step, x_end += b_pos_step ) {
+				for ( y_beg = 0, y_end = y_beg + b_width - 1; y_end < d_width; 
 					y_beg += b_pos_step, y_end = y_beg + b_width - 1 ) {
+						
 					ret++;
 					/* Note: vertical first for convention */
-					/* printf( "%d x %d: (%d,%d) to (%d,%d)\n", b_height, b_width, 
-						x_beg, y_beg, x_end, y_end ); */
+					/*printf( "%d x %d: (%d,%d) to (%d,%d)\n", b_height, b_width, 
+						x_beg, y_beg, x_end, y_end );*/
 				}
 			}
 		}
