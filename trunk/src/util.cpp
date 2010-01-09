@@ -15,7 +15,7 @@
 using namespace std;
 
 
-/* count the number of images in a directory */
+/* Count the number of images in a directory */
 int	countImages(const char *PATH_BASE) {
 	int ret = 0;
 	DIR *dir;
@@ -50,3 +50,34 @@ int	countImages(const char *PATH_BASE) {
 	return ret;
 }
 
+/* Print a matrix */
+/* The idea is taken from http://blog.weisu.org/2007/11/opencv-print-matrix.html */
+/** For single-channel 2D arrays only **/
+void printMat(CvMat *A, const char *name) {
+	/* Only the default, not necessarily the case */
+	int rowBeg = 0, rowEnd = A->rows - 1, colBeg = 0, colEnd = A->cols - 1;
+	cout << endl << name << "(" << rowBeg << ":" << rowEnd << ", " << colBeg << ":" << colEnd << ") =\n\n";
+	for (int i = rowBeg; i <= rowEnd; i++) {
+		switch (CV_MAT_DEPTH(A->type)) {
+			case CV_32F:
+			case CV_64F:
+				for (int j = colBeg; j <= colEnd; j++)
+					printf("%7.3f ", (float)cvGetReal2D(A, i, j));
+				break;
+			case CV_8U:
+			case CV_8S:
+			case CV_16U:
+			case CV_16S:
+			case CV_32S:
+				for (int j = colBeg; j <= colEnd; j++)
+					printf("%4d ", (int)cvGetReal2D(A, i, j));
+				break;
+			default:
+				cerr << "printMat(): Matrix type not supported.\n";
+				exit(EXIT_FAILURE);
+				break;
+		}
+		cout << endl;
+	}
+	cout << endl;
+}
