@@ -15,6 +15,7 @@
 #include <highgui.h>
 #include <cv.h>
 #include "parameters.h"
+#include "util.h"
 using namespace std;
 
 int main(int argc, char *argv[]) {
@@ -27,21 +28,18 @@ int main(int argc, char *argv[]) {
 	char slash = Unix ? '/' : '\\'; // It is '/' or '\' depending on OS
 	
 	if (argc != 3) {
-		cerr << "Usage: gen_neg [INPUT_DIR] [OUTPUT_DIR]" << endl;
-		exit(EXIT_FAILURE);
+		error("Usage: gen_neg [INPUT_DIR] [OUTPUT_DIR].");
 	}
 	
 	if (!(dirin = opendir(argv[ 1 ]))) {
-		cerr << "gen_neg: [INPUT_DIR] does not exist.\n";
-		exit(EXIT_FAILURE);
+		error("gen_neg: [INPUT_DIR] does not exist.");
 	}
 	/* Set INPUT_PATH_BASE to [INPUT_DIR] and append '/' or '\' */
 	strcpy(INPUT_PATH_BASE, argv[ 1 ]);	
 	sprintf(INPUT_PATH_BASE, "%s%c", INPUT_PATH_BASE, slash);
 	
 	if (!(dirout = opendir(argv[ 2 ]))) {
-		cerr << "gen_neg: [OUTPUT_DIR] does not exist.\n";
-		exit(EXIT_FAILURE);
+		error("gen_neg: [OUTPUT_DIR] does not exist.");
 	}
 	closedir(dirout); // not needed for output
 	/* Set OUTPUT_PATH_BASE to [OUTPUT_DIR] and append '/' or '\' */
