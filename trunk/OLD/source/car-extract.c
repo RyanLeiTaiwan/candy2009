@@ -239,7 +239,7 @@ void extract_image( char *fileName, int Iid, float ***POOL ) {
 		for ( b_height = b_size_min; b_height <= d_height; b_height += b_size_step ) {
 			for ( x_beg = 0, x_end = x_beg + b_height - 1; x_end < d_height; 
 				x_beg += b_pos_step, x_end = x_beg + b_height - 1 ) {
-				for ( y_beg = 0, y_end = x_beg + b_width - 1; y_end < d_width; 
+				for ( y_beg = 0, y_end = y_beg + b_width - 1; y_end < d_width; 
 					y_beg += b_pos_step, y_end = y_beg + b_width - 1 ) {
 					/* Note: vertical first for convention */
 #if 0
