@@ -19,6 +19,7 @@
 #include <cxcore.h>
 #include <cv.h>
 #include "parameters.h"
+#include "util.h"
 #include "car_extract.h"
 using namespace std;
 
@@ -30,13 +31,11 @@ int main(int argc, char *argv[]) {
 	char NEG_PATH_BASE[ MAX_PATH_LENGTH ];
 	
 	if (argc != 4) {
-		cerr << "Usage: car_train [POS_DIR] [NEG_DIR] [OUTPUT]\n";
-		exit(EXIT_FAILURE);
+		error("Usage: car_train [POS_DIR] [NEG_DIR] [OUTPUT].");
 	}
 	
 	if (!(dir = opendir(argv[ 1 ]))) {
-		cerr << "car_train: [POS_DIR] does not exist.\n";
-		exit(EXIT_FAILURE);
+		error("car_train: [POS_DIR] does not exist.");
 	}
 	/* Set POS_PATH_BASE to [POS_DIR] and append '/' or '\' */
 	strcpy(POS_PATH_BASE, argv[ 1 ]);	
@@ -44,8 +43,7 @@ int main(int argc, char *argv[]) {
 	closedir(dir);
 	
 	if (!(dir = opendir(argv[ 2 ]))) {
-		cerr << "car_train: [NEG_DIR] does not exist.\n";
-		exit(EXIT_FAILURE);
+		error("car_train: [NEG_DIR] does not exist.");
 	}
 	/* Set NEG_PATH_BASE to [NEG_DIR] and append '/' or '\' */
 	strcpy(NEG_PATH_BASE, argv[ 2 ]);	
@@ -53,8 +51,7 @@ int main(int argc, char *argv[]) {
 	closedir(dir);
 	
 	if (!(fout = fopen(argv[ 3 ], "w"))) {
-		cerr << "car_train: [OUTPUT] does not exist.\n";
-		exit(EXIT_FAILURE);
+		error("car_train: [OUTPUT] does not exist.");
 	}
 
 	
@@ -70,6 +67,12 @@ int main(int argc, char *argv[]) {
 	int blockCount = 0; /* number of blocks in an image */
 	
 	/* [0] Feature extraction */
+	/* First, check for validity of extraction parameters */
+	assert(!(360 % (BIN_NUM * 2))); // (360 / BIN_NUM / 2) should be an integer */
+	assert(360 / BIN_NUM == BIN_SIZE);
+	assert(BIN_SIZE >> 1 == HALF_BIN_SIZE);
+	
+	cout << "\nStart of feature extraction ...\n";
 	extractAll(POS_PATH_BASE, &POS, &N1, &blockCount);
 	cout << "Extraction of POS data completed.\n";
 	extractAll(NEG_PATH_BASE, &NEG, &N2, &blockCount);
@@ -77,7 +80,6 @@ int main(int argc, char *argv[]) {
 	assert(blockCount > 0);
 	cout << "# of blocks per image: " << blockCount << ".\n";
 	getchar();
-	
 	
 	return 0;
 }

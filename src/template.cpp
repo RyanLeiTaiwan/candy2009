@@ -9,6 +9,7 @@
 #include <cxcore.h>
 #include <cv.h>
 #include "parameters.h"
+#include "util.h"
 using namespace std;
 
 void function( int param1, int param2 );
