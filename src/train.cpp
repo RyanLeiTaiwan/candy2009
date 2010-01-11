@@ -1,7 +1,7 @@
-/** File: car_extract.cpp
+/** File: train.cpp
  ** Author: Ryan Lei
  ** Creation: 2009/12/28
- ** Modification: 2010/01/09
+ ** Modification: 2010/01/11
  ** Description: The car-training program based on the paper:
     Fast Human Detection Using a Novel Boosted Cascading Structure With Meta Stages, Chen and Chen, 2008.
     Important techniques / concepts:
@@ -12,7 +12,9 @@
  **/
 
 /* Usage: car_train [POS_DIR] [NEG_DIR] [OUTPUT] */
+#define META 0  // NOT YET supporting meta stages
 #include <iostream>
+#include <cstdlib>
 #include <cstring>
 #include <cassert>
 #include <dirent.h>
@@ -20,7 +22,8 @@
 #include <cv.h>
 #include "parameters.h"
 #include "util.h"
-#include "car_extract.h"
+#include "extract.h"
+#include "adaboost.h"
 using namespace std;
 
 int main(int argc, char *argv[]) {
@@ -66,20 +69,67 @@ int main(int argc, char *argv[]) {
 	int N1, N2; /* number of positive / negative images */
 	int blockCount = 0; /* number of blocks in an image */
 	
-	/* [0] Feature extraction */
+	/* [1] Feature extraction */
 	/* First, check for validity of extraction parameters */
 	assert(!(360 % (BIN_NUM * 2))); // (360 / BIN_NUM / 2) should be an integer */
 	assert(360 / BIN_NUM == BIN_SIZE);
 	assert(BIN_SIZE >> 1 == HALF_BIN_SIZE);
 	
 	cout << "\nStart of feature extraction ...\n";
-	extractAll(POS_PATH_BASE, &POS, &N1, &blockCount);
+	extractAll(POS_PATH_BASE, POS, N1, blockCount);
 	cout << "Extraction of POS data completed.\n";
-	extractAll(NEG_PATH_BASE, &NEG, &N2, &blockCount);
+	extractAll(NEG_PATH_BASE, NEG, N2, blockCount);
 	cout << "Extraction of POS data completed.\n";
 	assert(blockCount > 0);
 	cout << "# of blocks per image: " << blockCount << ".\n";
 	getchar();
+
+	
+	/* [2] Cascaded-AdaBoost training */ 
+	cout << "Start of cascaded-AdaBoost training ...\n";
+	srand(time(NULL));
+	float F_current = 1.0;  // current overall false positive rate
+	int i = 1;  // AdaBoost stage counter
+	int k = 0;  // # of AdaStrong trained so far
+	int rejectCount = 0;  // # of negative images rejected so far
+
+	/* allocate an array of AdaBoost strong classifiers to keep track of */
+	AdaStrong *H = new AdaStrong[ ni + 1 ];
+	/* allocate rejection table */
+	bool *rejected = new bool[ N2 ];
+	
+	/* Learn A[1,j] stage as an exception */
+	for (int j = 1; j <= ni + 1; j++, k++) {
+		cout << "\nLearning stage A[" << i << "," << j << "]...\n";
+		learnA(N1, N2, blockCount, rejectCount, rejected, POS, NEG, H, F_current, fout);
+	}
+	
+#if META
+	/* Learn M[1] stage */
+	cout << "\nLearning stage M[1]...\n";
+	learnM();
+	k++;
+#endif
+	getchar();
+	i++;
+	
+	/* Learn other A[i,j] stages */
+	while ( F_current > F_target ) {
+		
+		for (int j = 1; j <= ni; j++, k++ ) {
+			cout << "\nLearning stage A[" << i << "," << j << "]...\n";
+			learnA(N1, N2, blockCount, rejectCount, rejected, POS, NEG, H, F_current, fout);
+		}
+#if META
+		cout << "\nLearning stage M[" << i << "]...\n";
+		learnM();
+		k++;
+#endif
+		getchar();
+		i++;
+		
+	}	
+	
 	
 	return 0;
 }

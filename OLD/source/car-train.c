@@ -1,7 +1,7 @@
 /** File: car-train.c
  ** Author: Ryan Lei
  ** Creation: 2009/09/11
- ** Modification: 2009/09/25
+ ** Modification: 2010/01/11
  ** Description: The car-training program based on the paper:
     Fast Human Detection Using a Novel Boosted Cascading Structure With Meta Stages, Chen and Chen, 2008.
 	Important techniques / concepts:
@@ -17,7 +17,7 @@
 int main( int argc, char *argv[] ) {
 	/* F means false-positive rate; d means detection rate */
 	/* A means AdaBoost stage; M means meta stage */
-	float F_target; /* target overall faGlse positive rate */
+	float F_target; /* target overall false positive rate */
 	float F_current = 1.0; /* current overall false positive rate */
 	float d_minA; /* minimum acceptable detection rate per AdaBoost stage */
 	float f_maxA; /* maximum acceptable false positive rate per AdaBoost stage */

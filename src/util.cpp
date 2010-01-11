@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <cstring>
+#include <ctime>
 #include <dirent.h>
 #include <cxcore.h>
 #include <cv.h>
@@ -169,10 +170,10 @@ void meanVarNorm(IplImage *normImg, double sum, double sqSum, int N) {
  * Make sure that (x1,y1) lies to the upper-left of (x2,y2) */
 float recSumRight(IplImage *ii, int x1, int y1, int x2, int y2) {
 	return 
-		*(double *)(ii->imageData + y2 * ii->widthStep + x2 * sizeof(double)) +
-		*(double *)(ii->imageData + (y1 - 1) * ii->widthStep + (x1 - 1) * sizeof(double)) -
-		*(double *)(ii->imageData + (y1 - 1) * ii->widthStep + x2 * sizeof(double)) -
-		*(double *)(ii->imageData + y2 * ii->widthStep + (x1 - 1) * sizeof(double));
+		*(double *) (ii->imageData + y2 * ii->widthStep + x2 * sizeof(double)) +
+		*(double *) (ii->imageData + (y1 - 1) * ii->widthStep + (x1 - 1) * sizeof(double)) -
+		*(double *) (ii->imageData + (y1 - 1) * ii->widthStep + x2 * sizeof(double)) -
+		*(double *) (ii->imageData + y2 * ii->widthStep + (x1 - 1) * sizeof(double));
 }
 
 /* Tilted rectangular sum given (x, y, w, h) */
@@ -182,8 +183,8 @@ float recSumRight(IplImage *ii, int x1, int y1, int x2, int y2) {
  * Lienhart & Maydt, "An extended set of Haar-like features for rapid object detection", [2002] */
 float recSumTilt(IplImage *ii, int x, int y, int w, int h) {
 	return
-		*(double *)(ii->imageData + (y + w) * ii->widthStep + (x + w) * sizeof(double)) +
-		*(double *)(ii->imageData + (y + h) * ii->widthStep + (x - h) * sizeof(double)) -
-		*(double *)(ii->imageData + y * ii->widthStep + x * sizeof(double)) -
-		*(double *)(ii->imageData + (y + w + h) * ii->widthStep + (x + w - h) * sizeof(double));
+		*(double *) (ii->imageData + (y + w) * ii->widthStep + (x + w) * sizeof(double)) +
+		*(double *) (ii->imageData + (y + h) * ii->widthStep + (x - h) * sizeof(double)) -
+		*(double *) (ii->imageData + y * ii->widthStep + x * sizeof(double)) -
+		*(double *) (ii->imageData + (y + w + h) * ii->widthStep + (x + w - h) * sizeof(double));
 }

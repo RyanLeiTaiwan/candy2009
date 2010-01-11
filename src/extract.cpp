@@ -1,7 +1,7 @@
-/** File: car_extract.cpp
+/** File: extract.cpp
  ** Author: Ryan Lei
  ** Creation: 2009/12/28
- ** Modification: 2010/01/19
+ ** Modification: 2010/01/11
  ** Description: The implementations of car feature extraction
     Features:
       1. Rectangle features
@@ -19,21 +19,21 @@
 #include <cv.h>
 #include <highgui.h>
 #include "parameters.h"
-#include "car_extract.h"
+#include "extract.h"
 #include "util.h"
 using namespace std;
 
-void extractAll(char *PATH_BASE, CvMat **POOL, int *N, int *blockCount) {
+void extractAll(char *PATH_BASE, CvMat *&POOL, int &N, int &blockCount) {
 	DIR *dir;
 	struct dirent *dp;
 	char PATH[ MAX_PATH_LENGTH ];
 	IplImage *img;
 	
 	/* count # of images */
-	*N = countImages(PATH_BASE);
-	cout << "Image count of " << PATH_BASE << ": " << *N << endl;
+	N = countImages(PATH_BASE);
+	cout << "\nImage count of " << PATH_BASE << ": " << N << endl;
 	/* allocate memory */
-	*POOL = new CvMat[ *N ];
+	POOL = new CvMat[ N ];
 	
 	try {
 		if (!(dir = opendir(PATH_BASE))) {
@@ -56,17 +56,17 @@ void extractAll(char *PATH_BASE, CvMat **POOL, int *N, int *blockCount) {
 				}
 				/* For the first image: also count # of blocks */
 				if (Iid == 0) {
-					*blockCount = countBlocks(img);
+					blockCount = countBlocks(img);
 				}
 				/* Create data matrix for this image */
-				CvMat *ptr = (*POOL) + Iid; // pointer to (*POOL)[ Iid ]
-				ptr = cvCreateMat(*blockCount, FEATURE_COUNT, CV_32FC1);
-				Iid++;
-				
-				/* Extract features for this image */
+				CvMat *ptr = POOL + Iid; // pointer to (*POOL)[ Iid ]
+				ptr = cvCreateMat(blockCount, FEATURE_COUNT, CV_32FC1);
+								
+				/** Extract features for this image **/
 				extractImg(img, ptr);
 				cout << "extracted.\n";
 				cvReleaseImage(&img);
+				Iid++;
 			}
 		}
 		closedir(dir);
@@ -126,8 +126,8 @@ void extractImg(IplImage *img, CvMat *data) {
 	normSum = cvCreateImage(cvSize(W + 1, H + 1), IPL_DEPTH_64F, 1);
 	cvIntegral(normImg, normSum);
 	
-	//printMat(normImg, "normImg", 0, 14, 0, 14);
-	//printMat(normSum, "normSum", 1, 15, 1, 15);
+//	printMat(normImg, "normImg", 0, 14, 0, 14);
+//	printMat(normSum, "normSum", 1, 15, 1, 15);
 	
 	
 
@@ -138,21 +138,24 @@ void extractImg(IplImage *img, CvMat *data) {
 	
 	/* [4] Extract these features from each block */
 	/* try all possible sizes and positions within the image */
-	int ret = 0;
 	for (int bHeight = BLOCK_MIN_SIZE; bHeight <= WINDOW_HEIGHT; bHeight += BLOCK_SIZE_INC) {
 		for (int bWidth = BLOCK_MIN_SIZE; bWidth <= WINDOW_WIDTH; bWidth += BLOCK_SIZE_INC) {
 			for (int y = 0; y + bHeight - 1 < WINDOW_HEIGHT; y += BLOCK_POS_INC) {
 				for (int x = 0; x + bWidth - 1 < WINDOW_WIDTH; x += BLOCK_POS_INC) {
 					/** Consider the dummy 1st row and 1st column produced by cvIntegral() **/
-					extractBlock(Bid, data, normSum, x + 1, bWidth, y + 1, bHeight);
+					extractBlock(Bid++, data, normSum, x + 1, bWidth, y + 1, bHeight);
+//					printMat(data, "data", 0, 19, 0, 4);
+//					getchar();
 				}
 			}
 		}
 	}
+
+	//printMat(data, "data", 0, 39, 0, 4);
 	
 	toc = clock();
-	runningTime(tic, toc);
-	getchar();	 
+//	runningTime(tic, toc);
+//	getchar();
 
 }
 
@@ -168,20 +171,24 @@ void extractBlock(int Bid, CvMat *data, IplImage *normSum, int x, int W, int y, 
 	const int yMid = (y + yEnd) >> 1;
 	const int yQ1 = (y + yMid ) >> 1;
 	const int yQ3 = (yMid+1 + yEnd) >> 1;
-	const int area = (xEnd - x + 1) * (yEnd - y + 1);
-	
+	//const int area = (xEnd - x + 1) * (yEnd - y + 1);
+
 	/* [1.1] 5 upright rectangle features */
-	(float *) ptr = 
-	recSumRight(normSum, x, y, xEnd, yMid) - recSumRight(normSum, x, yMid+1, xEnd, yEnd);
-	
-	
+	float *ptr = (float *) (data->data.ptr + Bid * data->step);
+	*ptr++ = recSumRight(normSum, x, y, xEnd, yMid) - recSumRight(normSum, x, yMid + 1, xEnd, yEnd);
+	*ptr++ = recSumRight(normSum, x, y, xMid, yEnd) - recSumRight(normSum, xMid + 1, y, xEnd, yEnd);
+	*ptr++ = recSumRight(normSum, x, y, xMid, yMid) - recSumRight(normSum, xMid + 1, y, xEnd, yMid) -
+		recSumRight(normSum, x, yMid + 1, xMid, yEnd) + recSumRight(normSum, xMid + 1, yMid + 1, xEnd, yEnd);
+	*ptr++ = recSumRight(normSum, x, y, xEnd, yQ1) - recSumRight(normSum, x, yQ1 + 1, xEnd, yQ3) +
+		recSumRight(normSum, x, yQ3 + 1, xEnd, yEnd);
+	*ptr = recSumRight(normSum, x, y, xQ1, yEnd) - recSumRight(normSum, xQ1 + 1, y, xQ3, yEnd) +
+		recSumRight(normSum, xQ3 + 1, y, xEnd, yEnd);
+
 	/* [1.2] 5 tilted rectangle features (NOT YET implemented) */
 
 	/* [2] 9 EOH features */
 	
 	/* [3] 1 ED feature */
-	
-	//getchar();
 	
 }
 
