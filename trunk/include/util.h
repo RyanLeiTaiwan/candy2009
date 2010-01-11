@@ -13,3 +13,5 @@ int countImages(const char *PATH);
 void printMat(CvMat *matrix, const char *name, int rowBeg = -1, int rowEnd = -1, int colBeg = -1, int colEnd = -1);
 /* The overloaded version for IplImage: Print a single-channel image */
 void printMat(IplImage *img, const char *name, int rowBeg = -1, int rowEnd = -1, int colBeg = -1, int colEnd = -1);
+/* Timer function */
+void runningTime( clock_t tic, clock_t toc );
