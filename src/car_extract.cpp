@@ -13,6 +13,7 @@
 #include <iostream>
 #include <cstring>
 #include <cassert>
+#include <cmath>
 #include <dirent.h>
 #include <cxcore.h>
 #include <cv.h>
@@ -83,12 +84,9 @@ int countBlocks(IplImage *img) {
 	for (int bHeight = BLOCK_MIN_SIZE; bHeight <= WINDOW_HEIGHT; bHeight += BLOCK_SIZE_INC) {
 		for (int bWidth = BLOCK_MIN_SIZE; bWidth <= WINDOW_WIDTH; bWidth += BLOCK_SIZE_INC) {
 			//int subTotal = 0;
-			for (int yBeg = 0, yEnd = yBeg + bHeight - 1; yEnd < WINDOW_HEIGHT;
-				 yBeg += BLOCK_POS_INC, yEnd += BLOCK_POS_INC) {
-				for (int xBeg = 0, xEnd = xBeg + bWidth - 1; xEnd < WINDOW_WIDTH;
-					xBeg += BLOCK_POS_INC, xEnd += BLOCK_POS_INC) {
+			for (int y = 0; y + bHeight - 1 < WINDOW_HEIGHT; y += BLOCK_POS_INC) {
+				for (int x = 0; x + bWidth - 1 < WINDOW_WIDTH; x += BLOCK_POS_INC) {
 					
-					assert(yEnd <= WINDOW_HEIGHT && xEnd <= WINDOW_WIDTH);
 					ret++;
 					//subTotal++;
 					//cout << bHeight << " x " << bWidth << ": (" << yBeg << "," << xBeg <<
@@ -109,48 +107,52 @@ void extractImg(IplImage *img, CvMat *data) {
 	/* data is the pointer to a single matrix: POOL[ Iid ] */
 	int Bid = 0; // block ID
 	
-//	/* CV_8UC1 image, CV_32FC1 image, integral image, image after normalization.
-//	 * "2" means the "squared" version */
-//	CvMat *img8U, *img, *img2, ii, ii2, *imgNorm, iiNorm;
-//	int rows, cols;
-//	
-//	/* Convert IplImage *imgIn into CvMat *img */
-//	CvSize size = cvGetSize(imgIn);
-//	img8U = cvCreateMatHeader(size.height, size.width, CV_8UC1);
-//	cvGetMat(imgIn, img8U);
-//	/* make it CV_32FC1 */
-//	rows = img8U->rows;
-//	cols = img8U->cols;
-//	img = cvCreateMat(rows, cols, CV_32FC1);
-//	cvConvert(img8U, img);
-//
-//	/* Copy img for later use */
-//	img2 = cvCloneMat(img);
-//	cvPow(img, img2, 2);
+	/* Timer */
+	clock_t tic, toc;
+	tic = clock();
 	
-	/* [1] For rectangle features, use cvIntegral() to compute:
-	 * sum: integral image of img
-	 * sqSum: integral imgage for squared pixel values
-	 * tiltedSum: integral for the 45' rotated image
-	 */
-	IplImage *sum, *sqSum, *tiltedSum; // all are in CV_64F
-	int W = imgIn->width, H = imgIn->height;
-	sum = cvCreateImage(cvSize(W+1, H+1), IPL_DEPTH_64F, 1);
-	sqSum = cvCreateImage(cvSize(W+1, H+1), IPL_DEPTH_64F, 1);
-	tiltedSum = cvCreateImage(cvSize(W+1, H+1), IPL_DEPTH_64F, 1);
-	cvIntegral(imgIn, sum, sqSum, tiltedSum);
+	/* [1.1] For rectangle features: first, perform Mean and variance normalization */
+	int W = img->width, H = img->height, N = W * H;
+	IplImage *sqImg, *normImg; // square image and normalized image
 	
-	
-	printMat(imgIn, "imgIn", 0, 9, 0, 9);
-	printMat(sum, "sum", 0, 9, 0, 9);
-	printMat(sqSum, "sqSum", 0, 9, 0, 9);	
-	printMat(tiltedSum, "tiltedSum", 0, 9, 0, 9);	
+	normImg = cvCreateImage(cvSize(W, H), IPL_DEPTH_32F, 1);
+	cvConvert(img, normImg);
+	sqImg = cvCloneImage(normImg);
+	cvPow(sqImg, sqImg, 2);	
+	meanVarNorm(normImg, cvSum(img).val[ 0 ], cvSum(sqImg).val[ 0 ], N);
+	cvReleaseImage(&sqImg);
 
+	/* [1.2] Use cvIntegral() to compute the integral image of normImg */
+	IplImage *normSum;  // in "IPL_DEPTH_64F"
+	normSum = cvCreateImage(cvSize(W + 1, H + 1), IPL_DEPTH_64F, 1);
+	cvIntegral(normImg, normSum);
+	
+	printMat(normImg, "normImg", 0, 14, 0, 14);
+	printMat(normSum, "normSum", 1, 15, 1, 15);
 	
 	
-	
-	
+	toc = clock();
+	runningTime(tic, toc);
 	getchar();
 
 }
 
+/* Mean and variance normalization given the "sum", the sum of squares "sqSum", and # of pixels N */
+/* Both sum and sqSum are double values, not IplImages */
+/* "normImg" is both the source and destination */
+void meanVarNorm(IplImage *normImg, double sum, double sqSum, int N) {
+	double mean, stdev;
+	mean = sum / (double)N;
+	stdev = sqrt((sqSum - N * mean * mean) / N);
+	cout << "mean = " << mean << ", stdev = " << stdev << ".\n";
+	
+	/* normalized */
+	cvSubS(normImg, cvScalar(mean), normImg);
+	cvScale(normImg, normImg, 1 / stdev);
+}
+
+/* Feature extraction of a single block */
+void extractBlock(int Bid, CvMat *data, IplImage *normSum, int x, int W, int y, int H) {
+	
+	;
+}

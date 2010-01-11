@@ -1,7 +1,7 @@
 /** File: util.h
  ** Author: iopic, ryanlei
  ** Creation : 2009/03/23
- ** Modification: 2009/09/24
+ ** Modification: 2010/01/11
  ** Description: utility functions
  **/
 #include "../include/util.h"
@@ -14,7 +14,7 @@ void error( char *msg ) {
 }
 
 void runningTime( clock_t tic, clock_t toc ) {
-	printf( "Running Time: %f seconds.\n", 
+	printf( "Running Time: %lf seconds.\n", 
 		(double) ( toc - tic ) / (double) CLOCKS_PER_SEC );
 }
 
