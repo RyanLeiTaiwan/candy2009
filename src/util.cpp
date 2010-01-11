@@ -148,3 +148,42 @@ void runningTime( clock_t tic, clock_t toc ) {
 	printf( "Running Time: %lf seconds.\n", 
 		   (double) ( toc - tic ) / (double) CLOCKS_PER_SEC );
 }
+
+/* Mean and variance normalization given the "sum", the sum of squares "sqSum", and # of pixels N */
+/* Both sum and sqSum are double values, not IplImages */
+/* "normImg" is both the source and destination */
+void meanVarNorm(IplImage *normImg, double sum, double sqSum, int N) {
+	double mean, stdev;
+	mean = sum / (double)N;
+	stdev = sqrt((sqSum - N * mean * mean) / N);
+	//cout << "mean = " << mean << ", stdev = " << stdev << ".\n";
+	
+	/* normalized */
+	cvSubS(normImg, cvScalar(mean), normImg);
+	cvScale(normImg, normImg, 1 / stdev);
+}
+
+/* Upright rectangular sum given two corner points (x1,y1), (x2,y2) */
+/* For the sake of performance, don't check for validity, and don't use cvGetReal2D().
+ * In addition, ii is in IPL_DEPTH_64F.
+ * Make sure that (x1,y1) lies to the upper-left of (x2,y2) */
+float recSumRight(IplImage *ii, int x1, int y1, int x2, int y2) {
+	return 
+		*(double *)(ii->imageData + y2 * ii->widthStep + x2 * sizeof(double)) +
+		*(double *)(ii->imageData + (y1 - 1) * ii->widthStep + (x1 - 1) * sizeof(double)) -
+		*(double *)(ii->imageData + (y1 - 1) * ii->widthStep + x2 * sizeof(double)) -
+		*(double *)(ii->imageData + y2 * ii->widthStep + (x1 - 1) * sizeof(double));
+}
+
+/* Tilted rectangular sum given (x, y, w, h) */
+/* For the sake of performance, don't check for validity, and don't use cvGetReal2D().
+ * In addition, ii is in IPL_DEPTH_64F.
+ * Make sure the parameters agree with those in the paper:
+ * Lienhart & Maydt, "An extended set of Haar-like features for rapid object detection", [2002] */
+float recSumTilt(IplImage *ii, int x, int y, int w, int h) {
+	return
+		*(double *)(ii->imageData + (y + w) * ii->widthStep + (x + w) * sizeof(double)) +
+		*(double *)(ii->imageData + (y + h) * ii->widthStep + (x - h) * sizeof(double)) -
+		*(double *)(ii->imageData + y * ii->widthStep + x * sizeof(double)) -
+		*(double *)(ii->imageData + (y + w + h) * ii->widthStep + (x + w - h) * sizeof(double));
+}

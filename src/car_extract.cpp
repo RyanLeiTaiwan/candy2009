@@ -47,7 +47,7 @@ void extractAll(char *PATH_BASE, CvMat **POOL, int *N, int *blockCount) {
 			
 			/* If it is an image file (read it in grayscale) */
 			if (img = cvLoadImage(PATH, 0)) {
-				cout << PATH;
+				cout << PATH << " ... ";
 				
 				/* check image sizes */
 				if (img->width != WINDOW_WIDTH || img->height != WINDOW_HEIGHT) {
@@ -61,12 +61,11 @@ void extractAll(char *PATH_BASE, CvMat **POOL, int *N, int *blockCount) {
 				/* Create data matrix for this image */
 				CvMat *ptr = (*POOL) + Iid; // pointer to (*POOL)[ Iid ]
 				ptr = cvCreateMat(*blockCount, FEATURE_COUNT, CV_32FC1);
-				cvmSet(ptr, 2, 2, 50);
 				Iid++;
 				
 				/* Extract features for this image */
 				extractImg(img, ptr);
-				cout << " extracted.\n";
+				cout << "extracted.\n";
 				cvReleaseImage(&img);
 			}
 		}
@@ -102,7 +101,7 @@ int countBlocks(IplImage *img) {
 }
 
 /* Extract features from a single image */
-/** Be careful with the PERFORMANCE in this function **/
+/** Be careful with the PERFORMANCE in this function and its subroutines **/
 void extractImg(IplImage *img, CvMat *data) {
 	/* data is the pointer to a single matrix: POOL[ Iid ] */
 	int Bid = 0; // block ID
@@ -127,32 +126,62 @@ void extractImg(IplImage *img, CvMat *data) {
 	normSum = cvCreateImage(cvSize(W + 1, H + 1), IPL_DEPTH_64F, 1);
 	cvIntegral(normImg, normSum);
 	
-	printMat(normImg, "normImg", 0, 14, 0, 14);
-	printMat(normSum, "normSum", 1, 15, 1, 15);
+	//printMat(normImg, "normImg", 0, 14, 0, 14);
+	//printMat(normSum, "normSum", 1, 15, 1, 15);
 	
+	
+
+	
+	/* [2] For EOH features */
+	
+	/* [3] For ED features */
+	
+	/* [4] Extract these features from each block */
+	/* try all possible sizes and positions within the image */
+	int ret = 0;
+	for (int bHeight = BLOCK_MIN_SIZE; bHeight <= WINDOW_HEIGHT; bHeight += BLOCK_SIZE_INC) {
+		for (int bWidth = BLOCK_MIN_SIZE; bWidth <= WINDOW_WIDTH; bWidth += BLOCK_SIZE_INC) {
+			for (int y = 0; y + bHeight - 1 < WINDOW_HEIGHT; y += BLOCK_POS_INC) {
+				for (int x = 0; x + bWidth - 1 < WINDOW_WIDTH; x += BLOCK_POS_INC) {
+					/** Consider the dummy 1st row and 1st column produced by cvIntegral() **/
+					extractBlock(Bid, data, normSum, x + 1, bWidth, y + 1, bHeight);
+				}
+			}
+		}
+	}
 	
 	toc = clock();
 	runningTime(tic, toc);
-	getchar();
+	getchar();	 
 
-}
-
-/* Mean and variance normalization given the "sum", the sum of squares "sqSum", and # of pixels N */
-/* Both sum and sqSum are double values, not IplImages */
-/* "normImg" is both the source and destination */
-void meanVarNorm(IplImage *normImg, double sum, double sqSum, int N) {
-	double mean, stdev;
-	mean = sum / (double)N;
-	stdev = sqrt((sqSum - N * mean * mean) / N);
-	cout << "mean = " << mean << ", stdev = " << stdev << ".\n";
-	
-	/* normalized */
-	cvSubS(normImg, cvScalar(mean), normImg);
-	cvScale(normImg, normImg, 1 / stdev);
 }
 
 /* Feature extraction of a single block */
+/** Be careful with the PERFORMANCE in this function and its subroutines **/
 void extractBlock(int Bid, CvMat *data, IplImage *normSum, int x, int W, int y, int H) {
+	/* define the 1st quarter, middle, 3rd quarter, and endpoint coordinates */
+	const int xEnd = x + W - 1;
+	const int xMid = (x + xEnd) >> 1;
+	const int xQ1 = (x + xMid) >> 1;
+	const int xQ3 = (xMid+1 + xEnd) >> 1;
+	const int yEnd = y + H - 1;
+	const int yMid = (y + yEnd) >> 1;
+	const int yQ1 = (y + yMid ) >> 1;
+	const int yQ3 = (yMid+1 + yEnd) >> 1;
+	const int area = (xEnd - x + 1) * (yEnd - y + 1);
 	
-	;
+	/* [1.1] 5 upright rectangle features */
+	(float *) ptr = 
+	recSumRight(normSum, x, y, xEnd, yMid) - recSumRight(normSum, x, yMid+1, xEnd, yEnd);
+	
+	
+	/* [1.2] 5 tilted rectangle features (NOT YET implemented) */
+
+	/* [2] 9 EOH features */
+	
+	/* [3] 1 ED feature */
+	
+	//getchar();
+	
 }
+
