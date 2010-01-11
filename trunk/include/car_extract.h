@@ -22,5 +22,4 @@ void extractImg(IplImage *img, CvMat *data);
 void extractBlock(int Bid, CvMat *data, IplImage *normSum, int x, int W, int y, int H);
 /* Count # of blocks in the image according to the internal parameters */
 int countBlocks(IplImage *img);
-/* Mean and variance normalization given the "sum", the sum of squares "sqSum", and # of pixels N */
-void meanVarNorm(IplImage *normImg, double sum, double sqSum, int N);
+
