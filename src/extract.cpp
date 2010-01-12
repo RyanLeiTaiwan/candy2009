@@ -1,7 +1,7 @@
 /** File: extract.cpp
  ** Author: Ryan Lei
  ** Creation: 2009/12/28
- ** Modification: 2010/01/11
+ ** Modification: 2010/01/12
  ** Description: The implementations of car feature extraction
     Features:
       1. Rectangle features
@@ -65,7 +65,6 @@ void extractAll(char *PATH_BASE, CvMat *&POOL, int &N, int &blockCount) {
 				/** Extract features for this image **/
 				extractImg(img, ptr);
 				cout << "extracted.\n";
-				cvReleaseImage(&img);
 				Iid++;
 			}
 		}
@@ -112,29 +111,35 @@ void extractImg(IplImage *img, CvMat *data) {
 	
 	/* [1.1] For rectangle features: first, perform Mean and variance normalization */
 	int W = img->width, H = img->height, N = W * H;
-	IplImage *sqImg, *normImg; // square image and normalized image
+	/* "IPL_DEPTH_32F" converted image, square image, and normalized image */
+	IplImage *cvtImg, *sqImg, *normImg; 
 	
-	normImg = cvCreateImage(cvSize(W, H), IPL_DEPTH_32F, 1);
-	cvConvert(img, normImg);
-	sqImg = cvCloneImage(normImg);
-	cvPow(sqImg, sqImg, 2);	
+	cvtImg = cvCreateImage(cvSize(W, H), IPL_DEPTH_32F, 1);
+	cvConvert(img, cvtImg);	
+	normImg = cvCloneImage(cvtImg);
+	sqImg = cvCloneImage(cvtImg);
+	cvPow(sqImg, sqImg, 2);
+	/* Mean and variance normalization */
 	meanVarNorm(normImg, cvSum(img).val[ 0 ], cvSum(sqImg).val[ 0 ], N);
 	cvReleaseImage(&sqImg);
 
 	/* [1.2] Use cvIntegral() to compute the integral image of normImg */
 	IplImage *normSum;  // in "IPL_DEPTH_64F"
 	normSum = cvCreateImage(cvSize(W + 1, H + 1), IPL_DEPTH_64F, 1);
-	cvIntegral(normImg, normSum);
-	
+	cvIntegral(normImg, normSum);	
 //	printMat(normImg, "normImg", 0, 14, 0, 14);
 //	printMat(normSum, "normSum", 1, 15, 1, 15);
-	
-	
+	cvReleaseImage(&normImg);
 
-	
+
 	/* [2] For EOH features */
 	
 	/* [3] For ED features */
+	
+	
+	
+	/* Release cvtImg */
+	cvReleaseImage(&cvtImg);
 	
 	/* [4] Extract these features from each block */
 	/* try all possible sizes and positions within the image */
@@ -152,6 +157,9 @@ void extractImg(IplImage *img, CvMat *data) {
 	}
 
 	//printMat(data, "data", 0, 39, 0, 4);
+	
+	/* Release remaining images */
+	cvReleaseImage(&normSum);
 	
 	toc = clock();
 //	runningTime(tic, toc);
