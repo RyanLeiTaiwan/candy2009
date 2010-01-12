@@ -274,8 +274,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>6</integer>
-									<integer>1</integer>
+									<integer>11</integer>
+									<integer>7</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -317,7 +317,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>adaboost.cpp</string>
+								<string>extract.cpp</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -325,11 +325,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>adaboost.cpp</string>
+										<string>extract.cpp</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>2ED8673510FC8AB900EA0FC5</string>
+										<string>2ED868BD10FCC7A400EA0FC5</string>
 										<key>history</key>
 										<array>
 											<string>2ED7585110E7E149001D3EE5</string>
@@ -349,15 +349,15 @@
 											<string>2ED24A8610FA2DE400DFCAB3</string>
 											<string>2ED24A8710FA2DE400DFCAB3</string>
 											<string>2ED8660410FC7AAB00EA0FC5</string>
-											<string>2ED866C010FC871100EA0FC5</string>
 											<string>2ED866DF10FC883B00EA0FC5</string>
-											<string>2ED866E010FC883B00EA0FC5</string>
-											<string>2ED866E110FC883B00EA0FC5</string>
-											<string>2ED866FD10FC898500EA0FC5</string>
 											<string>2ED8671D10FC89FE00EA0FC5</string>
-											<string>2ED8673210FC8AB900EA0FC5</string>
-											<string>2ED8673310FC8AB900EA0FC5</string>
-											<string>2ED8673410FC8AB900EA0FC5</string>
+											<string>2ED8689210FCC39300EA0FC5</string>
+											<string>2ED8689310FCC39300EA0FC5</string>
+											<string>2ED8689410FCC39300EA0FC5</string>
+											<string>2ED8689510FCC39300EA0FC5</string>
+											<string>2ED8689610FCC39300EA0FC5</string>
+											<string>2ED868AD10FCC5A900EA0FC5</string>
+											<string>2ED868AE10FCC5A900EA0FC5</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -586,7 +586,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>adaboost.cpp</string>
+								<string>extract.cpp</string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
