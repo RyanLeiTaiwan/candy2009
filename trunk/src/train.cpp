@@ -18,7 +18,7 @@
 #include "adaboost.h"
 
 int main(int argc, char *argv[]) {
-	
+
 	DIR *dir;
 	/* There are some problems with <fstream> and Xcode 3.2 ... Orz 
 	 * So I'll just settle with FILE * and fprintf().
@@ -60,6 +60,7 @@ int main(int argc, char *argv[]) {
 		"Press [Enter] to continue, or ctrl+C/D/Z to exit ...";
 	getchar();
 	
+	/* Use only one large matrix for storing all POS / NEG feature data */
 	CvMat *POS, *NEG;
 	int N1, N2; /* number of positive / negative images */
 	int blockCount = 0; /* number of blocks in an image */
@@ -85,43 +86,33 @@ int main(int argc, char *argv[]) {
 	srand(time(NULL));
 	float F_current = 1.0;  // current overall false positive rate
 	int i = 1;  // AdaBoost stage counter
-	int k = 0;  // # of AdaStrong trained so far
+	int k = 0;  // # of AdaStrong trained so far (useful?)
 	int rejectCount = 0;  // # of negative images rejected so far
 
-	/* allocate an array of AdaBoost strong classifiers to keep track of */
+	/* Allocate an array of AdaBoost strong classifiers to keep track of */
 	AdaStrong *H = new AdaStrong[ ni + 1 ];
 	/* Allocate rejection table */
 	/** Note: All the xxxTable[]'s are of boolean flags **/
 	bool *rejectTable = new bool[ N2 ];
+	memset(rejectTable, 0, N2);
 	
-	/* Learn A[1,j] stage as an exception */
-	for (int j = 1; j <= ni + 1; j++, k++) {
-		cout << "\nLearning stage A[" << i << "," << j << "]...\n";
-		learnA(N1, N2, blockCount, rejectCount, rejectTable, POS, NEG, H, F_current, fout);
-	}
-	
-#if META
-	/* Learn M[1] stage */
-	cout << "\nLearning stage M[1]...\n";
-	learnM();
-	k++;
-#endif
-	getchar();
-	i++;
-	
-	/* Learn other A[i,j] stages */
+	/* Learn an A[i,j] stage */
 	while ( F_current > F_target ) {
-		
-		for (int j = 1; j <= ni; j++, k++ ) {
+		/* upper bound for j */
+		int jEnd = i == 1 ? ni + 1 : ni;
+		for (int j = 1; j <= jEnd; j++, k++ ) {
+			AdaStrong *Hptr = H;
 			cout << "\nLearning stage A[" << i << "," << j << "]...\n";
-			learnA(N1, N2, blockCount, rejectCount, rejectTable, POS, NEG, H, F_current, fout);
+			learnA(N1, N2, blockCount, rejectCount, rejectTable, POS, NEG, Hptr++, F_current, fout);
+			getchar();
 		}
 #if META
+		/* Learn a M[i] stage */
 		cout << "\nLearning stage M[" << i << "]...\n";
 		learnM();
+		getchar();
 		k++;
 #endif
-		getchar();
 		i++;
 		
 	}	

@@ -1,7 +1,7 @@
 /** File: car-adaboost.c
  ** Author: Ryan Lei
  ** Creation: 2009/09/20
- ** Modification: 2009/09/27
+ ** Modification: 2010/01/12
  ** Description: AdaBoost learning details.
  **   This learning algorithm is based on the Chen-and-Chen paper,
  **   which is "real" AdaBoost in a "cascaded" structure.
@@ -38,7 +38,7 @@ void select_neg( int posCount, int negCount, bool rejected[], int selectTable[] 
 /* Add a weak learner h to the strong classifier H */
 void addWeak( int posCount, int negCount, int blockCount, int selectTable[],
 	float ***POS, float ***NEG, Matrix *posWeight, Matrix *negWeight, Ada *strong, int *hUsed ) {
-	/* For all possible features (Bid, FeatureType, Fid) */
+	/* For all possible features (Bid, Fid) */
 	int Iid, Bid, Fid;
 	Matrix posCorrect, negCorrect, ONES; /* classification correctness matrices */
 	Matrix bestPosCorrect, bestNegCorrect;
@@ -80,7 +80,7 @@ void addWeak( int posCount, int negCount, int blockCount, int selectTable[],
 				NEG_mean += NEG[ selectTable[ Iid ] ][ Bid ][ Fid ];
 			}
 			POS_mean /= posCount;
-			NEG_mean /= negCount;
+			NEG_mean /= posCount;
 
 			/* default decision threshold: avg of POS_mean and NEG_mean */
 			decision = ( POS_mean + NEG_mean ) / 2.f;
