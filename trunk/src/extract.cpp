@@ -10,17 +10,7 @@
     Notice the use of integral histogram in computation.
  **/
 
-#include <iostream>
-#include <cstring>
-#include <cassert>
-#include <cmath>
-#include <dirent.h>
-#include <cxcore.h>
-#include <cv.h>
-#include <highgui.h>
-#include "parameters.h"
 #include "extract.h"
-#include "util.h"
 using namespace std;
 
 void extractAll(char *PATH_BASE, CvMat *&POOL, int &N, int &blockCount) {
