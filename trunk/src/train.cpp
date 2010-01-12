@@ -96,12 +96,12 @@ int main(int argc, char *argv[]) {
 	/* allocate an array of AdaBoost strong classifiers to keep track of */
 	AdaStrong *H = new AdaStrong[ ni + 1 ];
 	/* allocate rejection table */
-	bool *rejected = new bool[ N2 ];
+	bool *rejectTable = new bool[ N2 ];  // rejection table
 	
 	/* Learn A[1,j] stage as an exception */
 	for (int j = 1; j <= ni + 1; j++, k++) {
 		cout << "\nLearning stage A[" << i << "," << j << "]...\n";
-		learnA(N1, N2, blockCount, rejectCount, rejected, POS, NEG, H, F_current, fout);
+		learnA(N1, N2, blockCount, rejectCount, rejectTable, POS, NEG, H, F_current, fout);
 	}
 	
 #if META
@@ -118,7 +118,7 @@ int main(int argc, char *argv[]) {
 		
 		for (int j = 1; j <= ni; j++, k++ ) {
 			cout << "\nLearning stage A[" << i << "," << j << "]...\n";
-			learnA(N1, N2, blockCount, rejectCount, rejected, POS, NEG, H, F_current, fout);
+			learnA(N1, N2, blockCount, rejectCount, rejectTable, POS, NEG, H, F_current, fout);
 		}
 #if META
 		cout << "\nLearning stage M[" << i << "]...\n";
