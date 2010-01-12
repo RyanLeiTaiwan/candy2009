@@ -12,7 +12,7 @@
 
 /* Learn AdaBoost stage A[i,j] */
 void learnA(const int N1, const int N2, const int blockCount, int &rejectCount, bool rejectTable[],
-			CvMat POS[], CvMat NEG[], AdaStrong H[], float &F_current, ofstream &fout) {
+			CvMat *POS, CvMat *NEG, AdaStrong H[], float &F_current, ofstream &fout) {
 	
 	/* [0] Initialization */
 	int selection[ N1 ];  // image selection result
@@ -23,7 +23,7 @@ void learnA(const int N1, const int N2, const int blockCount, int &rejectCount, 
 	posWeight = cvCreateMat(N1, 1, CV_32FC1);
 	cvSet(posWeight, cvScalar(initialW));
 	negWeight = cvCloneMat(posWeight);
-		
+	
 	/* [1] Randomly select N1 negative examples from the bootstrap set.
 	 * Report an error if NEG images are not enough
 	 */	
@@ -67,18 +67,18 @@ void selectNeg(const int N1, const int N2, bool rejectTable[], int selection[]) 
 	delete [] selectTable;
 }
 
-void addWeak(const int N1, const int N2, const int blockCount, int selection[], CvMat POS[], CvMat NEG[],
+void addWeak(const int N1, const int N2, const int blockCount, int selection[], CvMat *POS, CvMat *NEG,
 			 CvMat *posWeight, CvMat *negWeight, AdaStrong H[]) {
 	
 	/* For all possible blocks and features (Bid, Fid):
 	 * Select a weak classifier that minimizes the error rate */
 	for (int Bid = 0; Bid < blockCount; Bid++ ) {
 		for (int Fid = 0; Fid < FEATURE_COUNT; Fid++ ) {
-			float posMean = 0.f, negMean = 0.f;  // POS/NEG Mean values for this feature
+			float posMean = 0.f, negMean = 0.f;  // POS / NEG Mean values for this feature
 			
 			/* [1] Compute the POS & NEG mean feature values */
 			for (int Iid = 0; Iid < N1; Iid++) {
-				posMean += cvGetReal2D(POS + Iid, Bid, Fid);
+				posMean += cvGetReal2D(POS, Iid * blockCount + Bid, Fid);
 				//negMean += NEG[ selectTable[ Iid ] ][ Bid ][ Fid ];
 			}
 			posMean /= N1;

@@ -6,9 +6,10 @@
  **/
 
 #include "util.h"
+#define TIMER 0  // Count the time for extracting one image
 
 /* Feature extraction of the entire directory */
-void extractAll(char *PATH_BASE, CvMat *POOL, int &N, int &blockCount);
+void extractAll(char *PATH_BASE, CvMat *&POOL, int &N, int &blockCount);
 /* Feature extraction of a single image */
 void extractImg(IplImage *img, float *&ptr);
 /* Feature extraction of a single block */
