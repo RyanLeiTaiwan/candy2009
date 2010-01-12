@@ -71,6 +71,8 @@ int main(int argc, char *argv[]) {
 	assert(360 / BIN_NUM == BIN_SIZE);
 	assert(BIN_SIZE >> 1 == HALF_BIN_SIZE);
 	
+	
+	/* Have to pass CvMat *& to really create the matrices */
 	cout << "\nStart of feature extraction ...\n";
 	extractAll(POS_PATH_BASE, POS, N1, blockCount);
 	cout << "Extraction of POS data completed.\n";
@@ -86,7 +88,7 @@ int main(int argc, char *argv[]) {
 	srand(time(NULL));
 	float F_current = 1.0;  // current overall false positive rate
 	int i = 1;  // AdaBoost stage counter
-	int k = 0;  // # of AdaStrong trained so far (useful?)
+	int k = 0;  // # of AdaStrong trained so far (useful??)
 	int rejectCount = 0;  // # of negative images rejected so far
 
 	/* Allocate an array of AdaBoost strong classifiers to keep track of */
@@ -111,7 +113,7 @@ int main(int argc, char *argv[]) {
 		cout << "\nLearning stage M[" << i << "]...\n";
 		learnM();
 		getchar();
-		k++;
+//		k++;
 #endif
 		i++;
 		

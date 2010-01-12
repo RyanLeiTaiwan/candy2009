@@ -12,7 +12,7 @@
 
 #include "extract.h"
 
-void extractAll(char *PATH_BASE, CvMat *POOL, int &N, int &blockCount) {
+void extractAll(char *PATH_BASE, CvMat *&POOL, int &N, int &blockCount) {
 	DIR *dir;
 	struct dirent *dp;
 	char PATH[ MAX_PATH_LENGTH ];
@@ -61,8 +61,8 @@ void extractAll(char *PATH_BASE, CvMat *POOL, int &N, int &blockCount) {
 		cerr << "extractAll(): " << e << endl;
 	}
 	
-//	printMat(POOL, "POOL");
-//	getchar();
+	printMat(POOL, "POOL");
+	getchar();
 }
 
 int countBlocks(IplImage *img) {
@@ -94,9 +94,10 @@ void extractImg(IplImage *img, float *&ptr) {
 	/* data is the pointer to a single matrix: POOL[ Iid ] */
 	int Bid = 0; // block ID
 
-	/* Timer */
+#if TIMER
 	clock_t tic, toc;
 	tic = clock();
+#endif
 	
 	/* [1.1] For rectangle features: first, perform Mean and variance normalization */
 	int W = img->width, H = img->height, N = W * H;
@@ -146,10 +147,12 @@ void extractImg(IplImage *img, float *&ptr) {
 	
 	/* Release remaining images */
 	cvReleaseImage(&normSum);
-	
+
+#if TIMER
 	toc = clock();
 	runningTime(tic, toc);
 	getchar();
+#endif
 
 }
 
