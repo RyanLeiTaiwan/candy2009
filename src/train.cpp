@@ -1,7 +1,7 @@
 /** File: train.cpp
  ** Author: Ryan Lei
  ** Creation: 2009/12/28
- ** Modification: 2010/01/11
+ ** Modification: 2010/01/12
  ** Description: The car-training program based on the paper:
     Fast Human Detection Using a Novel Boosted Cascading Structure With Meta Stages, Chen and Chen, 2008.
     Important techniques / concepts:
@@ -13,22 +13,15 @@
 
 /* Usage: car_train [POS_DIR] [NEG_DIR] [OUTPUT] */
 #define META 0  // NOT YET supporting meta stages
-#include <iostream>
-#include <cstdlib>
-#include <cstring>
-#include <cassert>
-#include <dirent.h>
-#include <cxcore.h>
-#include <cv.h>
-#include "parameters.h"
-#include "util.h"
+
 #include "extract.h"
 #include "adaboost.h"
 using namespace std;
 
 int main(int argc, char *argv[]) {
+	
 	DIR *dir;
-	FILE *fout;
+	ofstream fout;
 	char slash = Unix ? '/' : '\\'; // It is '/' or '\' depending on OS
 	char POS_PATH_BASE[ MAX_PATH_LENGTH ];
 	char NEG_PATH_BASE[ MAX_PATH_LENGTH ];
@@ -53,7 +46,8 @@ int main(int argc, char *argv[]) {
 	sprintf(NEG_PATH_BASE, "%s%c", NEG_PATH_BASE, slash);	
 	closedir(dir);
 	
-	if (!(fout = fopen(argv[ 3 ], "w"))) {
+	fout.open(argv[ 3 ]);
+	if (!fout) {
 		error("car_train: [OUTPUT] does not exist.");
 	}
 
@@ -101,7 +95,7 @@ int main(int argc, char *argv[]) {
 	/* Learn A[1,j] stage as an exception */
 	for (int j = 1; j <= ni + 1; j++, k++) {
 		cout << "\nLearning stage A[" << i << "," << j << "]...\n";
-		learnA(N1, N2, blockCount, rejectCount, rejectTable, POS, NEG, H, F_current, fout);
+		learnA(N1, N2, blockCount, rejectCount, rejectTable, POS, NEG, H, F_current);
 	}
 	
 #if META
@@ -118,7 +112,7 @@ int main(int argc, char *argv[]) {
 		
 		for (int j = 1; j <= ni; j++, k++ ) {
 			cout << "\nLearning stage A[" << i << "," << j << "]...\n";
-			learnA(N1, N2, blockCount, rejectCount, rejectTable, POS, NEG, H, F_current, fout);
+			learnA(N1, N2, blockCount, rejectCount, rejectTable, POS, NEG, H, F_current);
 		}
 #if META
 		cout << "\nLearning stage M[" << i << "]...\n";

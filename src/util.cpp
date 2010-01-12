@@ -5,16 +5,9 @@
  ** Description: Utility functions
  **/
 
-#include <iostream>
-#include <cstring>
-#include <ctime>
-#include <dirent.h>
-#include <cxcore.h>
-#include <cv.h>
-#include "parameters.h"
+
 #include "util.h"
 using namespace std;
-
 
 /* Print an error message in cerr */
 void error(const char *msg) {
@@ -41,9 +34,9 @@ int	countImages(const char *PATH_BASE) {
 			}
 		}
 		else {
-			/* In Windows system, ignore the "desktop.ini" */
+			/* In Windows system, ignore the "desktop.ini" and "Thumbs.db" */
 			while (dp = readdir(dir)) {
-				if (!strcmp(dp->d_name, "desktop.ini")) {
+				if (!strcmp(dp->d_name, "desktop.ini") || !strcmp(dp->d_name, "Thumbs.db")) {
 					ret++;
 				}
 			}
@@ -57,14 +50,9 @@ int	countImages(const char *PATH_BASE) {
 	return ret;
 }
 
-/* Print a single-channel 2D matrix, with default range being the whole matrix */
+/* Print a single-channel 2D matrix with a specified range */
 /* The idea is taken from http://blog.weisu.org/2007/11/opencv-print-matrix.html */
 void printMat(CvMat *A, const char *name, int rowBeg, int rowEnd, int colBeg, int colEnd) {
-	/* If the (row, col) range is all in default => Use the full range */
-	if (rowBeg == -1 && rowEnd == -1 && colBeg == -1 && colEnd == -1) {
-		rowBeg = 0; rowEnd = A->rows - 1; colBeg = 0; colEnd = A->cols - 1;
-	}
-	
 	/* Check for validity of the privided (row, col) range */
 	if (rowBeg < 0 || rowEnd >= A->rows || rowBeg > rowEnd || colBeg < 0 || colEnd >= A->cols || colBeg > colEnd) {
 		error("printMat(): Invalid range of (rowBeg, rowEnd, colBeg, colEnd)." );
@@ -98,7 +86,39 @@ void printMat(CvMat *A, const char *name, int rowBeg, int rowEnd, int colBeg, in
 	cout << endl;
 }
 
-/* Print a single-channel image, with default range being the whole matrix */
+/* Print a single-channel 2D matrix without a specified range */
+void printMat(CvMat *A, const char *name) {
+	int rowBeg = 0, rowEnd = A->rows - 1, colBeg = 0, colEnd = A->cols - 1;
+	
+	cout << endl << name << "(" << rowBeg << ":" << rowEnd << ", " << colBeg << ":" << colEnd << ") =\n\n";
+	for (int i = rowBeg; i <= rowEnd; i++) {
+		switch (CV_MAT_DEPTH(A->type)) {
+			case CV_32F:
+			case CV_64F:
+				for (int j = colBeg; j <= colEnd; j++)
+				/* Use C's printf() for convenience :p */
+					printf("%6.2f ", (float)cvGetReal2D(A, i, j));
+				break;
+			case CV_8U:
+			case CV_8S:
+			case CV_16U:
+			case CV_16S:
+			case CV_32S:
+				for (int j = colBeg; j <= colEnd; j++)
+				/* Use C's printf() for convenience :p */
+					printf("%4d ", (int)cvGetReal2D(A, i, j));
+				break;
+			default:
+				cerr << "printMat(): Matrix type not supported.\n";
+				exit(EXIT_FAILURE);
+				break;
+		}
+		cout << endl;
+	}
+	cout << endl;
+}
+
+/* Print a single-channel image with a spcified range */
 /* This is the overloaded version for IplImage */
 void printMat(IplImage *A, const char *name, int rowBeg, int rowEnd, int colBeg, int colEnd) {
 	/* If the (row, col) range is all in default => Use the full range */
@@ -111,6 +131,44 @@ void printMat(IplImage *A, const char *name, int rowBeg, int rowEnd, int colBeg,
 		error("printMat(): Invalid range of (rowBeg, rowEnd, colBeg, colEnd)." );
 	}
 	
+	cout << endl << name << "(" << rowBeg << ":" << rowEnd << ", " << colBeg << ":" << colEnd << ") =\n\n";
+	for (int i = rowBeg; i <= rowEnd; i++) {
+		switch (A->depth) {
+			case IPL_DEPTH_32F:
+			case IPL_DEPTH_64F:
+				for (int j = colBeg; j <= colEnd; j++)
+				/* Use C's printf() for convenience :p */
+					printf("%6.2f ", (float)cvGetReal2D(A, i, j));
+				break;
+			case IPL_DEPTH_8U:
+			case IPL_DEPTH_8S:
+			case IPL_DEPTH_16U:
+			case IPL_DEPTH_16S:
+			case IPL_DEPTH_32S:
+				for (int j = colBeg; j <= colEnd; j++)
+				/* Use C's printf() for convenience :p */
+					printf("%4d ", (int)cvGetReal2D(A, i, j));
+				break;
+			case IPL_DEPTH_1U:
+				for (int j = colBeg; j <= colEnd; j++)
+				/* Use C's printf() for convenience :p */
+					printf("%1d ", (int)cvGetReal2D(A, i, j));
+				break;				
+			default:
+				cerr << "printMat(): Matrix type not supported.\n";
+				exit(EXIT_FAILURE);
+				break;
+		}
+		cout << endl;
+	}
+	cout << endl;
+}
+
+/* Print a single-channel image without a spcified range */
+/* This is the overloaded version for IplImage */
+void printMat(IplImage *A, const char *name) {
+	int	rowBeg = 0, rowEnd = A->height - 1, colBeg = 0, colEnd = A->width - 1;
+
 	cout << endl << name << "(" << rowBeg << ":" << rowEnd << ", " << colBeg << ":" << colEnd << ") =\n\n";
 	for (int i = rowBeg; i <= rowEnd; i++) {
 		switch (A->depth) {

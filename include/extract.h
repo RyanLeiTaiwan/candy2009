@@ -5,7 +5,10 @@
  ** Description: Header file of car feature extraction
  **/
 
-/* Internal parameters */
+#include "util.h"
+
+/** Internal parameters **/
+
 /* feature-ralated constants */
 #define FEATURE_COUNT 5 
 #define REC_BEGIN 0

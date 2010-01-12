@@ -274,7 +274,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>4</integer>
+									<integer>5</integer>
 									<integer>1</integer>
 									<integer>0</integer>
 								</array>
@@ -317,7 +317,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>train.cpp</string>
+								<string>adaboost.cpp</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -325,11 +325,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>train.cpp</string>
+										<string>adaboost.cpp</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>2ED864AE10FC5BCE00EA0FC5</string>
+										<string>2ED865B310FC742000EA0FC5</string>
 										<key>history</key>
 										<array>
 											<string>2ED7573110E79BF5001D3EE5</string>
@@ -349,15 +349,15 @@
 											<string>2ED24A8410FA2DE400DFCAB3</string>
 											<string>2ED24A8610FA2DE400DFCAB3</string>
 											<string>2ED24A8710FA2DE400DFCAB3</string>
-											<string>2E37467210FB711D00C1DC11</string>
-											<string>2E3746E910FB7B3400C1DC11</string>
-											<string>2E37471710FB7E4600C1DC11</string>
-											<string>2E37471810FB7E4600C1DC11</string>
-											<string>2E37472210FB7EAC00C1DC11</string>
-											<string>2ED8620B10FC59C900EA0FC5</string>
-											<string>2ED8622310FC5B6100EA0FC5</string>
-											<string>2ED864AD10FC5BCE00EA0FC5</string>
-											<string>2ED8620C10FC59C900EA0FC5</string>
+											<string>2ED8653D10FC6A7600EA0FC5</string>
+											<string>2ED8657210FC6FE300EA0FC5</string>
+											<string>2ED8658E10FC719200EA0FC5</string>
+											<string>2ED865A510FC73D400EA0FC5</string>
+											<string>2ED865A810FC73D400EA0FC5</string>
+											<string>2ED865AF10FC742000EA0FC5</string>
+											<string>2ED865B010FC742000EA0FC5</string>
+											<string>2ED865B110FC742000EA0FC5</string>
+											<string>2ED865B210FC742000EA0FC5</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -582,7 +582,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string></string>
+								<string>train.cpp</string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -599,6 +599,8 @@
 							<string>436pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>

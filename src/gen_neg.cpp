@@ -8,13 +8,6 @@
 
 /* Usage: gen_neg [INPUT_DIR] [OUTPUT_DIR] */ 
 
-#include <iostream>
-#include <cstring>
-#include <dirent.h>
-#include <cxcore.h>
-#include <highgui.h>
-#include <cv.h>
-#include "parameters.h"
 #include "util.h"
 using namespace std;
 
