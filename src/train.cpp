@@ -16,12 +16,14 @@
 
 #include "extract.h"
 #include "adaboost.h"
-using namespace std;
 
 int main(int argc, char *argv[]) {
 	
 	DIR *dir;
-	ofstream fout;
+	/* There are some problems with <fstream> and Xcode 3.2 ... Orz 
+	 * So I'll just settle with FILE * and fprintf().
+	 */
+	ofstream fout;  
 	char slash = Unix ? '/' : '\\'; // It is '/' or '\' depending on OS
 	char POS_PATH_BASE[ MAX_PATH_LENGTH ];
 	char NEG_PATH_BASE[ MAX_PATH_LENGTH ];
@@ -47,10 +49,9 @@ int main(int argc, char *argv[]) {
 	closedir(dir);
 	
 	fout.open(argv[ 3 ]);
-	if (!fout) {
+	if (!(fout)) {
 		error("car_train: [OUTPUT] does not exist.");
 	}
-
 	
 	/** Command is correct **/
 	cout << "This program provides cascaded-AdaBoost training.\n" <<
@@ -89,13 +90,14 @@ int main(int argc, char *argv[]) {
 
 	/* allocate an array of AdaBoost strong classifiers to keep track of */
 	AdaStrong *H = new AdaStrong[ ni + 1 ];
-	/* allocate rejection table */
-	bool *rejectTable = new bool[ N2 ];  // rejection table
+	/* Allocate rejection table */
+	/** Note: All the xxxTable[]'s are of boolean flags **/
+	bool *rejectTable = new bool[ N2 ];
 	
 	/* Learn A[1,j] stage as an exception */
 	for (int j = 1; j <= ni + 1; j++, k++) {
 		cout << "\nLearning stage A[" << i << "," << j << "]...\n";
-		learnA(N1, N2, blockCount, rejectCount, rejectTable, POS, NEG, H, F_current);
+		learnA(N1, N2, blockCount, rejectCount, rejectTable, POS, NEG, H, F_current, fout);
 	}
 	
 #if META
@@ -112,7 +114,7 @@ int main(int argc, char *argv[]) {
 		
 		for (int j = 1; j <= ni; j++, k++ ) {
 			cout << "\nLearning stage A[" << i << "," << j << "]...\n";
-			learnA(N1, N2, blockCount, rejectCount, rejectTable, POS, NEG, H, F_current);
+			learnA(N1, N2, blockCount, rejectCount, rejectTable, POS, NEG, H, F_current, fout);
 		}
 #if META
 		cout << "\nLearning stage M[" << i << "]...\n";
@@ -124,6 +126,7 @@ int main(int argc, char *argv[]) {
 		
 	}	
 	
-	
+	/* Don't forget to close the file stream */
+	fout.close();
 	return 0;
 }

@@ -11,7 +11,6 @@
  **/
 
 #include "extract.h"
-using namespace std;
 
 void extractAll(char *PATH_BASE, CvMat *&POOL, int &N, int &blockCount) {
 	DIR *dir;

@@ -274,7 +274,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>5</integer>
+									<integer>6</integer>
 									<integer>1</integer>
 									<integer>0</integer>
 								</array>
@@ -299,7 +299,7 @@
 							<real>209</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>8 80 1260 692 0 0 1280 778 </string>
+						<string>9 82 1260 692 0 0 1280 778 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -329,10 +329,9 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>2ED865B310FC742000EA0FC5</string>
+										<string>2ED8673510FC8AB900EA0FC5</string>
 										<key>history</key>
 										<array>
-											<string>2ED7573110E79BF5001D3EE5</string>
 											<string>2ED7585110E7E149001D3EE5</string>
 											<string>2ED7585310E7E149001D3EE5</string>
 											<string>2E3CBDFB10E8EB32004F7109</string>
@@ -349,15 +348,16 @@
 											<string>2ED24A8410FA2DE400DFCAB3</string>
 											<string>2ED24A8610FA2DE400DFCAB3</string>
 											<string>2ED24A8710FA2DE400DFCAB3</string>
-											<string>2ED8653D10FC6A7600EA0FC5</string>
-											<string>2ED8657210FC6FE300EA0FC5</string>
-											<string>2ED8658E10FC719200EA0FC5</string>
-											<string>2ED865A510FC73D400EA0FC5</string>
-											<string>2ED865A810FC73D400EA0FC5</string>
-											<string>2ED865AF10FC742000EA0FC5</string>
-											<string>2ED865B010FC742000EA0FC5</string>
-											<string>2ED865B110FC742000EA0FC5</string>
-											<string>2ED865B210FC742000EA0FC5</string>
+											<string>2ED8660410FC7AAB00EA0FC5</string>
+											<string>2ED866C010FC871100EA0FC5</string>
+											<string>2ED866DF10FC883B00EA0FC5</string>
+											<string>2ED866E010FC883B00EA0FC5</string>
+											<string>2ED866E110FC883B00EA0FC5</string>
+											<string>2ED866FD10FC898500EA0FC5</string>
+											<string>2ED8671D10FC89FE00EA0FC5</string>
+											<string>2ED8673210FC8AB900EA0FC5</string>
+											<string>2ED8673310FC8AB900EA0FC5</string>
+											<string>2ED8673410FC8AB900EA0FC5</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -371,7 +371,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {1029, 506}}</string>
 								<key>RubberWindowFrame</key>
-								<string>8 80 1260 692 0 0 1280 778 </string>
+								<string>9 82 1260 692 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -391,7 +391,7 @@
 								<key>Frame</key>
 								<string>{{0, 511}, {1029, 140}}</string>
 								<key>RubberWindowFrame</key>
-								<string>8 80 1260 692 0 0 1280 778 </string>
+								<string>9 82 1260 692 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -555,13 +555,17 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>2ED8672110FC89FE00EA0FC5</string>
+		<string>2ED8671610FC89D400EA0FC5</string>
+		<string>2ED8671710FC89D400EA0FC5</string>
+		<string>1C78EAAD065D492600B07095</string>
 		<string>2ED756D810E790DF001D3EE5</string>
 		<string>1CD10A99069EF8BA00B06720</string>
 		<string>2ED7B33D10E787C50080D7C9</string>
 		<string>/Users/ryanlei/candy2009/proj/mac/mac.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>8 80 1260 692 0 0 1280 778 </string>
+	<string>9 82 1260 692 0 0 1280 778 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
@@ -582,7 +586,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>train.cpp</string>
+								<string>adaboost.cpp</string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -930,7 +934,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C78EAAD065D492600B07095</string>
-				<string>2ED7B34510E787C50080D7C9</string>
+				<string>2ED8671410FC89D400EA0FC5</string>
 				<string>1C78EAAC065D492600B07095</string>
 			</array>
 			<key>ToolbarConfiguration</key>

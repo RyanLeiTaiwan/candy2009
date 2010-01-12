@@ -9,7 +9,6 @@
 /* Usage: gen_neg [INPUT_DIR] [OUTPUT_DIR] */ 
 
 #include "util.h"
-using namespace std;
 
 int main(int argc, char *argv[]) {
 	DIR *dirin, *dirout;
