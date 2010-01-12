@@ -21,6 +21,13 @@
 #else
 	#define Unix 0
 #endif
+
+#ifdef Mac
+	// Work around some Xcode 3.2 bug ... orz
+	#define _GLIBCXX_FULLY_DYNAMIC_STRING 1
+	#undef _GLIBCXX_DEBUG
+	#undef _GLIBCXX_DEBUG_PEDANTIC
+#endif
 #define MAX_PATH_LENGTH 200
 
 /** Project parameters: may be edited **/

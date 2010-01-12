@@ -13,6 +13,7 @@
 #include <cv.h>
 #include <highgui.h>
 #include "parameters.h"
+using namespace std;
 
 /* Print an error message in cerr */
 void error(const char *msg);

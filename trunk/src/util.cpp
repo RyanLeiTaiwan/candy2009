@@ -7,7 +7,6 @@
 
 
 #include "util.h"
-using namespace std;
 
 /* Print an error message in cerr */
 void error(const char *msg) {
