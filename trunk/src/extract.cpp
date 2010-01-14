@@ -1,7 +1,7 @@
 /** File: extract.cpp
  ** Author: Ryan Lei
  ** Creation: 2009/12/28
- ** Modification: 2010/01/12
+ ** Modification: 2010/01/14
  ** Description: The implementations of car feature extraction
     Features:
       1. Rectangle features
@@ -17,10 +17,14 @@ void extractAll(char *PATH_BASE, CvMat *&POOL, int &N, int &blockCount) {
 	struct dirent *dp;
 	char PATH[ MAX_PATH_LENGTH ];
 	IplImage *img;
+	int n = 0; // The actual # of images
 	
-	/* count # of images */
+	/* Roughly count # of images */
 	N = countImages(PATH_BASE);
-	cout << "\nImage count of " << PATH_BASE << ": " << N << endl;
+	cout << "\nRough image count of " << PATH_BASE << ": " << N << endl;
+#if PAUSE
+	getchar();
+#endif
 	
 	try {
 		if (!(dir = opendir(PATH_BASE))) {
@@ -35,6 +39,7 @@ void extractAll(char *PATH_BASE, CvMat *&POOL, int &N, int &blockCount) {
 			
 			/* If it is an image file (read it in grayscale) */
 			if (img = cvLoadImage(PATH, 0)) {
+				n++;  // Count actual # of images
 				cout << PATH << " ... ";
 				
 				/* check image sizes */
@@ -61,8 +66,15 @@ void extractAll(char *PATH_BASE, CvMat *&POOL, int &N, int &blockCount) {
 		cerr << "extractAll(): " << e << endl;
 	}
 	
-	printMat(POOL, "POOL");
-	getchar();
+	if (n != N) {
+		N = n;  // Reset N to the actual # of images counted by n
+		cout << "extractAll(): Warning: " << PATH_BASE << " contains non-image files.\n";
+		/* In fact, this situation won't ruin the training process and is acceptable. */
+		getchar();
+	}
+	
+//	printMat(POOL, "POOL in extractAll()");
+//	getchar();
 }
 
 int countBlocks(IplImage *img) {
