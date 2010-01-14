@@ -1,7 +1,7 @@
 /** File: global.h
  ** Author: Ryan Lei
  ** Creation: 2009/12/25
- ** Update: 2010/01/09
+ ** Update: 2010/01/14
  ** Description: Constants or Parameters used globally.
  **/
 
@@ -30,6 +30,11 @@
 	#undef _GLIBCXX_DEBUG_PEDANTIC
 #endif
 #define MAX_PATH_LENGTH 200
+
+
+/** Run-time options: may be edited **/
+#define PAUSE 1  // Encounter getchar()'s in run time;
+
 
 /** Project parameters: may be edited **/
 #define WINDOW_WIDTH 128

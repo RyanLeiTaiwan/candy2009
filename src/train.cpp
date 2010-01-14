@@ -72,12 +72,12 @@ int main(int argc, char *argv[]) {
 	assert(BIN_SIZE >> 1 == HALF_BIN_SIZE);
 	
 	
-	/* Have to pass CvMat *& to really create the matrices */
+	/* Have to pass (CvMat *&) to really create the matrices */
 	cout << "\nStart of feature extraction ...\n";
 	extractAll(POS_PATH_BASE, POS, N1, blockCount);
 	cout << "Extraction of POS data completed.\n";
 	extractAll(NEG_PATH_BASE, NEG, N2, blockCount);
-	cout << "Extraction of POS data completed.\n";
+	cout << "Extraction of NEG data completed.\n";
 	assert(blockCount > 0);
 	cout << "# of blocks per image: " << blockCount << ".\n";
 	getchar();
