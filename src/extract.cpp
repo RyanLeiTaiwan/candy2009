@@ -22,7 +22,7 @@ void extractAll(char *PATH_BASE, CvMat *&POOL, int &N, int &blockCount) {
 	/* Roughly count # of images */
 	N = countImages(PATH_BASE);
 	cout << "\nRough image count of " << PATH_BASE << ": " << N << endl;
-#if PAUSE
+#if GETCHAR
 	getchar();
 #endif
 	

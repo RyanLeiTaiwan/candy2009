@@ -33,7 +33,7 @@
 
 
 /** Run-time options: may be edited **/
-#define PAUSE 1  // Encounter getchar()'s in run time;
+#define GETCHAR 1  // Encounter getchar()'s in run time;
 
 
 /** Project parameters: may be edited **/
