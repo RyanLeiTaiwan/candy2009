@@ -107,13 +107,19 @@ int main(int argc, char *argv[]) {
 			/* Learn an A[i,j] stage */
 			cout << "\nLearning stage A[" << i << "," << j << "]...\n";
 			learnA(N1, N2, blockCount, rejectCount, rejectTable, POS, NEG, H, F_current, fout);
+			cout << "Stage A[" << i << "," << j << "] completes.\n";
+#if GETCHAR
 			getchar();
+#endif
 		}
 #if META
 		/* Learn a M[i] stage */
 		cout << "\nLearning stage M[" << i << "]...\n";
 		learnM();
+		cout << "Stage M[" << i << "," << j << "] completes.\n";
+  #if GETCHAR
 		getchar();
+  #endif
 //		k++;
 #endif
 		i++;

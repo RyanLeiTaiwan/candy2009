@@ -26,7 +26,7 @@ void learnA(const int N1, const int N2, const int blockCount, int &rejectCount, 
 	/* [0] Initialization */
 	int selection[ N1 ];  // image selection result
 	static float initialW = 1.f / (float) (N1 << 1) ;  // Initial data weight = 1 / 2N1 (# of pos == # of neg)
-	float f_local = 1.f;
+	float d_local = 0.f, f_local = 1.f;
 	float threshold = 0.f; /* threshold of the strong classifier A[i,j], should be recorded */
 	CvMat *posWeight, *negWeight;
 	posWeight = cvCreateMat(1, N1, CV_32FC1);  // Row vector, which is easy to print
@@ -42,34 +42,93 @@ void learnA(const int N1, const int N2, const int blockCount, int &rejectCount, 
 	}
     selectNeg(N1, N2, rejectTable, selection);
 
-	
-	/* Result of H(x) classification */
+	/* Results of H(x) classification */
 	CvMat *posResult = cvCreateMat(1, N1, CV_32FC1);
 	CvMat *negResult = cvCreateMat(1, N1, CV_32FC1);
+	
+	int weakUsed = 0;
 	while (f_local > f_maxA) {
 		/* [2] Add a weak learner h to the strong classifier A[i,j] */
+		weakUsed++;
+#if GETCHAR
+		cout << "* Weak learner " << weakUsed << ":\n";
+#endif		
 		addWeak(N1, blockCount, selection, POS, NEG, posWeight, negWeight, H);
 		
-		/* [3.1] Use the H(x) so far to trial-classify 
+		/* [3.1] Use the H(x) so far to classify:
 		 * H(x) = sign( sum[alpha_t * h_t(x)] )
 		 * Process the POS and NEG together in one loop
 		 */
-		classifyStrongAll(N1, blockCount, selection, POS, NEG, H, posResult, negResult);
+		float minPosResult = classifyStrongAll(N1, blockCount, selection, POS, NEG, H, posResult, negResult);
+#if 0
+		printMat(posResult, "posResult");
+		printMat(negResult, "negResult");
+		getchar();
+#endif
+
+#if GETCHAR
+		/* May be skipped: Calculate d_local and f_local of H(x) */
+		int detect = 0, fp = 0;  // Counters for detections and false-positives
+		for (int Iid = 0; Iid < N1; Iid++) {
+			if (cvGetReal2D(posResult, 0, Iid) >= 0.f) {
+				detect++;
+			}
+			if (cvGetReal2D(negResult, 0, Iid) >= 0.f) {
+				fp++;
+			}
+		}
+		d_local = (float)detect / (float)N1;
+		f_local = (float)fp / (float)N1;
+
+		cout << "  Before modifying the threshold:\n    Detection rate = " << d_local << " (" << detect << "/" << N1 << ")\n";
+		cout << "    False positive rate = " << f_local << " (" << fp << "/" << N1 << ")\n";
+#endif
 		
-		/* [4] Calculate f_local of H(x) */
-		
-        /* [2.2] If necessary, modify the threshold of H(x) to fulfill d_minA 
-		 * If min( posResult ) < 0, then let
-		 * result = result - min( posResult ) so that all POS data are
+        /* [3.2] If necessary, modify the threshold of H(x) to fulfill d_minA 
+		 * If minPosResult < 0, then let
+		 * result = result - minPosResult so that all POS data are
 		 * determined as positive, i.e., detection rate = 100%.
 		 */		
+		if (minPosResult < 0.f) {
+			threshold = minPosResult;
+			cvSubS(posResult, cvScalar(threshold), posResult);
+			cvSubS(negResult, cvScalar(threshold), negResult);
+		}
+#if 0
+		printMat(posResult, "posResult");
+		printMat(negResult, "negResult");
+		getchar();
+#endif
 		
-        /* [4] Calculate f_local of H(x) */
+        /* [4] Calculate d_local and f_local of H(x) */
+		detect = 0, fp = 0;  // Counters for detections and false-positives
+		for (int Iid = 0; Iid < N1; Iid++) {
+			if (cvGetReal2D(posResult, 0, Iid) >= 0.f) {
+				detect++;
+			}
+			if (cvGetReal2D(negResult, 0, Iid) >= 0.f) {
+				fp++;
+			}
+		}
+		d_local = (float)detect / (float)N1;
+		f_local = (float)fp / (float)N1;
+#if GETCHAR
+		cout << "  After modifying the threshold:\n    Detection rate = " << d_local << " (" << detect << "/" << N1 << ")\n";
+		cout << "    False positive rate = " << f_local << " (" << fp << "/" << N1 << ")\n";
+		getchar();
+#endif		
+		assert(d_local >= d_minA); 
 		
-	}
+		
+	} // End of loop "while (f_local > f_maxA). Now the learning of strong classifier H is complete."
 	
+	/* Update the overall false positive rate */
 	
-	
+	/* Reject the true negative images */
+	/* ............
+	 .........
+	 ......
+	 */
 	
 }
 
@@ -161,7 +220,7 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 				}
 				
 				/* Nagative and wrong => False positive */
-				if (parity * cvGetReal2D(NEG, Iid * blockCount + Bid, Fid) > parity * decision) {
+				if (parity * cvGetReal2D(NEG, Iid * blockCount + Bid, Fid) >= parity * decision) {
 					error += cvGetReal2D(negWeight, 0, Iid);
 					cvSetReal2D(negResult, 0, Iid, -1.f);
 				}
@@ -205,8 +264,7 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 	avgError /= (blockCount * FEATURE_COUNT);
 	cout << "Average error rate: " << avgError << endl;
 	cout << "Best error rate: " << bestError << ", Bid: " << bestBid << ", Fid: " << bestFid << endl;
-	cout << "Best weak learner weight: " << weight;
-	getchar();
+	cout << "Best weak learner weight: " << weight << endl;
 #endif
 
 #if 0
@@ -227,26 +285,32 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 	cvScale(negMul, negMul, -weight);
 	cvExp(posMul, posMul);
 	cvExp(negMul, negMul);
-	float normalize = cvSum(posMul).val[0] + cvSum(negMul).val[0];
-	cvScale(posMul, posMul, 1.f / normalize);
-	cvScale(negMul, negMul, 1.f / normalize);
+	cvMul(posWeight, posMul, posWeight);
+	cvMul(negWeight, negMul, negWeight);
+	float normalize = cvSum(posWeight).val[0] + cvSum(negWeight).val[0];
+	cvScale(posWeight, posWeight, 1.f / normalize);
+	cvScale(negWeight, negWeight, 1.f / normalize);
 
 #if 0
-	printMat(posMul, "posMul");
-	printMat(negMul, "negMul");
+	printMat(posWeight, "posWeight");
+	printMat(negWeight, "negWeight");
 	getchar();
-#endif	
+#endif
 	
 }
 
-/* Classify all data using the strong classifier. Write the results in "results". */
-void classifyStrongAll(const int N1, const int blockCount, int selection[], CvMat *POS, CvMat *NEG,
+/* Classify all data using the strong classifier. Write the results in "results".
+ * Returns the minumum posAnswer. */
+float classifyStrongAll(const int N1, const int blockCount, int selection[], CvMat *POS, CvMat *NEG,
 					   AdaStrong &H, CvMat *posResult, CvMat *negResult) {
 	
+	float minPosAnswer = 0.f; // Record posAnswer less than zero
 	/* H(x[i] = sign( sum[ weight_t * h_t(x[i]) ] )
 	 * Process the POS and NEG together in one loop.
 	 */
-	for (int Iid = 0; Iid < N1; Iid++) {		
+	for (int Iid = 0; Iid < N1; Iid++) {
+		float posAnswer = 0.f;
+		float negAnswer = 0.f;
 		for (vector<AdaWeak>::iterator it = H.h.begin(); it != H.h.end(); it++) {
 			int Bid = it->Bid;
 			int Fid = it->Fid;
@@ -255,12 +319,36 @@ void classifyStrongAll(const int N1, const int blockCount, int selection[], CvMa
 			float weight = it->weight;
 			
 			/* Determine that positive is positive */
-			
+			if (parity * cvGetReal2D(POS, Iid * blockCount + Bid, Fid) >= parity * decision) {
+				posAnswer += weight;
+			}
 			/* Determine that positive is negative */
+			else {
+				posAnswer -= weight;
+			}
 			/* Determine that negative is positive */
+			if (parity * cvGetReal2D(NEG, Iid * blockCount + Bid, Fid) >= parity * decision) {
+				negAnswer += weight;
+			}
 			/* Determine that negative is negative */
+			else {
+				negAnswer -= weight;
+			}	
 		}
-	}
+		
+		/* After classification of one image: Record the result */
+		cvSetReal2D(posResult, 0, Iid, posAnswer);
+		cvSetReal2D(negResult, 0, Iid, negAnswer);
+		
+		/* Remember the minimum posAnswer:
+		 * Since d_minA is implemented as 100%, we must shift the threshold to the minimum posAnswer if it's below zero.
+		 */
+		if (posAnswer < minPosAnswer) {
+			minPosAnswer = posAnswer;
+		}
+	} // End of loop "Iid"
+	
+	return minPosAnswer;
 }
 
 /* Learn Meta stage M[i] */
