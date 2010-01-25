@@ -1,7 +1,7 @@
 /** File: car-extract.c
  ** Author: Ryan Lei
  ** Creation: 2009/09/11
- ** Modification: 2010/01/09
+ ** Modification: 2010/01/26
  ** Description: The function implementations of feature extraction
     Features:
 	  1. Rectangle features -- Integral image, 45'-tilted-version techniques
@@ -114,6 +114,9 @@ void extract_image( char *fileName, int Iid, float ***POOL ) {
 	int Bid = 0; /* block id */
 	int row, col, size1, size2;
 	/* original image, image after normalization, integral image, and their "square" versions */
+	/* [BUG] 20100126: Mean and variance normalization should instead be applied to each "block", not the entire image.
+	 * In this case, the "block size effect" can be reduced.
+	 */
 	Matrix img, img2, ii, ii2, img_norm, ii_norm;
 	/* vertical/horizontal gradients, gradient magnitude/angle */
 	const int binNum = 9; /* parameter: # of EOH bins */
