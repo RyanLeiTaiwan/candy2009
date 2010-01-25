@@ -61,7 +61,8 @@ void addWeak( int posCount, int negCount, int blockCount, int selectTable[],
 	full_dump( posWeight, "posWeight", ALL, FLOAT );
 	full_dump( negWeight, "negWeight", ALL, FLOAT );
 #endif
-
+	
+	printf( "Add a weak classifier\n" );
 	for ( Bid = 0; Bid < blockCount; Bid++ ) {
 		for ( Fid = 0; Fid < FEATURE_COUNT; Fid++ ) {
 
@@ -258,7 +259,29 @@ void learnA( int posCount, int negCount, int blockCount, int *rejectCount, bool 
 			}
 
 		} /* end of loop "Iid" */
-		
+
+#if 0
+		full_dump( &posResult, "posResult", ALL, FLOAT );
+		full_dump( &negResult, "negResult", ALL, FLOAT );
+#endif
+
+#if 1
+		/* count for detections and false positives */
+		for ( Iid = 0; Iid < posCount; Iid++ ) {
+			if ( posResult.data[ 0 ][ 0 ][ Iid ] >= 0.f ) {
+				detect++;
+			}
+			if ( negResult.data[ 0 ][ 0 ][ Iid ] >= 0.f ) {
+				fpCount++;
+			}
+		}
+		d_local = (float)detect / (float)posCount;
+		printf( "Before modify threshold:\n  Detection rate: %f ( %d / %d )\n", d_local, detect, posCount );
+        /* [3] Calculate f_local of H(x) */
+		f_local = (float)fpCount / (float)posCount;
+		printf( "  False positive rate: %f ( %d / %d )\n", f_local, fpCount, posCount );
+#endif
+				
         /* [2.2] Modify the threshold of H(x) to fulfill d_minA 
 		 * If min( posResult ) < 0, then let
 		 * result = result - min( posResult ) so that all POS data are
@@ -276,6 +299,8 @@ void learnA( int posCount, int negCount, int blockCount, int *rejectCount, bool 
 #endif
 
 		/* count for detections and false positives */
+		detect = 0;
+		fpCount = 0;
 		for ( Iid = 0; Iid < posCount; Iid++ ) {
 			if ( posResult.data[ 0 ][ 0 ][ Iid ] >= 0.f ) {
 				detect++;
@@ -285,8 +310,8 @@ void learnA( int posCount, int negCount, int blockCount, int *rejectCount, bool 
 			}
 		}
 		d_local = (float)detect / (float)posCount;
-		printf( "Detection rate: %f ( %d / %d )\n", d_local, detect, posCount );
-		assert( d_local > d_minA );
+		printf( "  After modify threshold:\n  Detection rate: %f ( %d / %d )\n", d_local, detect, posCount );
+		//assert( d_local >= d_minA );
 
         /* [3] Calculate f_local of H(x) */
 		f_local = (float)fpCount / (float)posCount;

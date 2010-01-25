@@ -1,7 +1,7 @@
 /** File: train.cpp
  ** Author: Ryan Lei
  ** Creation: 2009/12/28
- ** Modification: 2010/01/12
+ ** Modification: 2010/01/25 
  ** Description: The car-training program based on the paper:
     Fast Human Detection Using a Novel Boosted Cascading Structure With Meta Stages, Chen and Chen, 2008.
     Important techniques / concepts:
@@ -80,8 +80,9 @@ int main(int argc, char *argv[]) {
 	cout << "Extraction of NEG data completed.\n";
 	assert(blockCount > 0);
 	cout << "# of blocks per image: " << blockCount << ".\n";
+#if GETCHAR
 	getchar();
-
+#endif
 	
 	/* [2] Cascaded-AdaBoost training */ 
 	cout << "Start of cascaded-AdaBoost training ...\n";
@@ -91,21 +92,21 @@ int main(int argc, char *argv[]) {
 	int k = 0;  // # of AdaStrong trained so far (useful??)
 	int rejectCount = 0;  // # of negative images rejected so far
 
-	/* Allocate an array of AdaBoost strong classifiers to keep track of */
-	AdaStrong *H = new AdaStrong[ ni + 1 ];
 	/* Allocate rejection table */
 	/** Note: All the xxxTable[]'s are of boolean flags **/
 	bool *rejectTable = new bool[ N2 ];
 	memset(rejectTable, 0, N2);
 	
-	/* Learn an A[i,j] stage */
 	while ( F_current > F_target ) {
 		/* upper bound for j */
-		int jEnd = i == 1 ? ni + 1 : ni;
+		int jEnd = (i == 1) ? (ni + 1) : ni;
+		
 		for (int j = 1; j <= jEnd; j++, k++ ) {
-			AdaStrong *Hptr = H;
+			/* One AdaBoost strong classifier */
+			AdaStrong H;
+			/* Learn an A[i,j] stage */
 			cout << "\nLearning stage A[" << i << "," << j << "]...\n";
-			learnA(N1, N2, blockCount, rejectCount, rejectTable, POS, NEG, Hptr++, F_current, fout);
+			learnA(N1, N2, blockCount, rejectCount, rejectTable, POS, NEG, H, F_current, fout);
 			getchar();
 		}
 #if META

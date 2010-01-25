@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2E0180FD10F8586A00978B21 /* util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E0180FC10F8586A00978B21 /* util.cpp */; };
-		2E3CBE9A10E8F243004F7109 /* OpenCV.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2ED7B33310E7879F0080D7C9 /* OpenCV.framework */; };
-		2E3CBE9C10E8F2E5004F7109 /* extract.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E3CBDF810E8EB05004F7109 /* extract.cpp */; };
-		2E3CBEB210E8F596004F7109 /* adaboost.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E3CBEB010E8F596004F7109 /* adaboost.cpp */; };
-		2E3CBEB310E8F596004F7109 /* train.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E3CBEB110E8F596004F7109 /* train.cpp */; };
+		2E49E110110D799F00176010 /* OpenCV.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2ED7B33310E7879F0080D7C9 /* OpenCV.framework */; };
+		2E49E129110D79B300176010 /* util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E0180FC10F8586A00978B21 /* util.cpp */; };
+		2E49E12A110D79B300176010 /* extract.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E3CBDF810E8EB05004F7109 /* extract.cpp */; };
+		2E49E12B110D79B300176010 /* train.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E3CBEB110E8F596004F7109 /* train.cpp */; };
+		2E49E12C110D79B300176010 /* adaboost.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E3CBEB010E8F596004F7109 /* adaboost.cpp */; };
 		2ED7B35810E7893A0080D7C9 /* OpenCV.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2ED7B33310E7879F0080D7C9 /* OpenCV.framework */; };
 		2ED7B37310E78A500080D7C9 /* gen_neg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2ED7B35610E7891B0080D7C9 /* gen_neg.cpp */; };
 /* End PBXBuildFile section */
@@ -21,9 +21,9 @@
 		2E37465F10FB6E4400C1DC11 /* adaboost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = adaboost.h; path = ../../include/adaboost.h; sourceTree = SOURCE_ROOT; };
 		2E3CBDF810E8EB05004F7109 /* extract.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = extract.cpp; path = ../../src/extract.cpp; sourceTree = "<group>"; };
 		2E3CBE0F10E8EC2D004F7109 /* extract.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = extract.h; path = ../../include/extract.h; sourceTree = "<group>"; };
-		2E3CBE9610E8F233004F7109 /* car_train */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = car_train; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E3CBEB010E8F596004F7109 /* adaboost.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = adaboost.cpp; path = ../../src/adaboost.cpp; sourceTree = "<group>"; };
 		2E3CBEB110E8F596004F7109 /* train.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = train.cpp; path = ../../src/train.cpp; sourceTree = "<group>"; };
+		2E49E10B110D797700176010 /* train */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = train; path = ../../../../../../bin/mac/train; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E5B4A4710F8646100F0C953 /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = util.h; path = ../../include/util.h; sourceTree = SOURCE_ROOT; };
 		2ED7B33310E7879F0080D7C9 /* OpenCV.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenCV.framework; path = Library/Frameworks/OpenCV.framework; sourceTree = SDKROOT; };
 		2ED7B34910E788300080D7C9 /* parameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = parameters.h; path = ../../include/parameters.h; sourceTree = "<group>"; };
@@ -33,11 +33,11 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		2E3CBE9410E8F233004F7109 /* Frameworks */ = {
+		2E49E109110D797700176010 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2E3CBE9A10E8F243004F7109 /* OpenCV.framework in Frameworks */,
+				2E49E110110D799F00176010 /* OpenCV.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,7 +80,7 @@
 			isa = PBXGroup;
 			children = (
 				2ED7B35110E788BF0080D7C9 /* gen_neg */,
-				2E3CBE9610E8F233004F7109 /* car_train */,
+				2E49E10B110D797700176010 /* train */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -107,20 +107,20 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		2E3CBE9510E8F233004F7109 /* car_train */ = {
+		2E49E10A110D797700176010 /* train */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2E3CBE9B10E8F261004F7109 /* Build configuration list for PBXNativeTarget "car_train" */;
+			buildConfigurationList = 2E49E10F110D799600176010 /* Build configuration list for PBXNativeTarget "train" */;
 			buildPhases = (
-				2E3CBE9310E8F233004F7109 /* Sources */,
-				2E3CBE9410E8F233004F7109 /* Frameworks */,
+				2E49E108110D797700176010 /* Sources */,
+				2E49E109110D797700176010 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = car_train;
+			name = train;
 			productName = train;
-			productReference = 2E3CBE9610E8F233004F7109 /* car_train */;
+			productReference = 2E49E10B110D797700176010 /* train */;
 			productType = "com.apple.product-type.tool";
 		};
 		2ED7B35010E788BF0080D7C9 /* gen_neg */ = {
@@ -152,20 +152,20 @@
 			projectRoot = ../../;
 			targets = (
 				2ED7B35010E788BF0080D7C9 /* gen_neg */,
-				2E3CBE9510E8F233004F7109 /* car_train */,
+				2E49E10A110D797700176010 /* train */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		2E3CBE9310E8F233004F7109 /* Sources */ = {
+		2E49E108110D797700176010 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2E3CBE9C10E8F2E5004F7109 /* extract.cpp in Sources */,
-				2E3CBEB210E8F596004F7109 /* adaboost.cpp in Sources */,
-				2E3CBEB310E8F596004F7109 /* train.cpp in Sources */,
-				2E0180FD10F8586A00978B21 /* util.cpp in Sources */,
+				2E49E129110D79B300176010 /* util.cpp in Sources */,
+				2E49E12A110D79B300176010 /* extract.cpp in Sources */,
+				2E49E12B110D79B300176010 /* train.cpp in Sources */,
+				2E49E12C110D79B300176010 /* adaboost.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -209,7 +209,7 @@
 			};
 			name = Release;
 		};
-		2E3CBE9810E8F234004F7109 /* Debug */ = {
+		2E49E10D110D797700176010 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -220,11 +220,11 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/bin;
 				PREBINDING = NO;
-				PRODUCT_NAME = car_train;
+				PRODUCT_NAME = train;
 			};
 			name = Debug;
 		};
-		2E3CBE9910E8F234004F7109 /* Release */ = {
+		2E49E10E110D797700176010 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -281,11 +281,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2E3CBE9B10E8F261004F7109 /* Build configuration list for PBXNativeTarget "car_train" */ = {
+		2E49E10F110D799600176010 /* Build configuration list for PBXNativeTarget "train" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				2E3CBE9810E8F234004F7109 /* Debug */,
-				2E3CBE9910E8F234004F7109 /* Release */,
+				2E49E10D110D797700176010 /* Debug */,
+				2E49E10E110D797700176010 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -8,6 +8,7 @@
 #include <iostream>
 #include <cstring>
 #include <ctime>
+#include <cmath>
 #include <dirent.h>
 #include <cxcore.h>
 #include <cv.h>

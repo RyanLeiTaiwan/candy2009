@@ -1,7 +1,7 @@
 /** File: global.h
  ** Author: Ryan Lei
  ** Creation: 2009/12/25
- ** Update: 2010/01/14
+ ** Update: 2010/01/25
  ** Description: Constants or Parameters used globally.
  **/
 
@@ -48,7 +48,7 @@
 #define HALF_BIN_SIZE 20  // should be BIN_SIZE / 2
 
 #define F_target 0.001  // target overall false positive rate
-#define d_minA 0.999  // minimum acceptable detection rate per AdaBoost stage
+#define d_minA 0.99  // minimum acceptable detection rate per AdaBoost stage (implemented as 100%)
 #define f_maxA 0.50  // maximum acceptable false positive rate per AdaBoost stage
 #define d_minM 1.00  // minimum acceptable detection rate per meta stage
 #define ni 1  // # of AdaBoost stages before meeting a meta stage
