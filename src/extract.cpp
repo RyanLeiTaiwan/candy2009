@@ -1,7 +1,7 @@
 /** File: extract.cpp
  ** Author: Ryan Lei
  ** Creation: 2009/12/28
- ** Modification: 2010/01/14
+ ** Modification: 2010/01/25
  ** Description: The implementations of car feature extraction
     Features:
       1. Rectangle features
@@ -44,8 +44,9 @@ void extractAll(char *PATH_BASE, CvMat *&POOL, int &N, int &blockCount) {
 				
 				/* check image sizes */
 				if (img->width != WINDOW_WIDTH || img->height != WINDOW_HEIGHT) {
-					cerr << ": Image size should be " << WINDOW_WIDTH << " x " << WINDOW_HEIGHT << ".\n";
-					exit(EXIT_FAILURE);
+					char *msg;
+					sprintf(msg, "Image size should be %d x %d.\n", WINDOW_WIDTH, WINDOW_HEIGHT);
+					error(msg);
 				}
 				/* For the first image: also count # of blocks and create the large matrix */
 				if (Iid == 0) {
@@ -67,8 +68,9 @@ void extractAll(char *PATH_BASE, CvMat *&POOL, int &N, int &blockCount) {
 	}
 	
 	if (n != N) {
-		N = n;  // Reset N to the actual # of images counted by n
 		cout << "extractAll(): Warning: " << PATH_BASE << " contains non-image files.\n";
+		cout << "Rough count: " << N << ". Actual count: " << n << endl;
+		N = n;  // Reset N to the actual # of images counted by n
 		/* In fact, this situation won't ruin the training process and is acceptable. */
 		getchar();
 	}
