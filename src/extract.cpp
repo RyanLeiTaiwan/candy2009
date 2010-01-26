@@ -1,7 +1,7 @@
 /** File: extract.cpp
  ** Author: Ryan Lei
  ** Creation: 2009/12/28
- ** Modification: 2010/01/25
+ ** Modification: 2010/01/26
  ** Description: The implementations of car feature extraction
     Features:
       1. Rectangle features
@@ -15,7 +15,7 @@
 void extractAll(char *PATH_BASE, CvMat *&POOL, int &N, int &blockCount) {
 	DIR *dir;
 	struct dirent *dp;
-	char PATH[ MAX_PATH_LENGTH ];
+	char PATH[MAX_PATH_LENGTH];
 	IplImage *img;
 	int n = 0; // The actual # of images
 	
@@ -57,6 +57,7 @@ void extractAll(char *PATH_BASE, CvMat *&POOL, int &N, int &blockCount) {
 				
 				/** Extract features for this image **/
 				extractImg(img, ptr);
+				cvReleaseImage(&img);
 				cout << "extracted.\n";
 				Iid++;
 			}

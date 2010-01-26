@@ -6,10 +6,12 @@
  **/
 
 #include <iostream>
+#include <fstream>
+#include <dirent.h>
 #include <cstring>
 #include <ctime>
 #include <cmath>
-#include <dirent.h>
+#include <vector>
 #include <cxcore.h>
 #include <cv.h>
 #include <highgui.h>

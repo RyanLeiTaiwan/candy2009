@@ -29,16 +29,20 @@
 	#undef _GLIBCXX_DEBUG
 	#undef _GLIBCXX_DEBUG_PEDANTIC
 #endif
-#define MAX_PATH_LENGTH 200
-
+#define MAX_PATH_LENGTH 100
+#define MAX_LINE_LENGTH 50
 
 /** Run-time options: may be edited **/
 #define GETCHAR 0  // Encounter getchar()'s in run time, i.e., verbose mode.;
+#define CVWINDOW_X 500  // x position of OpenCV's NamedWindow
+#define CVWINDOW_Y 100  // y position of OpenCV's NamedWindow
+#define CVWINDOW_WIDTH 512  // width of the NamedWindow
+#define CVWINDOW_HEIGHT 512  // height of the NamedWindow
 
 
 /** Project parameters: may be edited **/
-#define WINDOW_WIDTH 128
-#define WINDOW_HEIGHT 128
+#define WINDOW_WIDTH 128  // detection window width
+#define WINDOW_HEIGHT 128  // detection window height
 #define BLOCK_MIN_SIZE 16  // minumum block size
 #define BLOCK_SIZE_INC 8  // block size increment
 #define BLOCK_POS_INC 16  // block position increment
@@ -52,3 +56,4 @@
 #define f_maxA 0.50  // maximum acceptable false positive rate per AdaBoost stage
 #define d_minM 1.00  // minimum acceptable detection rate per meta stage
 #define ni 1  // # of AdaBoost stages before meeting a meta stage
+

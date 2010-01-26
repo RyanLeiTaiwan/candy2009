@@ -11,7 +11,7 @@
       4. Integral image technique in computation
  **/
 
-/* Usage: car_train [POS_DIR] [NEG_DIR] [OUTPUT_FILE] */
+/* Usage: train [POS_DIR] [NEG_DIR] [OUTPUT_FILE] */
 #define META 0  // NOT YET supporting meta stages
 
 #include "extract.h"
@@ -20,21 +20,18 @@
 int main(int argc, char *argv[]) {
 
 	DIR *dir;
-	/* There are some problems with <fstream> and Xcode 3.2 ... Orz 
-	 * So I'll just settle with FILE * and fprintf().
-	 */
 	ofstream fout;  
 	char slash = Unix ? '/' : '\\'; // It is '/' or '\' depending on OS
-	char POS_PATH_BASE[ MAX_PATH_LENGTH ];
-	char NEG_PATH_BASE[ MAX_PATH_LENGTH ];
+	char POS_PATH_BASE[MAX_PATH_LENGTH];
+	char NEG_PATH_BASE[MAX_PATH_LENGTH];
 	clock_t tic, toc;
 	
 	if (argc != 4) {
-		error("Usage: car_train [POS_DIR] [NEG_DIR] [OUTPUT_FILE].");
+		error("Usage: train [POS_DIR] [NEG_DIR] [OUTPUT_FILE].");
 	}
 	
 	if (!(dir = opendir(argv[1]))) {
-		error("car_train: [POS_DIR] does not exist.");
+		error("train: [POS_DIR] open failed.");
 	}
 	/* Set POS_PATH_BASE to [POS_DIR] and append '/' or '\' */
 	strcpy(POS_PATH_BASE, argv[1]);	
@@ -42,7 +39,7 @@ int main(int argc, char *argv[]) {
 	closedir(dir);
 	
 	if (!(dir = opendir(argv[2]))) {
-		error("car_train: [NEG_DIR] does not exist.");
+		error("train: [NEG_DIR] open failed.");
 	}
 	/* Set NEG_PATH_BASE to [NEG_DIR] and append '/' or '\' */
 	strcpy(NEG_PATH_BASE, argv[2]);	
@@ -51,7 +48,7 @@ int main(int argc, char *argv[]) {
 	
 	fout.open(argv[3]);
 	if (!(fout)) {
-		error("car_train: [OUTPUT_FILE] does not exist.");
+		error("train: [OUTPUT_FILE] open failed.");
 	}
 	
 	/** Command is correct **/
