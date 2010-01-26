@@ -80,7 +80,7 @@ int main(int argc, char *argv[]) {
 #endif
 	extractAll(NEG_PATH_BASE, NEG, N2, blockCount);
 	cout << "Extraction of NEG data completed.\n";
-#if 1
+#if 0
 	printMat(NEG, "NEG", 9354 * blockCount, 9355 * blockCount - 1, 0, 4);
 #endif
 	assert(blockCount > 0);

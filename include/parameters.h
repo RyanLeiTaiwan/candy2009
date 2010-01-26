@@ -33,7 +33,7 @@
 #define MAX_LINE_LENGTH 50
 
 /** Run-time options: may be edited **/
-#define GETCHAR 1 // Encounter getchar()'s in training, i.e., verbose mode.;
+#define GETCHAR 0 // Encounter getchar()'s in training, i.e., verbose mode.;
 #define CVWINDOW_X 500  // x position of OpenCV's NamedWindow
 #define CVWINDOW_Y 100  // y position of OpenCV's NamedWindow
 #define CVWINDOW_WIDTH 512  // width of the NamedWindow
