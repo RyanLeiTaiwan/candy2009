@@ -1,7 +1,7 @@
 /** File: adaboost.cpp
  ** Author: Ryan Lei
  ** Creation: 2009/12/28
- ** Modification: 2009/01/11
+ ** Modification: 2009/01/26
  ** Description: The implementations of cascaded AdaBoost.
  **   This learning algorithm is based on the Chen-and-Chen paper,
  **   which is "real" AdaBoost in a "cascaded" structure.
@@ -19,9 +19,9 @@ void AdaWeak::setValue(int Bid, int Fid, char parity, float decision, float weig
 	this->weight = weight;
 }
 
-/* Learn AdaBoost stage A[i,j] */
-void learnA(const int N1, const int N2, const int blockCount, int &rejectCount, bool rejectTable[],
-			CvMat *POS, CvMat *NEG, AdaStrong &H, float &F_current, ofstream &fout) {
+/* Learn AdaBoost stage A[i,j]: Returns true if running out of NEG images. */
+bool learnA(const int N1, const int N2, const int blockCount, int &rejectCount, bool rejectTable[],
+			CvMat *POS, CvMat *NEG, vector<AdaStrong> &H, float &F_current) {
 	
 	/* [0] Initialization */
 	int selection[ N1 ];  // image selection result
@@ -34,11 +34,11 @@ void learnA(const int N1, const int N2, const int blockCount, int &rejectCount, 
 	negWeight = cvCloneMat(posWeight);
 	
 	/* [1] Randomly select N1 negative examples from the bootstrap set.
-	 * Report an error if NEG images are not enough
+	 * Stop the training if negative images are not enough.
 	 */	
 	if (N2 - rejectCount < N1) {
-		fout << "Warning: Not enough NEG images.\n";
-		error( "learnA(): Not enough NEG images." );
+		cout << "learnA(): Run out of negative images.\n";
+		return true;
 	}
     selectNeg(N1, N2, rejectTable, selection);
 
@@ -46,6 +46,8 @@ void learnA(const int N1, const int N2, const int blockCount, int &rejectCount, 
 	CvMat *posResult = cvCreateMat(1, N1, CV_32FC1);
 	CvMat *negResult = cvCreateMat(1, N1, CV_32FC1);
 	
+	/* Create an AdaStrong */
+	H.push_back(AdaStrong());
 	int weakUsed = 0;
 	while (f_local > f_maxA) {
 		/* [2] Add a weak learner h to the strong classifier A[i,j] */
@@ -66,9 +68,9 @@ void learnA(const int N1, const int N2, const int blockCount, int &rejectCount, 
 		getchar();
 #endif
 
+		int detect = 0, fp = 0;  // Counters for detections and false-positives
 #if GETCHAR
 		/* May be skipped: Calculate d_local and f_local of H(x) */
-		int detect = 0, fp = 0;  // Counters for detections and false-positives
 		for (int Iid = 0; Iid < N1; Iid++) {
 			if (cvGetReal2D(posResult, 0, Iid) >= 0.f) {
 				detect++;
@@ -122,14 +124,33 @@ void learnA(const int N1, const int N2, const int blockCount, int &rejectCount, 
 		
 	} // End of loop "while (f_local > f_maxA). Now the learning of strong classifier H is complete."
 	
-	/* Update the overall false positive rate */
+	/* [5] Write the threshold to the AdaStrong */
+	H.back().threshold = threshold;
 	
-	/* Reject the true negative images */
-	/* ............
-	 .........
-	 ......
-	 */
+	/* [6] Update the overall false positive rate */
+	F_current *= f_local;
+	cout << "Weak learners used: " << weakUsed << endl;
+	cout << "Overall false positive rate: " << F_current << endl;
 	
+	/* [7] Reject the true negative images */
+#if GETCHAR
+	int rejectLocal = 0;
+#endif
+	for (int Iid = 0; Iid < N1; Iid++) {
+		if (cvGetReal2D(negResult, 0, Iid) < 0.f) {
+			rejectTable[selection[Iid]] = true;
+			rejectCount++;
+#if GETCHAR
+			rejectLocal++;
+#endif
+		}
+	}
+#if GETCHAR
+	cout << "Rejected " << rejectLocal << " images for this AdaBoost stage.\n";
+#endif
+	cout << "Rejected " << rejectCount << " images in total.\n";
+	
+	return false;
 }
 
 /* Randomly select negative examples from the bootstrap */
@@ -156,7 +177,7 @@ void selectNeg(const int N1, const int N2, bool rejectTable[], int selection[]) 
 
 
 void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, CvMat *NEG,
-			 CvMat *posWeight, CvMat *negWeight, AdaStrong &H) {
+			 CvMat *posWeight, CvMat *negWeight, vector<AdaStrong> &H) {
 	
 	/* The best weak classifier h */
 	AdaWeak h;
@@ -258,7 +279,7 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 	float weight = logf((1.f - bestError) / bestError) / 2.f;
 	/* [4] Add h to H */
 	h.setValue(bestBid, bestFid, bestParity, bestDecision, weight);
-	H.h.push_back(h);
+	H.back().h.push_back(h);
 	
 #if GETCHAR
 	avgError /= (blockCount * FEATURE_COUNT);
@@ -302,7 +323,7 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 /* Classify all data using the strong classifier. Write the results in "results".
  * Returns the minumum posAnswer. */
 float classifyStrongAll(const int N1, const int blockCount, int selection[], CvMat *POS, CvMat *NEG,
-					   AdaStrong &H, CvMat *posResult, CvMat *negResult) {
+					    vector<AdaStrong> &H, CvMat *posResult, CvMat *negResult) {
 	
 	float minPosAnswer = 0.f; // Record posAnswer less than zero
 	/* H(x[i] = sign( sum[ weight_t * h_t(x[i]) ] )
@@ -311,7 +332,7 @@ float classifyStrongAll(const int N1, const int blockCount, int selection[], CvM
 	for (int Iid = 0; Iid < N1; Iid++) {
 		float posAnswer = 0.f;
 		float negAnswer = 0.f;
-		for (vector<AdaWeak>::iterator it = H.h.begin(); it != H.h.end(); it++) {
+		for (vector<AdaWeak>::iterator it = H.back().h.begin(); it != H.back().h.end(); it++) {
 			int Bid = it->Bid;
 			int Fid = it->Fid;
 			short parity = it->parity;
@@ -349,6 +370,27 @@ float classifyStrongAll(const int N1, const int blockCount, int selection[], CvM
 	} // End of loop "Iid"
 	
 	return minPosAnswer;
+}
+
+/* Write model parameters to [OUTPUT]. See docs/train_format.txt for output format. */
+void writeModel(vector<AdaStrong> &H, ofstream &fout) {
+	/* Model identifier */
+	fout << "[Candy2009]" << endl;
+	/* # of Strong classifiers */
+	fout << H.size() << endl;
+	
+	// AdaStrong iterator: itStrong. AdaWeak iterator: itWeak
+	for (vector<AdaStrong>::iterator itStrong = H.begin(); itStrong != H.end(); itStrong++) {
+		/* # of H_k' weak classifiers, threshold of H_k */
+		fout << itStrong->h.size() << " " << itStrong->threshold << endl;
+		for (vector<AdaWeak>::iterator itWeak = itStrong->h.begin(); itWeak != itStrong->h.end(); itWeak++) {
+			/* hk1's Bid, Fid, parity, decision, weight */
+			fout << itWeak->Bid << " " << itWeak->Fid << " " << (short)itWeak->parity << " " <<
+				itWeak->decision << " " << itWeak->weight << endl;
+		}
+	}
+	/* Model identifier */
+	fout << "[Candy2009]" << endl;
 }
 
 /* Learn Meta stage M[i] */
