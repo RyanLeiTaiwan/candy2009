@@ -264,6 +264,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateExpansionKey</key>
 							<array>
 								<string>08FB7794FE84155DC02AAC07</string>
+								<string>2E8F4775110ED0C4004AD9A9</string>
 								<string>08FB7795FE84155DC02AAC07</string>
 								<string>2ED7B34810E788070080D7C9</string>
 								<string>C6859E8C029090F304C91782</string>
@@ -275,8 +276,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>6</integer>
-									<integer>2</integer>
+									<integer>17</integer>
+									<integer>12</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -318,7 +319,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>adaboost.cpp</string>
+								<string>parameters.h</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -326,11 +327,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>adaboost.cpp</string>
+										<string>parameters.h</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>2EBAE872110F4D1600ADA3CE</string>
+										<string>2EBA1EAB110F69E300ADA3CE</string>
 										<key>history</key>
 										<array>
 											<string>2ED7585110E7E149001D3EE5</string>
@@ -352,19 +353,20 @@
 											<string>2EF3E53B110D54EF008CB96D</string>
 											<string>2E8F120B110EA9A6004AD9A9</string>
 											<string>2E8F47DC110EDE74004AD9A9</string>
-											<string>2E8F47DD110EDE74004AD9A9</string>
 											<string>2E453C5F110EF20A0018FD0A</string>
 											<string>2E453DDC110F24CE0018FD0A</string>
 											<string>2E453E17110F2F390018FD0A</string>
 											<string>2E453E2B110F338C0018FD0A</string>
 											<string>2E453E2C110F338C0018FD0A</string>
 											<string>2E453E2D110F338C0018FD0A</string>
-											<string>2E453E2E110F338C0018FD0A</string>
-											<string>2E4573EB110F3F2D0018FD0A</string>
-											<string>2E3F43DA110F40C60032402B</string>
 											<string>2EBAE868110F487E00ADA3CE</string>
-											<string>2EBAE869110F487E00ADA3CE</string>
-											<string>2EBAE86A110F487E00ADA3CE</string>
+											<string>2EBA1E5A110F564A00ADA3CE</string>
+											<string>2EBA1E5B110F564A00ADA3CE</string>
+											<string>2EBA1E7B110F5EF400ADA3CE</string>
+											<string>2EBA1E7C110F5EF400ADA3CE</string>
+											<string>2EBA1E81110F60F600ADA3CE</string>
+											<string>2EBA1EA9110F69E300ADA3CE</string>
+											<string>2EBA1EAA110F69E300ADA3CE</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -562,6 +564,8 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>2ED756D810E790DF001D3EE5</string>
+		<string>1CD10A99069EF8BA00B06720</string>
 		<string>2ED7B33D10E787C50080D7C9</string>
 		<string>/Users/ryanlei/candy2009/proj/mac/mac.xcodeproj</string>
 	</array>
@@ -765,13 +769,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>2E453D9F110F1B100018FD0A</string>
+				<string>2EBA1E3B110F537B00ADA3CE</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>2E453DA0110F1B100018FD0A</string>
-				<string>2E453DA1110F1B100018FD0A</string>
-				<string>2E453DA2110F1B100018FD0A</string>
-				<string>2E453DA3110F1B100018FD0A</string>
-				<string>2E453DA4110F1B100018FD0A</string>
+				<string>2EBA1E3C110F537B00ADA3CE</string>
+				<string>2EBA1E3D110F537B00ADA3CE</string>
+				<string>2EBA1E3E110F537B00ADA3CE</string>
+				<string>2EBA1E3F110F537B00ADA3CE</string>
+				<string>2EBA1E40110F537B00ADA3CE</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debugV3</string>
@@ -997,7 +1001,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1C78EAB2065D492600B07095</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>adaboost.h</string>
+								<string>sizeof.c</string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -1074,7 +1078,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>2ED756D810E790DF001D3EE5</string>
-				<string>2E453DAB110F1B100018FD0A</string>
+				<string>2EBA1E4C110F537B00ADA3CE</string>
 				<string>1C78EAB2065D492600B07095</string>
 				<string>1CD052920623707200166675</string>
 			</array>

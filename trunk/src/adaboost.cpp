@@ -189,6 +189,8 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 	float bestDecision;
 #if GETCHAR
 	float avgError = 0.f;
+	float bestPosMean;
+	float bestNegMean;
 #endif
 	/* Vector of 1's */
 	CvMat *ones = cvCreateMat(1, N1, CV_32FC1);
@@ -213,14 +215,25 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 			posResult = cvCloneMat(ones);
 			cvReleaseMat(&negResult);
 			negResult = cvCloneMat(ones);
-			
+
 			/* [1] Compute the POS & NEG mean feature values */
 			for (int Iid = 0; Iid < N1; Iid++) {
 				posMean += cvGetReal2D(POS, Iid * blockCount + Bid, Fid);
 				negMean += cvGetReal2D(NEG, selection[ Iid ] * blockCount + Bid, Fid);
+#if 1
+				assert(!isnan(cvGetReal2D(POS, Iid * blockCount + Bid, Fid)));
+				assert(!isnan(cvGetReal2D(NEG, selection[ Iid ] * blockCount + Bid, Fid)));
+#endif
 			}
+#if 0
+			cout << "Bid: " << Bid << ", Fid: " << Fid << ", posSum = " << posMean << ", negSum = " << negMean << endl;
+#endif			
+			
 			posMean /= N1;
 			negMean /= N1;
+#if 0
+			cout << "Bid: " << Bid << ", Fid: " << Fid << ", posMean = " << posMean << ", negMean = " << negMean << endl;
+#endif			
 			
 			/* Initial decision threshold: Average of POS_mean and NEG_mean */
 			float decision = (posMean + negMean) / 2.f;
@@ -229,9 +242,7 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 			 * parity = -1: ... posMean ... | ... negMean ...
 			 */
 			short parity = (posMean >= negMean) ? +1 : -1;
-#if 0
-			cout << "Bid: " << Bid << ", Fid: " << Fid << ", posMean = " << posMean << ", negMean = " << negMean << endl;
-#endif
+
 			
 			/* [2] Classify and compute the AdaBoost weighted error rate */
 			float error = 0.f;
@@ -250,7 +261,6 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 			}
 #if 0
 			cout << "Error rate = " << error << endl;
-			getchar();
 #endif
 #if GETCHAR
 			avgError += error;
@@ -263,6 +273,10 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 				bestFid = Fid;
 				bestParity = parity;
 				bestDecision = decision;
+#if GETCHAR
+				bestPosMean = posMean;
+				bestNegMean = negMean;
+#endif
 				/* Copy posResult and negResult to posMul, negMul */
 				cvReleaseMat(&posMul);
 				posMul = cvCloneMat(posResult);
@@ -286,7 +300,8 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 #if GETCHAR
 	avgError /= (blockCount * FEATURE_COUNT);
 	cout << "Average error rate: " << avgError << endl;
-	cout << "Best error rate: " << bestError << ", Bid: " << bestBid << ", Fid: " << bestFid << endl;
+	cout << "Best error rate: " << bestError << ", Bid: " << bestBid << ", Fid: " << bestFid;
+	cout << ", posMean: " << bestPosMean << ", negMean: " << bestNegMean << endl;
 	cout << "Best weak learner weight: " << weight << endl;
 #endif
 
@@ -298,7 +313,7 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 	
 	/* 
 	/* [5] Update the weight:
-	 *             D_t[i] * exp(-weight_t[i] * y_t[i] * h_t(x[i])
+	 *             D_t[i] * exp(-weight_t * y_t[i] * h_t(x[i])
 	 * D_t+1[i] = ------------------------------------------------
 	 *                         normalization factor
 	 *

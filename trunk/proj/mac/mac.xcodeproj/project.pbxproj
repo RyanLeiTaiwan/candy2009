@@ -38,6 +38,7 @@
 		2E8F4759110ECDDA004AD9A9 /* detect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = detect.cpp; path = ../../src/detect.cpp; sourceTree = SOURCE_ROOT; };
 		2E8F477A110ED138004AD9A9 /* gen_neg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gen_neg.cpp; path = ../../tools/gen_neg.cpp; sourceTree = SOURCE_ROOT; };
 		2E8F477C110ED1AD004AD9A9 /* toJPG.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = toJPG.c; path = ../../tools/toJPG.c; sourceTree = SOURCE_ROOT; };
+		2EBA1E6E110F5D9D00ADA3CE /* sizeof.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sizeof.c; path = ../../tools/sizeof.c; sourceTree = SOURCE_ROOT; };
 		2ED7B33310E7879F0080D7C9 /* OpenCV.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenCV.framework; path = Library/Frameworks/OpenCV.framework; sourceTree = SDKROOT; };
 		2ED7B34910E788300080D7C9 /* parameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = parameters.h; path = ../../include/parameters.h; sourceTree = "<group>"; };
 		2ED7B35110E788BF0080D7C9 /* gen_neg */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = gen_neg; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -111,6 +112,7 @@
 		2E8F4775110ED0C4004AD9A9 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				2EBA1E6E110F5D9D00ADA3CE /* sizeof.c */,
 				2E8F477C110ED1AD004AD9A9 /* toJPG.c */,
 				2E8F477A110ED138004AD9A9 /* gen_neg.cpp */,
 			);

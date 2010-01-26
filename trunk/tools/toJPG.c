@@ -10,7 +10,7 @@
 int main() {
 	FILE *fout = fopen("toJPG.m", "w");
 	char ch1, ch2, ch3;
-	for (ch1 = '0'; ch1 <= '2'; ch1++ ) {
+	for (ch1 = '0'; ch1 <= '1'; ch1++ ) {
 		for (ch2 = '0'; ch2 <= '9'; ch2++ ) {
 			for (ch3 = '0'; ch3 <= '9'; ch3++) {
 				fprintf(fout, "imwrite(imread('train%c%c%c.bmp'), 'train%c%c%c.JPG');\n",
