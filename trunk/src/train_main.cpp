@@ -75,8 +75,14 @@ int main(int argc, char *argv[]) {
 	cout << "\nStart of feature extraction ...\n";
 	extractAll(POS_PATH_BASE, POS, N1, blockCount);
 	cout << "Extraction of POS data completed.\n";
+#if 0
+	printMat(POS, "POS");
+#endif
 	extractAll(NEG_PATH_BASE, NEG, N2, blockCount);
 	cout << "Extraction of NEG data completed.\n";
+#if 1
+	printMat(NEG, "NEG", 9354 * blockCount, 9355 * blockCount - 1, 0, 4);
+#endif
 	assert(blockCount > 0);
 	cout << "# of blocks per image: " << blockCount << ".\n";
 #if GETCHAR
