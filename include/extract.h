@@ -6,7 +6,7 @@
  **/
 
 #include "util.h"
-#define TIMER 0  // Count the time for extracting one image
+#define TIMER_EXTRACT 0  // Count the time for extracting one image
 
 /* Feature extraction of the entire directory */
 void extractAll(char *PATH_BASE, CvMat *&POOL, int &N, int &blockCount);

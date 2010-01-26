@@ -168,7 +168,9 @@ void selectNeg(const int N1, const int N2, bool rejectTable[], int selection[]) 
 			//cout << "Iid = " << Iid << endl;
 		}
 		while (rejectTable[ Iid ] || selectTable[ Iid ]);
-		//cout << "selection = " << Iid << endl;
+#if 0
+		cout << "selection = " << Iid << endl;
+#endif
 		selectTable[ Iid ] = true;  // Mark as selected
 		selection[ i ] = Iid;  // Record the result
 	}	
@@ -326,7 +328,7 @@ float classifyStrongAll(const int N1, const int blockCount, int selection[], CvM
 					    vector<AdaStrong> &H, CvMat *posResult, CvMat *negResult) {
 	
 	float minPosAnswer = 0.f; // Record posAnswer less than zero
-	/* H(x[i] = sign( sum[ weight_t * h_t(x[i]) ] )
+	/* H(x[i]) = sign( sum[ weight_t * h_t(x[i]) ] )
 	 * Process the POS and NEG together in one loop.
 	 */
 	for (int Iid = 0; Iid < N1; Iid++) {

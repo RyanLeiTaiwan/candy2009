@@ -33,7 +33,7 @@
 #define MAX_LINE_LENGTH 50
 
 /** Run-time options: may be edited **/
-#define GETCHAR 0  // Encounter getchar()'s in run time, i.e., verbose mode.;
+#define GETCHAR 1 // Encounter getchar()'s in training, i.e., verbose mode.;
 #define CVWINDOW_X 500  // x position of OpenCV's NamedWindow
 #define CVWINDOW_Y 100  // y position of OpenCV's NamedWindow
 #define CVWINDOW_WIDTH 512  // width of the NamedWindow
@@ -51,7 +51,7 @@
 #define BIN_SIZE 40  // degrees in each bin (signed orientation => should be 360 / BIN_NUM)
 #define HALF_BIN_SIZE 20  // should be BIN_SIZE / 2
 
-#define F_target 1E-9  // target overall false positive rate
+#define F_target 1E-30  // target overall false positive rate
 #define d_minA 0.99  // minimum acceptable detection rate per AdaBoost stage (implemented as 100%)
 #define f_maxA 0.50  // maximum acceptable false positive rate per AdaBoost stage
 #define d_minM 1.00  // minimum acceptable detection rate per meta stage

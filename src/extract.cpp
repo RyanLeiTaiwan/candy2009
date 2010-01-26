@@ -109,7 +109,7 @@ void extractImg(IplImage *img, float *&ptr) {
 	/* data is the pointer to a single matrix: POOL[ Iid ] */
 	int Bid = 0; // block ID
 
-#if TIMER
+#if TIMER_EXTRACT
 	clock_t tic, toc;
 	tic = clock();
 #endif
@@ -163,7 +163,7 @@ void extractImg(IplImage *img, float *&ptr) {
 	/* Release remaining images */
 	cvReleaseImage(&normSum);
 
-#if TIMER
+#if TIMER_EXTRACT
 	toc = clock();
 	runningTime(tic, toc);
 	getchar();

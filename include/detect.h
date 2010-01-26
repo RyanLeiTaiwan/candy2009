@@ -6,6 +6,7 @@
  **/
 #include "adaboost.h"
 #include "extract.h"
+#define TIMER_DETECT 1  // Show running time of classifying a single image
 
 /* Internal parameters */
 // Origin to put text onto an image
@@ -18,7 +19,7 @@ void printUsage();
 /* Read the model parameters to vector<AdaStrong> H */
 void readModel(ifstream &fin, vector<AdaStrong> &H);
 /* Classify a single image using cascaded AdaBoost */
-int classifyCascade(IplImage *img, vector<AdaStrong> &H);
+float classifyCascade(IplImage *img, vector<AdaStrong> &H);
 					
 /* Online single image mode with directory [TEST_DIR] */
 void detectSingleOnline(char *TEST_DIR, vector<AdaStrong> &H);
