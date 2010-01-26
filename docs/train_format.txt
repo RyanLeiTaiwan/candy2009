@@ -1,0 +1,35 @@
+## File Name: train_format.txt
+## Author: Ryan Lei
+## Creation: 2010/01/26
+## Modification: XXXX/XX/XX
+## Description: 
+     This file describes the output format of the cascaded AdaBoost learning.
+	 Assume there are K strong classifiers, and the AdaStrong H_i has T_i weak classifiers.
+	 
+[Candy2009]
+# of Strong classifiers
+# of H_1' weak classifiers, threshold of H_1
+h11's Bid, Fid, parity, decision, weight
+h12's Bid, Fid, parity, decision, weight
+...
+h1T_1's Bid, Fid, parity, decision, weight
+# of H_2' weak classifiers, threshold of H_k
+h21's Bid, Fid, parity, decision, weight
+h22's Bid, Fid, parity, decision, weight
+...
+h2T_2's Bid, Fid, parity, decision, weight
+......
+# of H_K' weak classifiers, threshold of H_K
+hK1's Bid, Fid, parity, decision, weight
+hK2's Bid, Fid, parity, decision, weight
+......
+hKT_K's Bid, Fid, parity, decision, weight
+[Candy2009]
+
+
+==================================  Example  ==================================
+[Candy2009]
+
+
+
+[Candy2009]

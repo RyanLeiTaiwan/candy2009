@@ -12,6 +12,8 @@
 		2E49E12A110D79B300176010 /* extract.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E3CBDF810E8EB05004F7109 /* extract.cpp */; };
 		2E49E12B110D79B300176010 /* train.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E3CBEB110E8F596004F7109 /* train.cpp */; };
 		2E49E12C110D79B300176010 /* adaboost.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E3CBEB010E8F596004F7109 /* adaboost.cpp */; };
+		2E8F125D110EC44F004AD9A9 /* OpenCV.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2ED7B33310E7879F0080D7C9 /* OpenCV.framework */; };
+		2E8F127D110EC4D6004AD9A9 /* detect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E8F127C110EC4D6004AD9A9 /* detect.cpp */; };
 		2ED7B35810E7893A0080D7C9 /* OpenCV.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2ED7B33310E7879F0080D7C9 /* OpenCV.framework */; };
 		2ED7B37310E78A500080D7C9 /* gen_neg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2ED7B35610E7891B0080D7C9 /* gen_neg.cpp */; };
 /* End PBXBuildFile section */
@@ -25,6 +27,10 @@
 		2E3CBEB110E8F596004F7109 /* train.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = train.cpp; path = ../../src/train.cpp; sourceTree = "<group>"; };
 		2E49E10B110D797700176010 /* train */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = train; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E5B4A4710F8646100F0C953 /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = util.h; path = ../../include/util.h; sourceTree = SOURCE_ROOT; };
+		2E8F1207110EA69F004AD9A9 /* train_format.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = train_format.txt; path = ../../docs/train_format.txt; sourceTree = SOURCE_ROOT; };
+		2E8F1259110EC440004AD9A9 /* detect */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = detect; path = ../../../../../../bin/mac/detect; sourceTree = BUILT_PRODUCTS_DIR; };
+		2E8F127C110EC4D6004AD9A9 /* detect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = detect.cpp; path = ../../src/detect.cpp; sourceTree = SOURCE_ROOT; };
+		2E8F1281110EC525004AD9A9 /* detect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = detect.h; path = ../../include/detect.h; sourceTree = SOURCE_ROOT; };
 		2ED7B33310E7879F0080D7C9 /* OpenCV.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenCV.framework; path = Library/Frameworks/OpenCV.framework; sourceTree = SDKROOT; };
 		2ED7B34910E788300080D7C9 /* parameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = parameters.h; path = ../../include/parameters.h; sourceTree = "<group>"; };
 		2ED7B35110E788BF0080D7C9 /* gen_neg */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = gen_neg; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -38,6 +44,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				2E49E110110D799F00176010 /* OpenCV.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2E8F1257110EC440004AD9A9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2E8F125D110EC44F004AD9A9 /* OpenCV.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,6 +86,7 @@
 				2E3CBDF810E8EB05004F7109 /* extract.cpp */,
 				2E3CBEB110E8F596004F7109 /* train.cpp */,
 				2E3CBEB010E8F596004F7109 /* adaboost.cpp */,
+				2E8F127C110EC4D6004AD9A9 /* detect.cpp */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -81,6 +96,7 @@
 			children = (
 				2ED7B35110E788BF0080D7C9 /* gen_neg */,
 				2E49E10B110D797700176010 /* train */,
+				2E8F1259110EC440004AD9A9 /* detect */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -88,6 +104,7 @@
 		2ED7B34810E788070080D7C9 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
+				2E8F1281110EC525004AD9A9 /* detect.h */,
 				2E37465F10FB6E4400C1DC11 /* adaboost.h */,
 				2E3CBE0F10E8EC2D004F7109 /* extract.h */,
 				2E5B4A4710F8646100F0C953 /* util.h */,
@@ -99,6 +116,7 @@
 		C6859E8C029090F304C91782 /* Documentation */ = {
 			isa = PBXGroup;
 			children = (
+				2E8F1207110EA69F004AD9A9 /* train_format.txt */,
 				C6859E8B029090EE04C91782 /* mac.1 */,
 			);
 			name = Documentation;
@@ -121,6 +139,22 @@
 			name = train;
 			productName = train;
 			productReference = 2E49E10B110D797700176010 /* train */;
+			productType = "com.apple.product-type.tool";
+		};
+		2E8F1258110EC440004AD9A9 /* detect */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2E8F1261110EC45E004AD9A9 /* Build configuration list for PBXNativeTarget "detect" */;
+			buildPhases = (
+				2E8F1256110EC440004AD9A9 /* Sources */,
+				2E8F1257110EC440004AD9A9 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = detect;
+			productName = detect;
+			productReference = 2E8F1259110EC440004AD9A9 /* detect */;
 			productType = "com.apple.product-type.tool";
 		};
 		2ED7B35010E788BF0080D7C9 /* gen_neg */ = {
@@ -153,6 +187,7 @@
 			targets = (
 				2ED7B35010E788BF0080D7C9 /* gen_neg */,
 				2E49E10A110D797700176010 /* train */,
+				2E8F1258110EC440004AD9A9 /* detect */,
 			);
 		};
 /* End PBXProject section */
@@ -166,6 +201,14 @@
 				2E49E12A110D79B300176010 /* extract.cpp in Sources */,
 				2E49E12B110D79B300176010 /* train.cpp in Sources */,
 				2E49E12C110D79B300176010 /* adaboost.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2E8F1256110EC440004AD9A9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2E8F127D110EC4D6004AD9A9 /* detect.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -239,6 +282,36 @@
 			};
 			name = Release;
 		};
+		2E8F125B110EC441004AD9A9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = detect;
+			};
+			name = Debug;
+		};
+		2E8F125C110EC441004AD9A9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = detect;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 		2ED7B35310E788BF0080D7C9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -286,6 +359,15 @@
 			buildConfigurations = (
 				2E49E10D110D797700176010 /* Debug */,
 				2E49E10E110D797700176010 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2E8F1261110EC45E004AD9A9 /* Build configuration list for PBXNativeTarget "detect" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2E8F125B110EC441004AD9A9 /* Debug */,
+				2E8F125C110EC441004AD9A9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

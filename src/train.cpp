@@ -1,9 +1,9 @@
 /** File: train.cpp
  ** Author: Ryan Lei
  ** Creation: 2009/12/28
- ** Modification: 2010/01/25 
+ ** Modification: 2010/01/26 
  ** Description: The car-training program based on the paper:
-    Fast Human Detection Using a Novel Boosted Cascading Structure With Meta Stages, Chen and Chen, 2008.
+      Fast Human Detection Using a Novel Boosted Cascading Structure With Meta Stages, Chen and Chen, 2008.
     Important techniques / concepts:
       1. Real AdaBoost -> For now, use basic binary Adaboost
       2. Cascaded classifiers -> For now, it is without meta-stages (no confidence values)
@@ -27,28 +27,29 @@ int main(int argc, char *argv[]) {
 	char slash = Unix ? '/' : '\\'; // It is '/' or '\' depending on OS
 	char POS_PATH_BASE[ MAX_PATH_LENGTH ];
 	char NEG_PATH_BASE[ MAX_PATH_LENGTH ];
+	clock_t tic, toc;
 	
 	if (argc != 4) {
 		error("Usage: car_train [POS_DIR] [NEG_DIR] [OUTPUT].");
 	}
 	
-	if (!(dir = opendir(argv[ 1 ]))) {
+	if (!(dir = opendir(argv[1]))) {
 		error("car_train: [POS_DIR] does not exist.");
 	}
 	/* Set POS_PATH_BASE to [POS_DIR] and append '/' or '\' */
-	strcpy(POS_PATH_BASE, argv[ 1 ]);	
+	strcpy(POS_PATH_BASE, argv[1]);	
 	sprintf(POS_PATH_BASE, "%s%c", POS_PATH_BASE, slash);
 	closedir(dir);
 	
-	if (!(dir = opendir(argv[ 2 ]))) {
+	if (!(dir = opendir(argv[2]))) {
 		error("car_train: [NEG_DIR] does not exist.");
 	}
 	/* Set NEG_PATH_BASE to [NEG_DIR] and append '/' or '\' */
-	strcpy(NEG_PATH_BASE, argv[ 2 ]);	
+	strcpy(NEG_PATH_BASE, argv[2]);	
 	sprintf(NEG_PATH_BASE, "%s%c", NEG_PATH_BASE, slash);	
 	closedir(dir);
 	
-	fout.open(argv[ 3 ]);
+	fout.open(argv[3]);
 	if (!(fout)) {
 		error("car_train: [OUTPUT] does not exist.");
 	}
@@ -60,6 +61,7 @@ int main(int argc, char *argv[]) {
 		"Press [Enter] to continue, or ctrl+C/D/Z to exit ...";
 	getchar();
 	
+	tic = clock();
 	/* Use only one large matrix for storing all POS / NEG feature data */
 	CvMat *POS, *NEG;
 	int N1, N2; /* number of positive / negative images */
@@ -89,7 +91,6 @@ int main(int argc, char *argv[]) {
 	srand(time(NULL));
 	float F_current = 1.0;  // current overall false positive rate
 	int i = 1;  // AdaBoost stage counter
-	int k = 0;  // # of AdaStrong trained so far (useful??)
 	int rejectCount = 0;  // # of negative images rejected so far
 
 	/* Allocate rejection table */
@@ -97,34 +98,47 @@ int main(int argc, char *argv[]) {
 	bool *rejectTable = new bool[ N2 ];
 	memset(rejectTable, 0, N2);
 	
-	while ( F_current > F_target ) {
+	bool stop = false;  // Stopping flag
+	vector<AdaStrong> H;  // A cascade of AdaBoost strong classifiers
+	
+	/*** The training algorithm ***/
+	while (F_current > F_target && !stop) {
 		/* upper bound for j */
 		int jEnd = (i == 1) ? (ni + 1) : ni;
 		
-		for (int j = 1; j <= jEnd; j++, k++ ) {
-			/* One AdaBoost strong classifier */
-			AdaStrong H;
+		for (int j = 1; j <= jEnd; j++) {
 			/* Learn an A[i,j] stage */
 			cout << "\nLearning stage A[" << i << "," << j << "]...\n";
-			learnA(N1, N2, blockCount, rejectCount, rejectTable, POS, NEG, H, F_current, fout);
-			cout << "Stage A[" << i << "," << j << "] completes.\n";
+			if (stop = learnA(N1, N2, blockCount, rejectCount, rejectTable, POS, NEG, H, F_current)) {
+				break;
+			}
+			cout << "Stage A[" << i << "," << j << "] completed.\n";
 #if GETCHAR
 			getchar();
 #endif
 		}
 #if META
+		if (stop) break;
 		/* Learn a M[i] stage */
 		cout << "\nLearning stage M[" << i << "]...\n";
 		learnM();
-		cout << "Stage M[" << i << "," << j << "] completes.\n";
+		cout << "Stage M[" << i << "," << j << "] completed.\n";
   #if GETCHAR
 		getchar();
   #endif
-//		k++;
 #endif
 		i++;
 		
-	}	
+	} // End of loop while (F_current > F_target && !stop)	
+
+	cout << "The entire training process completed.\nWriting model parameters to " << argv[3] << " ... ";
+	/* Write model parameters to [OUTPUT]. See docs/train_format.txt for explanation. */
+	writeModel(H, fout);
+	cout << "done!\n";
+	
+	/* Show running time */
+	toc = clock();
+	runningTime(tic, toc);
 	
 	/* Don't forget to close the file stream */
 	fout.close();
