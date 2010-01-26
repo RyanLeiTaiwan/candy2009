@@ -1,8 +1,8 @@
-/** File: train.cpp
+/** File: train_main.cpp
  ** Author: Ryan Lei
  ** Creation: 2009/12/28
  ** Modification: 2010/01/26 
- ** Description: The car-training program based on the paper:
+ ** Description: The main function of the car-training program based on the paper:
       Fast Human Detection Using a Novel Boosted Cascading Structure With Meta Stages, Chen and Chen, 2008.
     Important techniques / concepts:
       1. Real AdaBoost -> For now, use basic binary Adaboost
@@ -11,7 +11,7 @@
       4. Integral image technique in computation
  **/
 
-/* Usage: car_train [POS_DIR] [NEG_DIR] [OUTPUT] */
+/* Usage: car_train [POS_DIR] [NEG_DIR] [OUTPUT_FILE] */
 #define META 0  // NOT YET supporting meta stages
 
 #include "extract.h"
@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
 	clock_t tic, toc;
 	
 	if (argc != 4) {
-		error("Usage: car_train [POS_DIR] [NEG_DIR] [OUTPUT].");
+		error("Usage: car_train [POS_DIR] [NEG_DIR] [OUTPUT_FILE].");
 	}
 	
 	if (!(dir = opendir(argv[1]))) {
@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
 	
 	fout.open(argv[3]);
 	if (!(fout)) {
-		error("car_train: [OUTPUT] does not exist.");
+		error("car_train: [OUTPUT_FILE] does not exist.");
 	}
 	
 	/** Command is correct **/
@@ -132,7 +132,7 @@ int main(int argc, char *argv[]) {
 	} // End of loop while (F_current > F_target && !stop)	
 
 	cout << "The entire training process completed.\nWriting model parameters to " << argv[3] << " ... ";
-	/* Write model parameters to [OUTPUT]. See docs/train_format.txt for explanation. */
+	/* Write model parameters to [OUTPUT_FILE]. See docs/train_format.txt for explanation. */
 	writeModel(H, fout);
 	cout << "done!\n";
 	

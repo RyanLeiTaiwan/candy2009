@@ -4,5 +4,9 @@
  ** Update: XXXX/XX/XX
  ** Description: Header file for the car-detection program.
  **/
+#include <vector>
+#include "parameters.h"
+#include "util.h"
 
-void function( int param1, int param2 );
+/* Print program usage: reused a lot */
+void printUsage();
