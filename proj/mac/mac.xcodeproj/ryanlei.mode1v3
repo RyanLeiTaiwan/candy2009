@@ -229,6 +229,8 @@
 			<key>Layout</key>
 			<array>
 				<dict>
+					<key>BecomeActive</key>
+					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -275,8 +277,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>8</integer>
-									<integer>2</integer>
+									<integer>11</integer>
+									<integer>9</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -311,14 +313,12 @@
 					<key>Dock</key>
 					<array>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>detect.cpp</string>
+								<string>adaboost.h</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -326,11 +326,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>detect.cpp</string>
+										<string>adaboost.h</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>2E453D91110F19AF0018FD0A</string>
+										<string>2E453DB8110F1B450018FD0A</string>
 										<key>history</key>
 										<array>
 											<string>2ED7585110E7E149001D3EE5</string>
@@ -361,10 +361,10 @@
 											<string>2E453D6C110F16EF0018FD0A</string>
 											<string>2E453D6D110F16EF0018FD0A</string>
 											<string>2E453D6F110F16EF0018FD0A</string>
-											<string>2E453D71110F16EF0018FD0A</string>
 											<string>2E453D82110F18CD0018FD0A</string>
+											<string>2E453DB1110F1B1D0018FD0A</string>
+											<string>2E453DB7110F1B450018FD0A</string>
 											<string>2E453D83110F18CD0018FD0A</string>
-											<string>2E453D84110F18CD0018FD0A</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -562,6 +562,8 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>2ED756D810E790DF001D3EE5</string>
+		<string>1CD10A99069EF8BA00B06720</string>
 		<string>2ED7B33D10E787C50080D7C9</string>
 		<string>/Users/ryanlei/candy2009/proj/mac/mac.xcodeproj</string>
 	</array>
@@ -767,13 +769,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>2E8F120F110EA9A6004AD9A9</string>
+				<string>2E453D9F110F1B100018FD0A</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>2E8F1210110EA9A6004AD9A9</string>
-				<string>2E8F1211110EA9A6004AD9A9</string>
-				<string>2E8F1212110EA9A6004AD9A9</string>
-				<string>2E8F1213110EA9A6004AD9A9</string>
-				<string>2E8F1214110EA9A6004AD9A9</string>
+				<string>2E453DA0110F1B100018FD0A</string>
+				<string>2E453DA1110F1B100018FD0A</string>
+				<string>2E453DA2110F1B100018FD0A</string>
+				<string>2E453DA3110F1B100018FD0A</string>
+				<string>2E453DA4110F1B100018FD0A</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debugV3</string>
@@ -999,7 +1001,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1C78EAB2065D492600B07095</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>train_main.cpp</string>
+								<string>adaboost.h</string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -1076,7 +1078,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>2ED756D810E790DF001D3EE5</string>
-				<string>2E8F4724110EC559004AD9A9</string>
+				<string>2E453DAB110F1B100018FD0A</string>
 				<string>1C78EAB2065D492600B07095</string>
 				<string>1CD052920623707200166675</string>
 			</array>
