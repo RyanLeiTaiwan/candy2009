@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2E453D69110F16D00018FD0A /* adaboost.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E3CBEB010E8F596004F7109 /* adaboost.cpp */; };
 		2E49E110110D799F00176010 /* OpenCV.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2ED7B33310E7879F0080D7C9 /* OpenCV.framework */; };
 		2E49E129110D79B300176010 /* util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E0180FC10F8586A00978B21 /* util.cpp */; };
 		2E49E12A110D79B300176010 /* extract.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E3CBDF810E8EB05004F7109 /* extract.cpp */; };
@@ -16,6 +17,8 @@
 		2E8F127D110EC4D6004AD9A9 /* detect_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E8F127C110EC4D6004AD9A9 /* detect_main.cpp */; };
 		2E8F475A110ECDDA004AD9A9 /* detect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E8F4759110ECDDA004AD9A9 /* detect.cpp */; };
 		2E8F477B110ED138004AD9A9 /* gen_neg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E8F477A110ED138004AD9A9 /* gen_neg.cpp */; };
+		2E8F47C9110ED9C9004AD9A9 /* util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E0180FC10F8586A00978B21 /* util.cpp */; };
+		2E8F47CA110EDA17004AD9A9 /* extract.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E3CBDF810E8EB05004F7109 /* extract.cpp */; };
 		2ED7B35810E7893A0080D7C9 /* OpenCV.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2ED7B33310E7879F0080D7C9 /* OpenCV.framework */; };
 /* End PBXBuildFile section */
 
@@ -29,7 +32,7 @@
 		2E49E10B110D797700176010 /* train */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = train; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E5B4A4710F8646100F0C953 /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = util.h; path = ../../include/util.h; sourceTree = SOURCE_ROOT; };
 		2E8F1207110EA69F004AD9A9 /* train_format.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = train_format.txt; path = ../../docs/train_format.txt; sourceTree = SOURCE_ROOT; };
-		2E8F1259110EC440004AD9A9 /* detect */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = detect; path = ../../../../../../bin/mac/detect; sourceTree = BUILT_PRODUCTS_DIR; };
+		2E8F1259110EC440004AD9A9 /* detect */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = detect; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E8F127C110EC4D6004AD9A9 /* detect_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = detect_main.cpp; path = ../../src/detect_main.cpp; sourceTree = "<group>"; };
 		2E8F1281110EC525004AD9A9 /* detect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = detect.h; path = ../../include/detect.h; sourceTree = SOURCE_ROOT; };
 		2E8F4759110ECDDA004AD9A9 /* detect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = detect.cpp; path = ../../src/detect.cpp; sourceTree = SOURCE_ROOT; };
@@ -223,6 +226,9 @@
 			files = (
 				2E8F127D110EC4D6004AD9A9 /* detect_main.cpp in Sources */,
 				2E8F475A110ECDDA004AD9A9 /* detect.cpp in Sources */,
+				2E8F47C9110ED9C9004AD9A9 /* util.cpp in Sources */,
+				2E8F47CA110EDA17004AD9A9 /* extract.cpp in Sources */,
+				2E453D69110F16D00018FD0A /* adaboost.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

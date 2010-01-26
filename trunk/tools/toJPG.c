@@ -3,7 +3,7 @@
  ** Creation: 2010/01/25
  ** Modification: 2010/01/26
  ** Description: Generate a MATLAB program of converting BMP images into JPG images.
- **              Useful when batch convertion is unavailable.
+ **              Useful when BMP format is not compatible with OpenCV and when batch convertion is unavailable.
  **/
 
 #include <stdio.h>

@@ -15,12 +15,18 @@
 #include "detect.h"
 
 int main(int argc, char *argv[]) {
-	
+	DIR *dir1/*, *dir2*/;
+	ifstream fin;
+	char slash = Unix ? '/' : '\\'; // It is '/' or '\' depending on OS
+	char PATH1_BASE[MAX_PATH_LENGTH];
+	//char PATH2_BASE[MAX_PATH_LENGTH];
+	vector<AdaStrong> H;
 	
 	/* Process user command */
 	if (argc < 3 || argc > 5) {
 		printUsage();
 	}
+	
 	/* Option: -c */
 	if (!strcmp(argv[1], "-c")) {
 		if (argc == 3) {
@@ -42,7 +48,21 @@ int main(int argc, char *argv[]) {
 	/* Option: -s */
 	else if (!strcmp(argv[1], "-s")) {
 		if (argc == 4) {
-			cout << "Single image mode (TEST_DIR). Under construction." << endl;
+			cout << "Single image mode (TEST_DIR)." << endl;
+			if (!(dir1 = opendir(argv[2]))) {
+				error("detect: [TEST_DIR] open failed.");
+			}
+			fin.open(argv[3]);
+			if (!fin) {
+				error("detect: [MODEL_FILE] open failed.");
+			}
+			/*** Single image mode with [TEST_DIR] ***/
+			/* Set PATH1_BASE to [TEST_DIR] and append slash */
+			strcpy(PATH1_BASE, argv[2]);	
+			sprintf(PATH1_BASE, "%s%c", PATH1_BASE, slash);
+			/* Read model parameters into AdaStrong vector */
+			readModel(fin, H);
+			detectSingleOnline(PATH1_BASE, H);
 		}
 		else if (argc == 5) {
 			cout << "Single image mode (POS_DIR, NEG_DIR). Under construction." << endl;
@@ -56,5 +76,6 @@ int main(int argc, char *argv[]) {
 		printUsage();
 	}
 
+	fin.close();
 	return 0;
 }

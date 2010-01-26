@@ -11,7 +11,7 @@
 #include "adaboost.h"
 
 /* Set values of an AdaWeak */
-void AdaWeak::setValue(int Bid, int Fid, char parity, float decision, float weight) {
+void AdaWeak::setValue(int Bid, int Fid, short parity, float decision, float weight) {
 	this->Bid = Bid;
 	this->Fid = Fid;
 	this->parity = parity;
@@ -183,7 +183,7 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 	AdaWeak h;
 	float bestError = 1.f;
 	int bestBid, bestFid;
-	char bestParity;
+	short bestParity;
 	float bestDecision;
 #if GETCHAR
 	float avgError = 0.f;
@@ -226,7 +226,7 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 			 * parity = +1: ... negMean ... | ... posMean ...
 			 * parity = -1: ... posMean ... | ... negMean ...
 			 */
-			float parity = (posMean >= negMean) ? +1 : -1;
+			short parity = (posMean >= negMean) ? +1 : -1;
 #if 0
 			cout << "Bid: " << Bid << ", Fid: " << Fid << ", posMean = " << posMean << ", negMean = " << negMean << endl;
 #endif
@@ -385,7 +385,7 @@ void writeModel(vector<AdaStrong> &H, ofstream &fout) {
 		fout << itStrong->h.size() << " " << itStrong->threshold << endl;
 		for (vector<AdaWeak>::iterator itWeak = itStrong->h.begin(); itWeak != itStrong->h.end(); itWeak++) {
 			/* hk1's Bid, Fid, parity, decision, weight */
-			fout << itWeak->Bid << " " << itWeak->Fid << " " << (short)itWeak->parity << " " <<
+			fout << itWeak->Bid << " " << itWeak->Fid << " " << itWeak->parity << " " <<
 				itWeak->decision << " " << itWeak->weight << endl;
 		}
 	}
