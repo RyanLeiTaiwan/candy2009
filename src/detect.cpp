@@ -59,7 +59,7 @@ void readModel(ifstream &fin, vector<AdaStrong> &H) {
 		error("readModel(): Model identifier error. Should be [Candy2009].");
 	}	
 	
-	cout << "Model read successfully. # of AdaBoost stages = " << H.size() << endl;
+	cout << "Model read successfully.\n# of AdaBoost stages = " << H.size() << endl;
 }
 
 /* Classify a single image using cascaded AdaBoost */
@@ -157,7 +157,7 @@ void detectSingleOnline(char *TEST_DIR, vector<AdaStrong> &H) {
 	
 	
 	
-	cout << "\nPress [Space] for the next image. Press [ESC] to exit." << endl;
+	cout << "\nPress any key for the next image. Press [ESC] to exit." << endl;
 	try {
 		if (!(dir = opendir(TEST_DIR))) {
 			throw "Directory open exception";
