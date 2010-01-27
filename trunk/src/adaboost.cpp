@@ -1,7 +1,7 @@
 /** File: adaboost.cpp
  ** Author: Ryan Lei
  ** Creation: 2009/12/28
- ** Modification: 2009/01/26
+ ** Modification: 2009/01/27
  ** Description: The implementations of cascaded AdaBoost.
  **   This learning algorithm is based on the Chen-and-Chen paper,
  **   which is "real" AdaBoost in a "cascaded" structure.
@@ -254,7 +254,7 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 				}
 				
 				/* Nagative and wrong => False positive */
-				if (parity * cvGetReal2D(NEG, Iid * blockCount + Bid, Fid) >= parity * decision) {
+				if (parity * cvGetReal2D(NEG, selection[Iid] * blockCount + Bid, Fid) >= parity * decision) {
 					error += cvGetReal2D(negWeight, 0, Iid);
 					cvSetReal2D(negResult, 0, Iid, -1.f);
 				}
