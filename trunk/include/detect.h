@@ -8,11 +8,6 @@
 #include "extract.h"
 #define TIMER_DETECT 1  // Show running time of classifying a single image
 
-/* Internal parameters */
-// Origin to put text onto an image
-#define FONT_X 55
-#define FONT_Y 30
-
 /* Print program usage: reused a lot */
 void printUsage();
 
