@@ -73,8 +73,7 @@ float classifyCascade(IplImage *img, vector<AdaStrong> &H) {
 	assert(img->width == WINDOW_WIDTH && img->height == WINDOW_HEIGHT);
 	/* countBlocks() just this once */
 	static int blockCount = countBlocks(img);
-	cout << "blockCount = " << blockCount << endl;
-
+	
 	/* Feature extraction */
 	CvMat *POOL = cvCreateMat(blockCount, FEATURE_COUNT, CV_32FC1);
 	float *ptr = (float *) POOL->data.ptr;  // Pointer to a CvMat element */

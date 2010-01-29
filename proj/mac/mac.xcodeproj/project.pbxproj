@@ -31,7 +31,6 @@
 		2E3CBEB110E8F596004F7109 /* train_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = train_main.cpp; path = ../../src/train_main.cpp; sourceTree = "<group>"; };
 		2E49E10B110D797700176010 /* train */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = train; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E5B4A4710F8646100F0C953 /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = util.h; path = ../../include/util.h; sourceTree = SOURCE_ROOT; };
-		2E8F1207110EA69F004AD9A9 /* train_format.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = train_format.txt; path = ../../docs/train_format.txt; sourceTree = SOURCE_ROOT; };
 		2E8F1259110EC440004AD9A9 /* detect */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = detect; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E8F127C110EC4D6004AD9A9 /* detect_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = detect_main.cpp; path = ../../src/detect_main.cpp; sourceTree = "<group>"; };
 		2E8F1281110EC525004AD9A9 /* detect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = detect.h; path = ../../include/detect.h; sourceTree = SOURCE_ROOT; };
@@ -39,6 +38,7 @@
 		2E8F477A110ED138004AD9A9 /* gen_neg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gen_neg.cpp; path = ../../tools/gen_neg.cpp; sourceTree = SOURCE_ROOT; };
 		2E8F477C110ED1AD004AD9A9 /* toJPG.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = toJPG.c; path = ../../tools/toJPG.c; sourceTree = SOURCE_ROOT; };
 		2EBA1E6E110F5D9D00ADA3CE /* sizeof.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sizeof.c; path = ../../tools/sizeof.c; sourceTree = SOURCE_ROOT; };
+		2EBE766F1112115200D59B1F /* train_format.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = train_format.txt; path = ../../doc/train_format.txt; sourceTree = SOURCE_ROOT; };
 		2ED7B33310E7879F0080D7C9 /* OpenCV.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenCV.framework; path = Library/Frameworks/OpenCV.framework; sourceTree = SDKROOT; };
 		2ED7B34910E788300080D7C9 /* parameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = parameters.h; path = ../../include/parameters.h; sourceTree = "<group>"; };
 		2ED7B35110E788BF0080D7C9 /* gen_neg */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = gen_neg; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -134,7 +134,7 @@
 		C6859E8C029090F304C91782 /* Documentation */ = {
 			isa = PBXGroup;
 			children = (
-				2E8F1207110EA69F004AD9A9 /* train_format.txt */,
+				2EBE766F1112115200D59B1F /* train_format.txt */,
 				C6859E8B029090EE04C91782 /* mac.1 */,
 			);
 			name = Documentation;
