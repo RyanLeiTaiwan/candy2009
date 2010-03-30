@@ -31,7 +31,7 @@ int main( int argc, char *argv[] ) {
 	/* Example 2-9: Input from a "camera" */
 	cvNamedWindow( "USB Camera", CV_WINDOW_AUTOSIZE );
 	cvWaitKey( 1000 );
-	CvCapture *camera = cvCaptureFromCAM( 0 );
+	CvCapture *camera = cvCaptureFromCAM( 2 );
 	assert( camera != NULL );
 	while ( true ) {
 		frame = cvQueryFrame( camera );

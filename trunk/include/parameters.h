@@ -52,7 +52,7 @@
 #define BIN_SIZE 40  // degrees in each bin (signed orientation => should be 360 / BIN_NUM)
 #define HALF_BIN_SIZE 20  // should be BIN_SIZE / 2
 
-#define F_target 1E-30  // target overall false positive rate
+#define F_target 1E-30  // target overall false positive rate -> 0
 #define d_minA 0.99  // minimum acceptable detection rate per AdaBoost stage (implemented as 100%)
 #define f_maxA 0.50  // maximum acceptable false positive rate per AdaBoost stage
 #define d_minM 1.00  // minimum acceptable detection rate per meta stage

@@ -1,11 +1,12 @@
 /** File: util.h
  ** Author: Ryan Lei
  ** Creation: 2010/01/09
- ** Update: 2010/01/12
+ ** Update: 2010/03/27
  ** Description: Header file for utility functions
  **/
 
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <dirent.h>
 #include <cstring>
@@ -29,7 +30,8 @@ void printMat(CvMat *matrix, const char *name);
 void printMat(IplImage *img, const char *name, int rowBeg, int rowEnd, int colBeg, int colEnd);
 void printMat(IplImage *img, const char *name);
 /* Timer function */
-void runningTime( clock_t tic, clock_t toc );
+void runningTime(clock_t tic, clock_t toc);
+void avgRunningTime(clock_t tic, clock_t toc, int N);
 /* Mean and variance normalization given the "sum", the sum of squares "sqSum", and # of pixels N */
 void meanVarNorm(IplImage *normImg, double sum, double sqSum, int N);
 /* Upright rectangular sum given two corner points (x1,y1), (x2,y2) */
