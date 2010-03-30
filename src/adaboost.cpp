@@ -1,7 +1,7 @@
 /** File: adaboost.cpp
  ** Author: Ryan Lei
  ** Creation: 2009/12/28
- ** Modification: 2009/01/27
+ ** Modification: 2009/03/27
  ** Description: The implementations of cascaded AdaBoost.
  **   This learning algorithm is based on the Chen-and-Chen paper,
  **   which is "real" AdaBoost in a "cascaded" structure.
@@ -130,7 +130,7 @@ bool learnA(const int N1, const int N2, const int blockCount, int &rejectCount, 
 	/* [6] Update the overall false positive rate */
 	F_current *= f_local;
 	cout << "Weak learners used: " << weakUsed << endl;
-	cout << "Overall false positive rate: " << F_current << endl;
+	cout << "Overall training false positive rate: " << F_current << endl;
 	
 	/* [7] Reject the true negative images */
 #if GETCHAR

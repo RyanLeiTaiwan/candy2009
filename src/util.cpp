@@ -1,7 +1,7 @@
 /** File: util.cpp
  ** Author: Ryan Lei
  ** Creation: 2010/01/09
- ** Modification: 2010/01/25
+ ** Modification: 2010/03/30
  ** Description: Utility functions
  **/
 
@@ -64,7 +64,7 @@ void printMat(CvMat *A, const char *name, int rowBeg, int rowEnd, int colBeg, in
 			case CV_64F:
 				for (int j = colBeg; j <= colEnd; j++)
 					/* Use C's printf() for convenience :p */
-					printf("%6.3f ", (float)cvGetReal2D(A, i, j));
+					printf("%6.2f ", (float)cvGetReal2D(A, i, j));
 				break;
 			case CV_8U:
 			case CV_8S:
@@ -96,7 +96,7 @@ void printMat(CvMat *A, const char *name) {
 			case CV_64F:
 				for (int j = colBeg; j <= colEnd; j++)
 				/* Use C's printf() for convenience :p */
-					printf("%6.3f ", (float)cvGetReal2D(A, i, j));
+					printf("%6.2f ", (float)cvGetReal2D(A, i, j));
 				break;
 			case CV_8U:
 			case CV_8S:
@@ -137,7 +137,7 @@ void printMat(IplImage *A, const char *name, int rowBeg, int rowEnd, int colBeg,
 			case IPL_DEPTH_64F:
 				for (int j = colBeg; j <= colEnd; j++)
 				/* Use C's printf() for convenience :p */
-					printf("%6.3f ", (float)cvGetReal2D(A, i, j));
+					printf("%6.2f ", (float)cvGetReal2D(A, i, j));
 				break;
 			case IPL_DEPTH_8U:
 			case IPL_DEPTH_8S:
@@ -175,7 +175,7 @@ void printMat(IplImage *A, const char *name) {
 			case IPL_DEPTH_64F:
 				for (int j = colBeg; j <= colEnd; j++)
 				/* Use C's printf() for convenience :p */
-					printf("%6.3f ", (float)cvGetReal2D(A, i, j));
+					printf("%6.2f ", (float)cvGetReal2D(A, i, j));
 				break;
 			case IPL_DEPTH_8U:
 			case IPL_DEPTH_8S:
@@ -202,9 +202,14 @@ void printMat(IplImage *A, const char *name) {
 }
 
 /* Timer function */
-void runningTime( clock_t tic, clock_t toc ) {
+void runningTime(clock_t tic, clock_t toc) {
 	printf( "Running Time: %lf seconds.\n", 
-		   (double) ( toc - tic ) / (double) CLOCKS_PER_SEC );
+		   (double)(toc - tic) / (double)CLOCKS_PER_SEC );
+}
+
+void avgRunningTime(clock_t tic, clock_t toc, int N) {
+	printf( "Average Running Time: %lf seconds.\n", 
+		   (double)(toc - tic) / (double)CLOCKS_PER_SEC / (double)N );
 }
 
 /* Mean and variance normalization given the "sum", the sum of squares "sqSum", and # of pixels N */

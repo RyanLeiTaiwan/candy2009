@@ -13,10 +13,11 @@
 		2E49E12A110D79B300176010 /* extract.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E3CBDF810E8EB05004F7109 /* extract.cpp */; };
 		2E49E12B110D79B300176010 /* train_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E3CBEB110E8F596004F7109 /* train_main.cpp */; };
 		2E49E12C110D79B300176010 /* adaboost.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E3CBEB010E8F596004F7109 /* adaboost.cpp */; };
+		2E6B4BA11161AC0300E7D6BE /* gen_neg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E8F477A110ED138004AD9A9 /* gen_neg.cpp */; };
+		2E6B4BA51161AC3100E7D6BE /* util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E0180FC10F8586A00978B21 /* util.cpp */; };
 		2E8F125D110EC44F004AD9A9 /* OpenCV.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2ED7B33310E7879F0080D7C9 /* OpenCV.framework */; };
 		2E8F127D110EC4D6004AD9A9 /* detect_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E8F127C110EC4D6004AD9A9 /* detect_main.cpp */; };
 		2E8F475A110ECDDA004AD9A9 /* detect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E8F4759110ECDDA004AD9A9 /* detect.cpp */; };
-		2E8F477B110ED138004AD9A9 /* gen_neg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E8F477A110ED138004AD9A9 /* gen_neg.cpp */; };
 		2E8F47C9110ED9C9004AD9A9 /* util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E0180FC10F8586A00978B21 /* util.cpp */; };
 		2E8F47CA110EDA17004AD9A9 /* extract.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E3CBDF810E8EB05004F7109 /* extract.cpp */; };
 		2ED7B35810E7893A0080D7C9 /* OpenCV.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2ED7B33310E7879F0080D7C9 /* OpenCV.framework */; };
@@ -238,7 +239,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2E8F477B110ED138004AD9A9 /* gen_neg.cpp in Sources */,
+				2E6B4BA51161AC3100E7D6BE /* util.cpp in Sources */,
+				2E6B4BA11161AC0300E7D6BE /* gen_neg.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

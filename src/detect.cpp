@@ -1,7 +1,7 @@
 /** File: detect.cpp
  ** Author: Ryan Lei
  ** Creation: 2010/01/26
- ** Modification: XXXX/XX/XX
+ ** Modification: 2010/03/30
  ** Description: The implementations of the car-detection program.
  **/
 
@@ -13,7 +13,7 @@ void printUsage() {
 	cout << "1. detect -c [MODEL_FILE] : Online detection using a camera." << endl;
 	cout << "2. detect -v [VIDEO_FILE] [MODEL_FILE] : Online detection using a video file." << endl;
 	cout << "3. detect -s [TEST_DIR] [MODEL_FILE] : Online detection using single images in one directory." << endl;
-	cout << "4. detect -s [POS_DIR] [NEG_DIR] [MODEL_FILE] : Offline detection using POS & NEG directories." << endl;	
+	cout << "4. detect -s [POS_DIR] [NEG_DIR] [MODEL_FILE] : Offline batch detection using POS & NEG directories." << endl;	
 	exit(EXIT_FAILURE);
 }
 
@@ -64,10 +64,6 @@ void readModel(ifstream &fin, vector<AdaStrong> &H) {
 
 /* Classify a single image using cascaded AdaBoost */
 float classifyCascade(IplImage *img, vector<AdaStrong> &H) {
-#if TIMER_DETECT
-	clock_t tic, toc;
-	tic = clock();
-#endif
 	float score = 0.f;  // Sum of all the positive H(x)
 	
 	assert(img->width == WINDOW_WIDTH && img->height == WINDOW_HEIGHT);
@@ -114,14 +110,9 @@ float classifyCascade(IplImage *img, vector<AdaStrong> &H) {
 		/* Adjust result by AdaStrong's threshold */
 		result -= threshold;
 		
-		/* If AdaStrong determines it is negative, return -1 immediately */
+		/* If AdaStrong determines it is negative, return "-stages" immediately */
 		if (result < 0.f) {
-			cout << "[-]: Rejected at stage " << itStrong - H.begin() + 1 << endl;
-#if TIMER_DETECT
-			toc = clock();
-			runningTime(tic, toc);
-#endif
-			return -1.f;
+			return -(itStrong - H.begin() + 1);
 		}
 		/* If AdaStrong determines it is positive, add result to score */
 		else {
@@ -131,12 +122,6 @@ float classifyCascade(IplImage *img, vector<AdaStrong> &H) {
 	} // End of loop itStrong
 	
 	/* positive */
-	cout << "[+]: Score = " << score << endl;
-#if TIMER_DETECT
-	toc = clock();
-	runningTime(tic, toc);
-#endif
-	
 	return score;
 }
 
@@ -145,16 +130,15 @@ void detectSingleOnline(char *TEST_DIR, vector<AdaStrong> &H) {
 	DIR *dir;
 	struct dirent *dp;
 	char PATH[MAX_PATH_LENGTH];
+#if TIMER_SINGLE_ONNLINE
+	clock_t tic, toc;
+#endif
 	
 	IplImage *colorImg, *grayImg, *cvtImg;
 	CvFont *font = new CvFont();
 	cvInitFont(font, CV_FONT_HERSHEY_TRIPLEX, 1, 1, 0, 1, 8);
 	CvScalar RED = cvScalar(0, 0, 255);
 	CvScalar GREEN = cvScalar(0, 255, 0);
-	
-	srand(time(NULL));
-	
-	
 	
 	cout << "\nPress any key for the next image. Press [ESC] to exit." << endl;
 	try {
@@ -165,27 +149,46 @@ void detectSingleOnline(char *TEST_DIR, vector<AdaStrong> &H) {
 		/* Create an OpenCV NamedWindow */
 		cvNamedWindow("Detection in single image mode");
 		cvMoveWindow("Detection in single image mode", CVWINDOW_X, CVWINDOW_Y);
-		/* [2] For all image files in [TEST_DIR] */
+		/* For all image files in [TEST_DIR] */
 		while (dp = readdir(dir)) {
 			/* The full path is TEST_DIR + FILENAME */
 			sprintf(PATH, "%s%s", TEST_DIR, dp->d_name);
 
 			/* If it is an image file */
-			if (colorImg = cvLoadImage(PATH, -1)) {
+			if (colorImg = cvLoadImage(PATH, CV_LOAD_IMAGE_UNCHANGED)) {
+				
 				cout << PATH << " ... ";
-				/* Convert into 8-bit grayscale (required to be 8-bit) */
-				grayImg = cvCreateImage(cvSize(WINDOW_WIDTH, WINDOW_HEIGHT), IPL_DEPTH_8U, 1);
-				cvConvertImage(colorImg, grayImg);
+				/* cvLoadImage again because cvConvertImage is somehow buggy */
+				grayImg = cvLoadImage(PATH, CV_LOAD_IMAGE_GRAYSCALE);
+
 				/* Convert into 32-bit float */
 				cvtImg = cvCreateImage(cvSize(WINDOW_WIDTH, WINDOW_HEIGHT), IPL_DEPTH_32F, 1);
 				cvConvert(grayImg, cvtImg);
 				cvReleaseImage(&grayImg);
 
-				/* Classify the image, then put text 'O' or 'X' onto colorImg based on the result */
-				if (classifyCascade(cvtImg, H) >= 0) {
+				/* Classify the image, show the text result (and running time), 
+				 * then put text 'O' or 'X' onto colorImg based on the result 
+				 */
+#if TIMER_SINGLE_ONNLINE
+				tic = clock();
+#endif
+				float score = classifyCascade(cvtImg, H);
+#if TIMER_SINGLE_ONNLINE
+				toc = clock();
+#endif
+				
+				if (score >= 0) {
+					cout << "[+]: Score = " << score << endl;					
+#if TIMER_SINGLE_ONNLINE
+					runningTime(tic, toc);
+#endif
 					cvPutText(colorImg, "O", cvPoint(FONT_X, FONT_Y), font, GREEN);
 				}
 				else {
+					cout << "[-]: Rejected at stage " << (int)-score << endl;
+#if TIMER_SINGLE_ONNLINE
+					runningTime(tic, toc);
+#endif					
 					cvPutText(colorImg, "X", cvPoint(FONT_X, FONT_Y), font, RED);
 				}
 
@@ -193,18 +196,105 @@ void detectSingleOnline(char *TEST_DIR, vector<AdaStrong> &H) {
 				cvResizeWindow("Detection in single image mode", CVWINDOW_WIDTH, CVWINDOW_HEIGHT);
 				cvShowImage("Detection in single image mode", colorImg);
 				cvReleaseImage(&colorImg);
-
+				
 				/* Press [ESC] to exit */
 				if (cvWaitKey(0) == 27) {
 					exit(EXIT_SUCCESS);
-				}
-				
+				}				
 			}
 		}
 		cvDestroyWindow("Detection in single image mode");
 		
 	}
 	catch (const char *e) {
-		cerr << "extractAll(): " << e << endl;
+		cerr << "detectSingleOnline(): " << e << endl;
 	}
+}
+
+/* Offline batch single image mode with directories [POS_DIR], [NEG_DIR] */
+void detectSingleOffline(char *POS_DIR, char *NEG_DIR, vector<AdaStrong> &H) {
+	DIR *dir;
+	struct dirent *dp;
+	char PATH[MAX_PATH_LENGTH];
+	clock_t tic, toc;
+	tic = clock();
+	IplImage *grayImg, *cvtImg;
+	int N1 = 0, N2 = 0; /* positive / negative image count */
+	
+	/*** Negative detection ***/
+	int error = 0; /* error count */
+	try {
+		if (!(dir = opendir(NEG_DIR))) {
+			throw "Directory open exception";
+		}
+		/* For all image files in [NEG_DIR] */
+		while (dp = readdir(dir)) {
+			/* The full path is NEG_DIR + FILENAME */
+			sprintf(PATH, "%s%s", NEG_DIR, dp->d_name);
+			
+			/* If it is an image file (read it in grayscale) */
+			if (grayImg = cvLoadImage(PATH, 0)) {		
+				/* Convert into 32-bit float */
+				cvtImg = cvCreateImage(cvSize(WINDOW_WIDTH, WINDOW_HEIGHT), IPL_DEPTH_32F, 1);
+				cvConvert(grayImg, cvtImg);
+				cvReleaseImage(&grayImg);
+				
+				/* Classify the image, then sum the error if misclassified */
+				N1++;
+				float score = classifyCascade(cvtImg, H);
+				if (score >= 0) {
+					error++;
+				}
+				cvReleaseImage(&cvtImg);
+			}
+		}
+
+	}
+	catch (const char *e) {
+		cerr << "detectSingleOffline(): " << e << endl;
+	}
+	/* Show the batch detection result */
+	cout << "\nfalse positive:  " << fixed << setprecision(1) << error / (double)N1 * 100.0 << "% ( " 
+		<< error << " / " << N1 << ") " << endl;
+	
+	
+	/*** Positive detection ***/
+	error = 0;
+	try {
+		if (!(dir = opendir(POS_DIR))) {
+			throw "Directory open exception";
+		}
+		/* For all image files in [POS_DIR] */
+		while (dp = readdir(dir)) {
+			/* The full path is POS_DIR + FILENAME */
+			sprintf(PATH, "%s%s", POS_DIR, dp->d_name);
+			
+			/* If it is an image file (read it in grayscale) */
+			if (grayImg = cvLoadImage(PATH, 0)) {		
+				/* Convert into 32-bit float */
+				cvtImg = cvCreateImage(cvSize(WINDOW_WIDTH, WINDOW_HEIGHT), IPL_DEPTH_32F, 1);
+				cvConvert(grayImg, cvtImg);
+				cvReleaseImage(&grayImg);
+				
+				/* Classify the image, then sum the error if misclassified */
+				N2++;
+				float score = classifyCascade(cvtImg, H);
+				if (score < 0) {
+					error++;
+				}
+				cvReleaseImage(&cvtImg);
+			}
+		}
+		
+	}
+	catch (const char *e) {
+		cerr << "detectSingleOffline(): " << e << endl;
+	}
+	/* Show the batch detection result */
+	toc = clock();
+	cout << "false negative:  " << fixed << setprecision(1) << error / (double)N2 * 100.0 << "% ( " 
+	<< error << " / " << N2 << ") " << endl;
+
+	avgRunningTime(tic, toc, N1 + N2);
+	
 }
