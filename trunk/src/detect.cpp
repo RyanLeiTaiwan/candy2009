@@ -1,7 +1,7 @@
 /** File: detect.cpp
  ** Author: Ryan Lei
  ** Creation: 2010/01/26
- ** Modification: 2010/03/30
+ ** Modification: 2010/03/31
  ** Description: The implementations of the car-detection program.
  **/
 
@@ -254,7 +254,7 @@ void detectSingleOffline(char *POS_DIR, char *NEG_DIR, vector<AdaStrong> &H) {
 		cerr << "detectSingleOffline(): " << e << endl;
 	}
 	/* Show the batch detection result */
-	cout << "\nfalse positive:  " << fixed << setprecision(1) << error / (double)N1 * 100.0 << "% ( " 
+	cout << "\nfalse positive:  " << fixed << setprecision(1) << error / (double)N1 * 100.0 << "% (" 
 		<< error << " / " << N1 << ") " << endl;
 	
 	
@@ -292,7 +292,7 @@ void detectSingleOffline(char *POS_DIR, char *NEG_DIR, vector<AdaStrong> &H) {
 	}
 	/* Show the batch detection result */
 	toc = clock();
-	cout << "false negative:  " << fixed << setprecision(1) << error / (double)N2 * 100.0 << "% ( " 
+	cout << "false negative:  " << fixed << setprecision(1) << error / (double)N2 * 100.0 << "% (" 
 	<< error << " / " << N2 << ") " << endl;
 
 	avgRunningTime(tic, toc, N1 + N2);
