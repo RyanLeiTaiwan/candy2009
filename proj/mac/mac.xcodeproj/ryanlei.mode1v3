@@ -301,7 +301,7 @@
 							<real>185</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>20 79 1260 692 0 0 1280 778 </string>
+						<string>21 79 1260 692 0 0 1280 778 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -331,7 +331,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>2E37AECF1161ADE40027E1AE</string>
+										<string>2E37AEF61161C69F0027E1AE</string>
 										<key>history</key>
 										<array>
 											<string>2ED7585110E7E149001D3EE5</string>
@@ -355,7 +355,6 @@
 											<string>2E63F69B110FED5F00863E38</string>
 											<string>2E0845CE112DCD2200834857</string>
 											<string>2E0768CC115DB08900931A98</string>
-											<string>2E6B4B3D11618EC500E7D6BE</string>
 											<string>2E37AEC71161ADE40027E1AE</string>
 											<string>2E37AEC81161ADE40027E1AE</string>
 											<string>2E37AEC91161ADE40027E1AE</string>
@@ -363,7 +362,8 @@
 											<string>2E37AECB1161ADE40027E1AE</string>
 											<string>2E37AECC1161ADE40027E1AE</string>
 											<string>2E37AECD1161ADE40027E1AE</string>
-											<string>2E37AECE1161ADE40027E1AE</string>
+											<string>2E37AEF41161C69F0027E1AE</string>
+											<string>2E37AEF51161C69F0027E1AE</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -377,7 +377,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {1053, 361}}</string>
 								<key>RubberWindowFrame</key>
-								<string>20 79 1260 692 0 0 1280 778 </string>
+								<string>21 79 1260 692 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -397,7 +397,7 @@
 								<key>Frame</key>
 								<string>{{0, 366}, {1053, 285}}</string>
 								<key>RubberWindowFrame</key>
-								<string>20 79 1260 692 0 0 1280 778 </string>
+								<string>21 79 1260 692 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -561,13 +561,13 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>2ED756D810E790DF001D3EE5</string>
 		<string>1CD10A99069EF8BA00B06720</string>
 		<string>2ED7B33D10E787C50080D7C9</string>
 		<string>/Users/ryanlei/svn/candy2009/proj/mac/mac.xcodeproj</string>
-		<string>2ED756D810E790DF001D3EE5</string>
 	</array>
 	<key>WindowString</key>
-	<string>20 79 1260 692 0 0 1280 778 </string>
+	<string>21 79 1260 692 0 0 1280 778 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
@@ -993,6 +993,8 @@
 					<key>Dock</key>
 					<array>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -1007,7 +1009,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {1021, 343}}</string>
 								<key>RubberWindowFrame</key>
-								<string>135 83 1021 639 0 0 1280 778 </string>
+								<string>7 69 1021 639 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -1015,8 +1017,6 @@
 							<string>343pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXCVSModuleFilterTypeKey</key>
@@ -1025,12 +1025,12 @@
 								<dict>
 									<key>PBXCVSModuleTreeModuleColumnWidthsKey</key>
 									<array>
-										<real>605</real>
+										<real>200</real>
 										<real>56</real>
 										<real>63</real>
 										<real>60</real>
 										<real>107</real>
-										<real>95</real>
+										<real>500</real>
 									</array>
 									<key>PBXCVSModuleTreeModuleColumnsKey</key>
 									<array>
@@ -1052,7 +1052,7 @@
 								<key>Frame</key>
 								<string>{{0, 348}, {1021, 250}}</string>
 								<key>RubberWindowFrame</key>
-								<string>135 83 1021 639 0 0 1280 778 </string>
+								<string>7 69 1021 639 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXCVSModule</string>
@@ -1082,11 +1082,11 @@
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.scm</string>
 			<key>WindowString</key>
-			<string>135 83 1021 639 0 0 1280 778 </string>
+			<string>7 69 1021 639 0 0 1280 778 </string>
 			<key>WindowToolGUID</key>
 			<string>2ED756D810E790DF001D3EE5</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>Identifier</key>
