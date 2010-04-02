@@ -1,7 +1,7 @@
 /** File: global.h
  ** Author: Ryan Lei
  ** Creation: 2009/12/25
- ** Update: 2010/01/25
+ ** Update: 2010/04/02
  ** Description: Constants or Parameters used globally.
  **/
 
@@ -36,10 +36,10 @@
 #define GETCHAR 0 // Encounter getchar()'s in training, i.e., verbose mode.;
 #define CVWINDOW_X 700  // x position of OpenCV's NamedWindow
 #define CVWINDOW_Y 100  // y position of OpenCV's NamedWindow
-#define CVWINDOW_WIDTH 512  // width of the NamedWindow
-#define CVWINDOW_HEIGHT 512  // height of the NamedWindow
-#define FONT_X 55  // x position to put text on the image (single-image detection mode)
-#define FONT_Y 30  // y position to put text on the image (single-image detection mode)
+#define RESIZE_WIDTH 512  // width of the resized image
+#define RESIZE_HEIGHT 512  // height of the resized image
+#define FONT_X 220  // x position to put text on the image (single-image detection mode)
+#define FONT_Y 110  // y position to put text on the image (single-image detection mode)
 
 /** Project parameters: may be edited **/
 #define WINDOW_WIDTH 128  // detection window width
