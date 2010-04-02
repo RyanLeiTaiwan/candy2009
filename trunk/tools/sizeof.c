@@ -15,4 +15,8 @@ int main() {
 	printf( "float       = %2d byte(s).\n", (int) sizeof( float ) );
 	printf( "double      = %2d byte(s).\n", (int) sizeof( double ) );
 	printf( "long double = %2d byte(s).\n", (int) sizeof( long double ) );
+	printf( "uchar*      = %2d byte(s).\n", (int) sizeof( unsigned char * ) );
+	printf( "int*        = %2d byte(s).\n", (int) sizeof( int * ) );
+	printf( "float*      = %2d byte(s).\n", (int) sizeof( float * ) );
+	printf( "double*     = %2d byte(s).\n", (int) sizeof( double * ) );
 }
