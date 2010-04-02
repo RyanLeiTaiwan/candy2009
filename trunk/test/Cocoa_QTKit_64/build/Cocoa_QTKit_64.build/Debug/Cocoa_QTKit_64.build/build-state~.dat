@@ -1,0 +1,115 @@
+TCocoa_QTKit_64
+v7
+r0
+t291884375.452804
+cCheck dependencies
+cCompileC build/Cocoa_QTKit_64.build/Debug/Cocoa_QTKit_64.build/Objects-normal/x86_64/hello.o /Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp normal x86_64 c++ com.apple.compilers.gcc.4_2
+
+N/Developer/SDKs/MacOSX10.6.sdk
+c000000004A769DAB00000000000000EE
+t1249287595
+s238
+
+N/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/build/Cocoa_QTKit_64.build/Debug/Cocoa_QTKit_64.build/Objects-normal/x86_64/Cocoa_QTKit_64.LinkFileList
+c000000004BB595D70000000000000085
+t1270191575
+s133
+
+N/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/build/Cocoa_QTKit_64.build/Debug/Cocoa_QTKit_64.build/Objects-normal/x86_64/hello.o
+t2
+s0
+
+N/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/build/Cocoa_QTKit_64.build/Debug/Cocoa_QTKit_64.build/Objects-normal/x86_64/main.o
+t2
+s0
+
+N/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/build/Debug/Cocoa_QTKit_64
+t2
+s0
+
+N/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp
+c000000004B7D7A1000000000000004EA
+t1266514448
+s1258
+i<iostream>
+i<highgui.h>
+i<cxcore.h>
+i<cv.h>
+
+N/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/main.cpp
+c000000004BB59545000000000000008F
+t1270191429
+s143
+i<iostream>
+
+N/usr/local/lib/libcv.dylib
+c000000004BB591D900000000002A5C58
+t1270190553
+s2776152
+
+N/usr/local/lib/libcvaux.dylib
+c000000004BB591D90000000000138360
+t1270190553
+s1278816
+
+N/usr/local/lib/libcxcore.dylib
+c000000004BB591D900000000002D0650
+t1270190553
+s2950736
+
+N/usr/local/lib/libhighgui.dylib
+c000000004BB591D90000000000104060
+t1270190553
+s1065056
+
+N/usr/local/lib/libml.dylib
+c000000004BB591D90000000000065C88
+t1270190553
+s416904
+
+CCheck dependencies
+r0
+lSLF07#2@18"Check dependencies291884375#291884375#0(0"0(0#1#0"9007637348679712#0"0#
+
+CCompileC build/Cocoa_QTKit_64.build/Debug/Cocoa_QTKit_64.build/Objects-normal/x86_64/hello.o /Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp normal x86_64 c++ com.apple.compilers.gcc.4_2
+s291884375.066194
+e291884375.452707
+r0
+xCompileC
+xbuild/Cocoa_QTKit_64.build/Debug/Cocoa_QTKit_64.build/Objects-normal/x86_64/hello.o
+x/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp
+xnormal
+xx86_64
+xc++
+xcom.apple.compilers.gcc.4_2
+o/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:2:21: error: highgui.h: No such file or directory
+o/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:3:20: error: cxcore.h: No such file or directory
+o/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:4:16: error: cv.h: No such file or directory
+o/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp: In function 'int main(int, char**)':
+o/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:14: error: 'IplImage' was not declared in this scope
+o/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:14: error: 'img' was not declared in this scope
+o/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:14: error: 'cvLoadImage' was not declared in this scope
+o/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:15: error: 'CV_WINDOW_AUTOSIZE' was not declared in this scope
+o/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:15: error: 'cvNamedWindow' was not declared in this scope
+o/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:16: error: 'cvShowImage' was not declared in this scope
+o/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:17: error: 'cvWaitKey' was not declared in this scope
+o/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:21: error: 'CvCapture' was not declared in this scope
+o/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:21: error: 'capture' was not declared in this scope
+o/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:21: error: 'cvCreateFileCapture' was not declared in this scope
+o/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:22: error: 'frame' was not declared in this scope
+o/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:24: error: 'cvQueryFrame' was not declared in this scope
+o/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:34: error: 'camera' was not declared in this scope
+o/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:34: error: 'cvCaptureFromCAM' was not declared in this scope
+o/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:35: error: 'assert' was not declared in this scope
+o/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:37: error: 'cvQueryFrame' was not declared in this scope
+o/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:44: error: 'cvReleaseCapture' was not declared in this scope
+o/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:46: error: 'cvDestroyWindow' was not declared in this scope
+o/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:48: error: 'cvReleaseImage' was not declared in this scope
+lSLF07#2@66"Compile /Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp291884375#291884375#0(2604"/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:2:21: error: highgui.h: No such file or directory/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:3:20: error: cxcore.h: No such file or directory/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:4:16: error: cv.h: No such file or directory/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp: In function 'int main(int, char**)':/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:14: error: 'IplImage' was not declared in this scope/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:14: error: 'img' was not declared in this scope/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:14: error: 'cvLoadImage' was not declared in this scope/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:15: error: 'CV_WINDOW_AUTOSIZE' was not declared in this scope/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:15: error: 'cvNamedWindow' was not declared in this scope/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:16: error: 'cvShowImage' was not declared in this scope/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:17: error: 'cvWaitKey' was not declared in this scope/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:21: error: 'CvCapture' was not declared in this scope/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:21: error: 'capture' was not declared in this scope/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:21: error: 'cvCreateFileCapture' was not declared in this scope/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:22: error: 'frame' was not declared in this scope/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:24: error: 'cvQueryFrame' was not declared in this scope/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:34: error: 'camera' was not declared in this scope/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:34: error: 'cvCaptureFromCAM' was not declared in this scope/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:35: error: 'assert' was not declared in this scope/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:37: error: 'cvQueryFrame' was not declared in this scope/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:44: error: 'cvReleaseCapture' was not declared in this scope/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:46: error: 'cvDestroyWindow' was not declared in this scope/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp:48: error: 'cvReleaseImage' was not declared in this scope22(4@36"Highgui.h: No such file or directory291884375#0#109#0(6@58"/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp288207248#2#0#2#0#28"*: No such file or directory0(4@35"Cxcore.h: No such file or directory291884375#109#108#0(6@58"/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp288207248#3#0#3#0#28"*: No such file or directory0(4@31"Cv.h: No such file or directory291884375#217#104#0(6@58"/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp288207248#4#0#4#0#28"*: No such file or directory0(4@41"'IplImage' was not declared in this scope291884375#418#112#0(6@58"/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp288207248#14#0#14#0#34"'*' was not declared in this scope0(4@36"'img' was not declared in this scope291884375#530#107#0(6@58"/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp288207248#14#0#14#0#34"'*' was not declared in this scope0(4@44"'cvLoadImage' was not declared in this scope291884375#637#115#0(6@58"/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp288207248#14#0#14#0#34"'*' was not declared in this scope0(4@51"'CV_WINDOW_AUTOSIZE' was not declared in this scope291884375#752#122#0(6@58"/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp288207248#15#0#15#0#34"'*' was not declared in this scope0(4@46"'cvNamedWindow' was not declared in this scope291884375#874#117#0(6@58"/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp288207248#15#0#15#0#34"'*' was not declared in this scope0(4@44"'cvShowImage' was not declared in this scope291884375#991#115#0(6@58"/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp288207248#16#0#16#0#34"'*' was not declared in this scope0(4@42"'cvWaitKey' was not declared in this scope291884375#1106#113#0(6@58"/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp288207248#17#0#17#0#34"'*' was not declared in this scope0(4@42"'CvCapture' was not declared in this scope291884375#1219#113#0(6@58"/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp288207248#21#0#21#0#34"'*' was not declared in this scope0(4@40"'capture' was not declared in this scope291884375#1332#111#0(6@58"/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp288207248#21#0#21#0#34"'*' was not declared in this scope0(4@52"'cvCreateFileCapture' was not declared in this scope291884375#1443#123#0(6@58"/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp288207248#21#0#21#0#34"'*' was not declared in this scope0(4@38"'frame' was not declared in this scope291884375#1566#109#0(6@58"/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp288207248#22#0#22#0#34"'*' was not declared in this scope0(4@45"'cvQueryFrame' was not declared in this scope291884375#1675#116#0(6@58"/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp288207248#24#0#24#0#34"'*' was not declared in this scope0(4@39"'camera' was not declared in this scope291884375#1791#110#0(6@58"/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp288207248#34#0#34#0#34"'*' was not declared in this scope0(4@49"'cvCaptureFromCAM' was not declared in this scope291884375#1901#120#0(6@58"/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp288207248#34#0#34#0#34"'*' was not declared in this scope0(4@39"'assert' was not declared in this scope291884375#2021#110#0(6@58"/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp288207248#35#0#35#0#34"'*' was not declared in this scope0(4@45"'cvQueryFrame' was not declared in this scope291884375#2131#116#0(6@58"/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp288207248#37#0#37#0#34"'*' was not declared in this scope0(4@49"'cvReleaseCapture' was not declared in this scope291884375#2247#120#0(6@58"/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp288207248#44#0#44#0#34"'*' was not declared in this scope0(4@48"'cvDestroyWindow' was not declared in this scope291884375#2367#119#0(6@58"/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp288207248#46#0#46#0#34"'*' was not declared in this scope0(4@47"'cvReleaseImage' was not declared in this scope291884375#2486#118#0(6@58"/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp288207248#48#0#48#0#34"'*' was not declared in this scope0(0#0#58"/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp3414973617650413056#1576"    cd /Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64    setenv LANG en_US.US-ASCII    /Developer/usr/bin/gcc-4.2 -x c++ -arch x86_64 -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -fasm-blocks -O0 -Wreturn-type -Wunused-variable -D_GLIBCXX_DEBUG=1 -D_GLIBCXX_DEBUG_PEDANTIC=1 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mfix-and-continue -fvisibility-inlines-hidden -mmacosx-version-min=10.6 -gdwarf-2 -iquote /Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/build/Cocoa_QTKit_64.build/Debug/Cocoa_QTKit_64.build/Cocoa_QTKit_64-generated-files.hmap -I/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/build/Cocoa_QTKit_64.build/Debug/Cocoa_QTKit_64.build/Cocoa_QTKit_64-own-target-headers.hmap -I/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/build/Cocoa_QTKit_64.build/Debug/Cocoa_QTKit_64.build/Cocoa_QTKit_64-all-target-headers.hmap -iquote /Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/build/Cocoa_QTKit_64.build/Debug/Cocoa_QTKit_64.build/Cocoa_QTKit_64-project-headers.hmap -F/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/build/Debug -I/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/build/Debug/include -I/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/build/Cocoa_QTKit_64.build/Debug/Cocoa_QTKit_64.build/DerivedSources/x86_64 -I/Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/build/Cocoa_QTKit_64.build/Debug/Cocoa_QTKit_64.build/DerivedSources -c /Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/hello.cpp -o /Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/build/Cocoa_QTKit_64.build/Debug/Cocoa_QTKit_64.build/Objects-normal/x86_64/hello.o1#
+
+CCompileC build/Cocoa_QTKit_64.build/Debug/Cocoa_QTKit_64.build/Objects-normal/x86_64/main.o /Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/main.cpp normal x86_64 c++ com.apple.compilers.gcc.4_2
+r0
+
+CLd /Users/ryanlei/svn/candy2009/test/Cocoa_QTKit_64/build/Debug/Cocoa_QTKit_64 normal x86_64
+r0
+

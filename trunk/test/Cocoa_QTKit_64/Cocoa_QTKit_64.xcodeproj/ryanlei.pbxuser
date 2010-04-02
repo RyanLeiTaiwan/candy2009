@@ -1,0 +1,123 @@
+// !$*UTF8*$!
+{
+	08FB7793FE84155DC02AAC07 /* Project object */ = {
+		activeBuildConfigurationName = Debug;
+		activeExecutable = 2E2E1E0F1165CCC500ACCC4E /* Cocoa_QTKit_64 */;
+		activeTarget = 8DD76F620486A84900D96B5E /* Cocoa_QTKit_64 */;
+		addToTargets = (
+			8DD76F620486A84900D96B5E /* Cocoa_QTKit_64 */,
+		);
+		codeSenseManager = 2E2E1E401165CCD400ACCC4E /* Code sense */;
+		executables = (
+			2E2E1E0F1165CCC500ACCC4E /* Cocoa_QTKit_64 */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					545,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 291905670;
+			PBXWorkspaceStateSaveDate = 291905670;
+		};
+		perUserProjectItems = {
+			2E2E1F101166159B00ACCC4E /* PBXTextBookmark */ = 2E2E1F101166159B00ACCC4E /* PBXTextBookmark */;
+			2E2E1F531166208900ACCC4E /* PBXTextBookmark */ = 2E2E1F531166208900ACCC4E /* PBXTextBookmark */;
+		};
+		sourceControlManager = 2E2E1E3F1165CCD400ACCC4E /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	2E2E1E0F1165CCC500ACCC4E /* Cocoa_QTKit_64 */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		dataTipCustomDataFormattersEnabled = 1;
+		dataTipShowTypeColumn = 1;
+		dataTipSortType = 0;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = Cocoa_QTKit_64;
+		showTypeColumn = 0;
+		sourceDirectories = (
+		);
+	};
+	2E2E1E3F1165CCD400ACCC4E /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+			repositoryNamesForRoots = {
+				"" = "";
+			};
+		};
+	};
+	2E2E1E401165CCD400ACCC4E /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	2E2E1E421165CCFA00ACCC4E /* hello.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {723, 960}}";
+			sepNavSelRange = "{1222, 0}";
+			sepNavVisRange = "{0, 610}";
+			sepNavWindowFrame = "{{15, 68}, {1187, 705}}";
+		};
+	};
+	2E2E1F101166159B00ACCC4E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 2E2E1E421165CCFA00ACCC4E /* hello.cpp */;
+		name = "hello.cpp: 52";
+		rLen = 0;
+		rLoc = 1222;
+		rType = 0;
+		vrLen = 633;
+		vrLoc = 0;
+	};
+	2E2E1F531166208900ACCC4E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 2E2E1E421165CCFA00ACCC4E /* hello.cpp */;
+		name = "hello.cpp: 52";
+		rLen = 0;
+		rLoc = 1222;
+		rType = 0;
+		vrLen = 610;
+		vrLoc = 0;
+	};
+	8DD76F620486A84900D96B5E /* Cocoa_QTKit_64 */ = {
+		activeExec = 0;
+		executables = (
+			2E2E1E0F1165CCC500ACCC4E /* Cocoa_QTKit_64 */,
+		);
+	};
+}

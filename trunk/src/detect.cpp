@@ -1,7 +1,7 @@
 /** File: detect.cpp
  ** Author: Ryan Lei
  ** Creation: 2010/01/26
- ** Modification: 2010/03/31
+ ** Modification: 2010/04/02
  ** Description: The implementations of the car-detection program.
  **/
 
@@ -134,11 +134,13 @@ void detectSingleOnline(char *TEST_DIR, vector<AdaStrong> &H) {
 	clock_t tic, toc;
 #endif
 	
-	IplImage *colorImg, *grayImg, *cvtImg;
+	IplImage *colorImg, *resizedImg;
+	IplImage *grayImg, *cvtImg;
 	CvFont *font = new CvFont();
-	cvInitFont(font, CV_FONT_HERSHEY_TRIPLEX, 1, 1, 0, 1, 8);
+	cvInitFont(font, CV_FONT_HERSHEY_TRIPLEX, 4, 4, 0, 4, 8);
 	CvScalar RED = cvScalar(0, 0, 255);
 	CvScalar GREEN = cvScalar(0, 255, 0);
+	//int 
 	
 	cout << "\nPress any key for the next image. Press [ESC] to exit." << endl;
 	try {
@@ -147,8 +149,9 @@ void detectSingleOnline(char *TEST_DIR, vector<AdaStrong> &H) {
 		}
 		
 		/* Create an OpenCV NamedWindow */
-		cvNamedWindow("Detection in single image mode");
+		cvNamedWindow("Detection in single image mode", CV_WINDOW_AUTOSIZE);
 		cvMoveWindow("Detection in single image mode", CVWINDOW_X, CVWINDOW_Y);
+		
 		/* For all image files in [TEST_DIR] */
 		while (dp = readdir(dir)) {
 			/* The full path is TEST_DIR + FILENAME */
@@ -156,9 +159,13 @@ void detectSingleOnline(char *TEST_DIR, vector<AdaStrong> &H) {
 
 			/* If it is an image file */
 			if (colorImg = cvLoadImage(PATH, CV_LOAD_IMAGE_UNCHANGED)) {
-				
+				/* Resize image by myself since cvResizeWindow() does not work with QTKit or Cocoa on Mac */
+				resizedImg = cvCreateImage(cvSize(RESIZE_WIDTH, RESIZE_HEIGHT), IPL_DEPTH_8U, 3);
+				cvResize(colorImg, resizedImg);
+				cvReleaseImage(&colorImg);
 				cout << PATH << " ... ";
-				/* cvLoadImage again because cvConvertImage is somehow buggy */
+				
+				/* cvLoadImage again because cvConvertImage() is somehow buggy */
 				grayImg = cvLoadImage(PATH, CV_LOAD_IMAGE_GRAYSCALE);
 
 				/* Convert into 32-bit float */
@@ -173,6 +180,7 @@ void detectSingleOnline(char *TEST_DIR, vector<AdaStrong> &H) {
 				tic = clock();
 #endif
 				float score = classifyCascade(cvtImg, H);
+				cvReleaseImage(&cvtImg);
 #if TIMER_SINGLE_ONNLINE
 				toc = clock();
 #endif
@@ -182,20 +190,19 @@ void detectSingleOnline(char *TEST_DIR, vector<AdaStrong> &H) {
 #if TIMER_SINGLE_ONNLINE
 					runningTime(tic, toc);
 #endif
-					cvPutText(colorImg, "O", cvPoint(FONT_X, FONT_Y), font, GREEN);
+					cvPutText(resizedImg, "O", cvPoint(FONT_X, FONT_Y), font, GREEN);
 				}
 				else {
 					cout << "[-]: Rejected at stage " << (int)-score << endl;
 #if TIMER_SINGLE_ONNLINE
 					runningTime(tic, toc);
 #endif					
-					cvPutText(colorImg, "X", cvPoint(FONT_X, FONT_Y), font, RED);
+					cvPutText(resizedImg, "X", cvPoint(FONT_X, FONT_Y), font, RED);
 				}
 
-				/* Show the (possibly) color image */
-				cvResizeWindow("Detection in single image mode", CVWINDOW_WIDTH, CVWINDOW_HEIGHT);
-				cvShowImage("Detection in single image mode", colorImg);
-				cvReleaseImage(&colorImg);
+				/* Show the resized (possibly) color image */
+				cvShowImage("Detection in single image mode", resizedImg);
+				cvReleaseImage(&resizedImg);
 				
 				/* Press [ESC] to exit */
 				if (cvWaitKey(0) == 27) {
