@@ -1,7 +1,7 @@
 /** File: train_main.cpp
  ** Author: Ryan Lei
  ** Creation: 2009/12/28
- ** Modification: 2010/01/26 
+ ** Modification: 2010/04/03
  ** Description: The main function of the car-training program based on the paper:
       Fast Human Detection Using a Novel Boosted Cascading Structure With Meta Stages, Chen and Chen, 2008.
     Important techniques / concepts:
@@ -81,7 +81,22 @@ int main(int argc, char *argv[]) {
 	extractAll(NEG_PATH_BASE, NEG, N2, blockCount);
 	cout << "Extraction of NEG data completed.\n";
 #if 0
-	printMat(NEG, "NEG", 9354 * blockCount, 9355 * blockCount - 1, 0, 4);
+	printMat(NEG, "NEG", 8999 * blockCount, 9000 * blockCount - 1, 0, 4);
+#endif
+#if 1
+	float *ptr = (float *)NEG->data.ptr;
+	for (int Iid = 0; Iid < N2; Iid++) {
+		for (int Bid = 0; Bid < blockCount; Bid++) {
+			for (int Fid = 0; Fid < FEATURE_COUNT; Fid++) {
+				if (isnan(*ptr)) {
+					cout << "NEG[" << Iid << "][" << Bid << "][" << Fid << "]\n";
+				}
+				ptr++;
+			}
+		}
+	}
+	cout << "NEG OK!!" << endl;
+	getchar();
 #endif
 	assert(blockCount > 0);
 	cout << "# of blocks per image: " << blockCount << ".\n";

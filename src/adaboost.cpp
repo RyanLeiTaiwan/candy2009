@@ -218,12 +218,24 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 
 			/* [1] Compute the POS & NEG mean feature values */
 			for (int Iid = 0; Iid < N1; Iid++) {
-				posMean += cvGetReal2D(POS, Iid * blockCount + Bid, Fid);
-				negMean += cvGetReal2D(NEG, selection[ Iid ] * blockCount + Bid, Fid);
-#if 1
-				assert(!isnan(cvGetReal2D(POS, Iid * blockCount + Bid, Fid)));
-				assert(!isnan(cvGetReal2D(NEG, selection[ Iid ] * blockCount + Bid, Fid)));
-#endif
+//				cout << "cvGetReal2D[+]: " << cvGetReal2D(POS, Iid * blockCount + Bid, Fid) << endl;
+//				cout << "pointer[+]: " << *(float *) (POS->data.ptr + (Iid * blockCount + Bid) * POS->step + Fid * sizeof(float)) << endl;
+//				posMean += cvGetReal2D(POS, Iid * blockCount + Bid, Fid);
+				float value;
+				value = *(float *) (POS->data.ptr + (Iid * blockCount + Bid) * POS->step + Fid * sizeof(float));
+				
+				assert(!isnan(value));
+				posMean += value;
+
+//				cout << "cvGetReal2D[-]: " << cvGetReal2D(NEG, selection[Iid] * blockCount + Bid, Fid) << endl;
+//				cout << "pointer[-]: " << *(float *) (NEG->data.ptr + (selection[Iid] * blockCount + Bid) * NEG->step + Fid * sizeof(float)) << endl;
+//				negMean += cvGetReal2D(NEG, selection[ Iid ] * blockCount + Bid, Fid);
+				value = *(float *) (NEG->data.ptr + (selection[Iid] * blockCount + Bid) * NEG->step + Fid * sizeof(float));
+				//float *address = (float *) (NEG->data.ptr + (selection[Iid] * blockCount + Bid) * NEG->step + Fid * sizeof(float));
+								
+				assert(!isnan(value));
+				negMean += value;
+
 			}
 #if 0
 			cout << "Bid: " << Bid << ", Fid: " << Fid << ", posSum = " << posMean << ", negSum = " << negMean << endl;
