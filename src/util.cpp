@@ -1,7 +1,7 @@
 /** File: util.cpp
  ** Author: Ryan Lei
  ** Creation: 2010/01/09
- ** Modification: 2010/04/03
+ ** Modification: 2010/04/04
  ** Description: Utility functions
  **/
 
@@ -248,7 +248,8 @@ void meanVarNorm(IplImage *normImg, double sum, double sqSum, int N) {
 
 	/* normalized */
 	cvSubS(normImg, cvScalar(mean), normImg);
-	cvScale(normImg, normImg, 1 / stdev);
+	/* EPSILON: Avoid stdev = 0 */
+	cvScale(normImg, normImg, 1 / (stdev + EPSILON));
 }
 
 /* Upright rectangular sum given two corner points (x1,y1), (x2,y2) */
@@ -257,11 +258,10 @@ void meanVarNorm(IplImage *normImg, double sum, double sqSum, int N) {
  * Make sure that (x1,y1) lies to the upper-left of (x2,y2) */
 float recSumRight(IplImage *ii, int x1, int y1, int x2, int y2) {
 	double ret =
-//		*(double *) (ii->imageData + y2 * ii->widthStep + x2 * sizeof(double)) +
-//		*(double *) (ii->imageData + (y1 - 1) * ii->widthStep + (x1 - 1) * sizeof(double)) -
-//		*(double *) (ii->imageData + (y1 - 1) * ii->widthStep + x2 * sizeof(double)) -
-//		*(double *) (ii->imageData + y2 * ii->widthStep + (x1 - 1) * sizeof(double));
-		cvGetReal2D(ii, y2, x2) + cvGetReal2D(ii, y1-1, x1-1) - cvGetReal2D(ii, y1-1, x2) - cvGetReal2D(ii, y2, x1-1); 
+		*(double *) (ii->imageData + y2 * ii->widthStep + x2 * sizeof(double)) +
+		*(double *) (ii->imageData + (y1 - 1) * ii->widthStep + (x1 - 1) * sizeof(double)) -
+		*(double *) (ii->imageData + (y1 - 1) * ii->widthStep + x2 * sizeof(double)) -
+		*(double *) (ii->imageData + y2 * ii->widthStep + (x1 - 1) * sizeof(double));
 	assert(!isnan(ret));
 	return (float)ret;
 }
