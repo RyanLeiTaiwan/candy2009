@@ -1,7 +1,7 @@
 /** File: extract.cpp
  ** Author: Ryan Lei
  ** Creation: 2009/12/28
- ** Modification: 2010/04/03
+ ** Modification: 2010/04/04
  ** Description: The implementations of car feature extraction
     Features:
       1. Rectangle features
@@ -32,7 +32,6 @@ void extractAll(char *PATH_BASE, CvMat *&POOL, int &N, int &blockCount) {
 		}
 
 		int Iid = 0; /* Image ID */
-		float *ptr;  /* Pointer to some "float" matrix element */
 		while ((dp = readdir(dir))) {
 			/* The full path is PATH_BASE + FILENAME */
 			sprintf(PATH, "%s%s", PATH_BASE, dp->d_name);
@@ -52,11 +51,10 @@ void extractAll(char *PATH_BASE, CvMat *&POOL, int &N, int &blockCount) {
 				if (Iid == 0) {
 					blockCount = countBlocks(img);
 					POOL = cvCreateMat(blockCount * N, FEATURE_COUNT, CV_32FC1);
-					ptr = (float *) POOL->data.ptr;
 				}
 
 				/** Extract features for this image **/
-				extractImg(img, ptr);
+				extractImg(img, POOL, Iid, blockCount);
 				cvReleaseImage(&img);
 				cout << "extracted.\n";
 				Iid++;
@@ -76,8 +74,6 @@ void extractAll(char *PATH_BASE, CvMat *&POOL, int &N, int &blockCount) {
 		getchar();
 	}
 
-//	printMat(POOL, "POOL in extractAll()");
-//	getchar();
 }
 
 int countBlocks(IplImage *img) {
@@ -105,9 +101,7 @@ int countBlocks(IplImage *img) {
 
 /* Extract features from a single image */
 /** Be careful with the PERFORMANCE in this function and its subroutines **/
-void extractImg(IplImage *img, float *&ptr) {
-	/* data is the pointer to a single matrix: POOL[ Iid ] */
-	int Bid = 0; // block ID
+void extractImg(IplImage *img, CvMat *POOL, int Iid, int blockCount) {
 
 #if TIMER_EXTRACT
 	clock_t tic, toc;
@@ -148,12 +142,15 @@ void extractImg(IplImage *img, float *&ptr) {
 
 	/* [4] Extract these features from each block */
 	/* try all possible sizes and positions within the image */
+	int Bid = 0; // block ID
 	for (int bHeight = BLOCK_MIN_SIZE; bHeight <= WINDOW_HEIGHT; bHeight += BLOCK_SIZE_INC) {
 		for (int bWidth = BLOCK_MIN_SIZE; bWidth <= WINDOW_WIDTH; bWidth += BLOCK_SIZE_INC) {
 			for (int y = 0; y + bHeight - 1 < WINDOW_HEIGHT; y += BLOCK_POS_INC) {
 				for (int x = 0; x + bWidth - 1 < WINDOW_WIDTH; x += BLOCK_POS_INC) {
+					/** ptr: Pointer to some "CV_32FC1" matrix element: the beginning of some row. **/
+					float *ptr = (float *)(POOL->data.ptr + (Iid * blockCount + Bid) * POOL->step);
 					/** Consider the dummy 1st row and 1st column produced by cvIntegral() **/
-					extractBlock(Bid++, ptr, normSum, x + 1, bWidth, y + 1, bHeight);
+					extractBlock(Iid, blockCount, POOL, Bid++, ptr, normSum, x + 1, bWidth, y + 1, bHeight);
 				}
 			}
 		}
@@ -173,7 +170,9 @@ void extractImg(IplImage *img, float *&ptr) {
 
 /* Feature extraction of a single block */
 /** Be careful with the PERFORMANCE in this function and its subroutines **/
-void extractBlock(int Bid, float *&ptr, IplImage *normSum, int x, int W, int y, int H) {
+void extractBlock(int Iid, int blockCount, CvMat *POOL, int Bid, float *&ptr, IplImage *normSum, int x, int W, int y, int H) {
+	/** ptr: Pointer to some "CV_32FC1" matrix element: the beginning of some row. **/
+	
 	/* define the 1st quarter, middle, 3rd quarter, and endpoint coordinates */
 	const int xEnd = x + W - 1;
 	const int xMid = (x + xEnd) >> 1;
@@ -186,15 +185,35 @@ void extractBlock(int Bid, float *&ptr, IplImage *normSum, int x, int W, int y, 
 	//const int area = (xEnd - x + 1) * (yEnd - y + 1);
 
 	/* [1.1] 5 upright rectangle features */
-	*ptr++ = recSumRight(normSum, x, y, xEnd, yMid) - recSumRight(normSum, x, yMid + 1, xEnd, yEnd);
-	*ptr++ = recSumRight(normSum, x, y, xMid, yEnd) - recSumRight(normSum, xMid + 1, y, xEnd, yEnd);
-	*ptr++ = recSumRight(normSum, x, y, xMid, yMid) - recSumRight(normSum, xMid + 1, y, xEnd, yMid) -
-		recSumRight(normSum, x, yMid + 1, xMid, yEnd) + recSumRight(normSum, xMid + 1, yMid + 1, xEnd, yEnd);
-	*ptr++ = recSumRight(normSum, x, y, xEnd, yQ1) - recSumRight(normSum, x, yQ1 + 1, xEnd, yQ3) +
-		recSumRight(normSum, x, yQ3 + 1, xEnd, yEnd);
-	*ptr++ = recSumRight(normSum, x, y, xQ1, yEnd) - recSumRight(normSum, xQ1 + 1, y, xQ3, yEnd) +
-		recSumRight(normSum, xQ3 + 1, y, xEnd, yEnd);
 
+//	*ptr++ = recSumRight(normSum, x, y, xEnd, yMid) - recSumRight(normSum, x, yMid + 1, xEnd, yEnd);
+//	*ptr++ = recSumRight(normSum, x, y, xMid, yEnd) - recSumRight(normSum, xMid + 1, y, xEnd, yEnd);
+//	*ptr++ = recSumRight(normSum, x, y, xMid, yMid) - recSumRight(normSum, xMid + 1, y, xEnd, yMid) -
+//		recSumRight(normSum, x, yMid + 1, xMid, yEnd) + recSumRight(normSum, xMid + 1, yMid + 1, xEnd, yEnd);
+//	*ptr++ = recSumRight(normSum, x, y, xEnd, yQ1) - recSumRight(normSum, x, yQ1 + 1, xEnd, yQ3) +
+//		recSumRight(normSum, x, yQ3 + 1, xEnd, yEnd);
+//	*ptr = recSumRight(normSum, x, y, xQ1, yEnd) - recSumRight(normSum, xQ1 + 1, y, xQ3, yEnd) +
+//		recSumRight(normSum, xQ3 + 1, y, xEnd, yEnd);
+	
+	double value = recSumRight(normSum, x, y, xEnd, yMid) - recSumRight(normSum, x, yMid + 1, xEnd, yEnd);
+	cvSetReal2D(POOL, Iid * blockCount + Bid, 0, value);
+	
+	value = recSumRight(normSum, x, y, xMid, yEnd) - recSumRight(normSum, xMid + 1, y, xEnd, yEnd);
+	cvSetReal2D(POOL, Iid * blockCount + Bid, 1, value);
+	
+	value = recSumRight(normSum, x, y, xMid, yMid) - recSumRight(normSum, xMid + 1, y, xEnd, yMid) -
+	recSumRight(normSum, x, yMid + 1, xMid, yEnd) + recSumRight(normSum, xMid + 1, yMid + 1, xEnd, yEnd);
+	cvSetReal2D(POOL, Iid * blockCount + Bid, 2, value);
+	
+	value = recSumRight(normSum, x, y, xEnd, yQ1) - recSumRight(normSum, x, yQ1 + 1, xEnd, yQ3) +
+	recSumRight(normSum, x, yQ3 + 1, xEnd, yEnd);
+	cvSetReal2D(POOL, Iid * blockCount + Bid, 3, value);
+	
+	value = recSumRight(normSum, x, y, xQ1, yEnd) - recSumRight(normSum, xQ1 + 1, y, xQ3, yEnd) +
+	recSumRight(normSum, xQ3 + 1, y, xEnd, yEnd);
+	cvSetReal2D(POOL, Iid * blockCount + Bid, 4, value);
+
+	
 	/* [1.2] 5 tilted rectangle features (NOT YET implemented) */
 
 	/* [2] 9 EOH features */

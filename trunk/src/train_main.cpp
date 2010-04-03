@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
 
 	tic = clock();
 	/* Use only one large matrix for storing all POS / NEG feature data */
-	CvMat *POS, *NEG;
+	CvMat *POS = NULL, *NEG = NULL;
 	int N1, N2; /* number of positive / negative images */
 	int blockCount = 0; /* number of blocks in an image */
 

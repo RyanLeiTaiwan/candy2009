@@ -256,11 +256,14 @@ void meanVarNorm(IplImage *normImg, double sum, double sqSum, int N) {
  * In addition, ii is in IPL_DEPTH_64F.
  * Make sure that (x1,y1) lies to the upper-left of (x2,y2) */
 float recSumRight(IplImage *ii, int x1, int y1, int x2, int y2) {
-	return
-		*(double *) (ii->imageData + y2 * ii->widthStep + x2 * sizeof(double)) +
-		*(double *) (ii->imageData + (y1 - 1) * ii->widthStep + (x1 - 1) * sizeof(double)) -
-		*(double *) (ii->imageData + (y1 - 1) * ii->widthStep + x2 * sizeof(double)) -
-		*(double *) (ii->imageData + y2 * ii->widthStep + (x1 - 1) * sizeof(double));
+	double ret =
+//		*(double *) (ii->imageData + y2 * ii->widthStep + x2 * sizeof(double)) +
+//		*(double *) (ii->imageData + (y1 - 1) * ii->widthStep + (x1 - 1) * sizeof(double)) -
+//		*(double *) (ii->imageData + (y1 - 1) * ii->widthStep + x2 * sizeof(double)) -
+//		*(double *) (ii->imageData + y2 * ii->widthStep + (x1 - 1) * sizeof(double));
+		cvGetReal2D(ii, y2, x2) + cvGetReal2D(ii, y1-1, x1-1) - cvGetReal2D(ii, y1-1, x2) - cvGetReal2D(ii, y2, x1-1); 
+	assert(!isnan(ret));
+	return (float)ret;
 }
 
 /* Tilted rectangular sum given (x, y, w, h) */
