@@ -1,7 +1,7 @@
 /** File: adaboost.cpp
  ** Author: Ryan Lei
  ** Creation: 2009/12/28
- ** Modification: 2009/03/27
+ ** Modification: 2009/04/03
  ** Description: The implementations of cascaded AdaBoost.
  **   This learning algorithm is based on the Chen-and-Chen paper,
  **   which is "real" AdaBoost in a "cascaded" structure.
@@ -22,7 +22,7 @@ void AdaWeak::setValue(int Bid, int Fid, short parity, float decision, float wei
 /* Learn AdaBoost stage A[i,j]: Returns true if running out of NEG images. */
 bool learnA(const int N1, const int N2, const int blockCount, int &rejectCount, bool rejectTable[],
 			CvMat *POS, CvMat *NEG, vector<AdaStrong> &H, float &F_current) {
-	
+
 	/* [0] Initialization */
 	int selection[ N1 ];  // image selection result
 	static float initialW = 1.f / (float) (N1 << 1) ;  // Initial data weight = 1 / 2N1 (# of pos == # of neg)
@@ -32,10 +32,10 @@ bool learnA(const int N1, const int N2, const int blockCount, int &rejectCount, 
 	posWeight = cvCreateMat(1, N1, CV_32FC1);  // Row vector, which is easy to print
 	cvSet(posWeight, cvScalar(initialW));
 	negWeight = cvCloneMat(posWeight);
-	
+
 	/* [1] Randomly select N1 negative examples from the bootstrap set.
 	 * Stop the training if negative images are not enough.
-	 */	
+	 */
 	if (N2 - rejectCount < N1) {
 		cout << "learnA(): Run out of negative images.\n";
 		return true;
@@ -45,7 +45,7 @@ bool learnA(const int N1, const int N2, const int blockCount, int &rejectCount, 
 	/* Results of H(x) classification */
 	CvMat *posResult = cvCreateMat(1, N1, CV_32FC1);
 	CvMat *negResult = cvCreateMat(1, N1, CV_32FC1);
-	
+
 	/* Create an AdaStrong */
 	H.push_back(AdaStrong());
 	int weakUsed = 0;
@@ -54,9 +54,9 @@ bool learnA(const int N1, const int N2, const int blockCount, int &rejectCount, 
 		weakUsed++;
 #if GETCHAR
 		cout << "* Weak learner " << weakUsed << ":\n";
-#endif		
+#endif
 		addWeak(N1, blockCount, selection, POS, NEG, posWeight, negWeight, H);
-		
+
 		/* [3.1] Use the H(x) so far to classify:
 		 * H(x) = sign( sum[alpha_t * h_t(x)] )
 		 * Process the POS and NEG together in one loop
@@ -85,12 +85,12 @@ bool learnA(const int N1, const int N2, const int blockCount, int &rejectCount, 
 		cout << "  Before modifying the threshold:\n    Detection rate = " << d_local << " (" << detect << "/" << N1 << ")\n";
 		cout << "    False positive rate = " << f_local << " (" << fp << "/" << N1 << ")\n";
 #endif
-		
-        /* [3.2] If necessary, modify the threshold of H(x) to fulfill d_minA 
+
+        /* [3.2] If necessary, modify the threshold of H(x) to fulfill d_minA
 		 * If minPosResult < 0, then let
 		 * result = result - minPosResult so that all POS data are
 		 * determined as positive, i.e., detection rate = 100%.
-		 */		
+		 */
 		if (minPosResult < 0.f) {
 			threshold = minPosResult;
 			cvSubS(posResult, cvScalar(threshold), posResult);
@@ -101,7 +101,7 @@ bool learnA(const int N1, const int N2, const int blockCount, int &rejectCount, 
 		printMat(negResult, "negResult");
 		getchar();
 #endif
-		
+
         /* [4] Calculate d_local and f_local of H(x) */
 		detect = 0, fp = 0;  // Counters for detections and false-positives
 		for (int Iid = 0; Iid < N1; Iid++) {
@@ -118,20 +118,20 @@ bool learnA(const int N1, const int N2, const int blockCount, int &rejectCount, 
 		cout << "  After modifying the threshold:\n    Detection rate = " << d_local << " (" << detect << "/" << N1 << ")\n";
 		cout << "    False positive rate = " << f_local << " (" << fp << "/" << N1 << ")\n";
 		getchar();
-#endif		
-		assert(d_local >= d_minA); 
-		
-		
+#endif
+		assert(d_local >= d_minA);
+
+
 	} // End of loop "while (f_local > f_maxA). Now the learning of strong classifier H is complete."
-	
+
 	/* [5] Write the threshold to the AdaStrong */
 	H.back().threshold = threshold;
-	
+
 	/* [6] Update the overall false positive rate */
 	F_current *= f_local;
 	cout << "Weak learners used: " << weakUsed << endl;
 	cout << "Overall training false positive rate: " << F_current << endl;
-	
+
 	/* [7] Reject the true negative images */
 #if GETCHAR
 	int rejectLocal = 0;
@@ -149,7 +149,7 @@ bool learnA(const int N1, const int N2, const int blockCount, int &rejectCount, 
 	cout << "Rejected " << rejectLocal << " images for this AdaBoost stage.\n";
 #endif
 	cout << "Rejected " << rejectCount << " images in total.\n";
-	
+
 	return false;
 }
 
@@ -158,10 +158,10 @@ void selectNeg(const int N1, const int N2, bool rejectTable[], int selection[]) 
 	/* Selection table: indicate whether this image has been selected */
 	bool *selectTable = new bool[ N2 ];
 	memset(selectTable, 0, N2);
-	
+
 	for ( int i = 0; i < N1; i++ ) {
 		int Iid;
-		/* Randomly select an image that is neither REJECTED nor SELECTED 
+		/* Randomly select an image that is neither REJECTED nor SELECTED
 		 * by the AdaBoost learning */
 		do {
 			Iid = rand() % N2;
@@ -173,20 +173,20 @@ void selectNeg(const int N1, const int N2, bool rejectTable[], int selection[]) 
 #endif
 		selectTable[ Iid ] = true;  // Mark as selected
 		selection[ i ] = Iid;  // Record the result
-	}	
+	}
 	delete [] selectTable;
 }
 
 
 void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, CvMat *NEG,
 			 CvMat *posWeight, CvMat *negWeight, vector<AdaStrong> &H) {
-	
+
 	/* The best weak classifier h */
 	AdaWeak h;
 	float bestError = 1.f;
-	int bestBid, bestFid;
-	short bestParity;
-	float bestDecision;
+	int bestBid = -1, bestFid = -1;
+	short bestParity = 0;
+	float bestDecision = 0;
 #if GETCHAR
 	float avgError = 0.f;
 	float bestPosMean;
@@ -204,7 +204,7 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 	posMul = cvCreateMat(1, N1, CV_32FC1);
 	negMul = cvCreateMat(1, N1, CV_32FC1);
 
-	
+
 	/* For all possible blocks and features (Bid, Fid):
 	 * Select a weak classifier that minimizes the error rate */
 	for (int Bid = 0; Bid < blockCount; Bid++ ) {
@@ -223,7 +223,7 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 //				posMean += cvGetReal2D(POS, Iid * blockCount + Bid, Fid);
 				float value;
 				value = *(float *) (POS->data.ptr + (Iid * blockCount + Bid) * POS->step + Fid * sizeof(float));
-				
+
 				assert(!isnan(value));
 				posMean += value;
 
@@ -232,30 +232,30 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 //				negMean += cvGetReal2D(NEG, selection[ Iid ] * blockCount + Bid, Fid);
 				value = *(float *) (NEG->data.ptr + (selection[Iid] * blockCount + Bid) * NEG->step + Fid * sizeof(float));
 				//float *address = (float *) (NEG->data.ptr + (selection[Iid] * blockCount + Bid) * NEG->step + Fid * sizeof(float));
-								
+
 				assert(!isnan(value));
 				negMean += value;
 
 			}
 #if 0
 			cout << "Bid: " << Bid << ", Fid: " << Fid << ", posSum = " << posMean << ", negSum = " << negMean << endl;
-#endif			
-			
+#endif
+
 			posMean /= N1;
 			negMean /= N1;
 #if 0
 			cout << "Bid: " << Bid << ", Fid: " << Fid << ", posMean = " << posMean << ", negMean = " << negMean << endl;
-#endif			
-			
+#endif
+
 			/* Initial decision threshold: Average of POS_mean and NEG_mean */
 			float decision = (posMean + negMean) / 2.f;
-			/* 
+			/*
 			 * parity = +1: ... negMean ... | ... posMean ...
 			 * parity = -1: ... posMean ... | ... negMean ...
 			 */
 			short parity = (posMean >= negMean) ? +1 : -1;
 
-			
+
 			/* [2] Classify and compute the AdaBoost weighted error rate */
 			float error = 0.f;
 			for (int Iid = 0; Iid < N1; Iid++) {
@@ -264,7 +264,7 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 					error += cvGetReal2D(posWeight, 0, Iid);
 					cvSetReal2D(posResult, 0, Iid, -1.f);
 				}
-				
+
 				/* Nagative and wrong => False positive */
 				if (parity * cvGetReal2D(NEG, selection[Iid] * blockCount + Bid, Fid) >= parity * decision) {
 					error += cvGetReal2D(negWeight, 0, Iid);
@@ -277,7 +277,7 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 #if GETCHAR
 			avgError += error;
 #endif
-			
+
 			/* [3] If error < bestError, keep the values in h */
 			if (error < bestError) {
 				bestError = error;
@@ -298,7 +298,7 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 		}
 	} // End of for all (Bid, Fid). Now we have the best weak learner.
 
-	
+
 	/* Make sure bestError < 0.5 (random guessing) */
 	if (bestError >= 0.5f) {
 		error("addWeak(): Best error rate is above 0.5! Please train again.");
@@ -308,7 +308,7 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 	/* [4] Add h to H */
 	h.setValue(bestBid, bestFid, bestParity, bestDecision, weight);
 	H.back().h.push_back(h);
-	
+
 #if GETCHAR
 	avgError /= (blockCount * FEATURE_COUNT);
 	cout << "Average error rate: " << avgError << endl;
@@ -322,9 +322,9 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 	printMat(negMul, "negMul");
 	getchar();
 #endif
-	
-	/* 
-	/* [5] Update the weight:
+
+	/*
+	 * [5] Update the weight:
 	 *             D_t[i] * exp(-weight_t * y_t[i] * h_t(x[i])
 	 * D_t+1[i] = ------------------------------------------------
 	 *                         normalization factor
@@ -346,14 +346,14 @@ void addWeak(const int N1, const int blockCount, int selection[], CvMat *POS, Cv
 	printMat(negWeight, "negWeight");
 	getchar();
 #endif
-	
+
 }
 
 /* Classify all data using the strong classifier. Write the results in "results".
  * Returns the minumum posAnswer. */
 float classifyStrongAll(const int N1, const int blockCount, int selection[], CvMat *POS, CvMat *NEG,
 					    vector<AdaStrong> &H, CvMat *posResult, CvMat *negResult) {
-	
+
 	float minPosAnswer = 0.f; // Record posAnswer less than zero
 	/* H(x[i]) = sign( sum[ weight_t * h_t(x[i]) ] )
 	 * Process the POS and NEG together in one loop.
@@ -367,7 +367,7 @@ float classifyStrongAll(const int N1, const int blockCount, int selection[], CvM
 			short parity = it->parity;
 			float decision = it->decision;
 			float weight = it->weight;
-			
+
 			/* Determine that positive is positive */
 			if (parity * cvGetReal2D(POS, Iid * blockCount + Bid, Fid) >= parity * decision) {
 				posAnswer += weight;
@@ -383,13 +383,13 @@ float classifyStrongAll(const int N1, const int blockCount, int selection[], CvM
 			/* Determine that negative is negative */
 			else {
 				negAnswer -= weight;
-			}	
+			}
 		}
-		
+
 		/* After classification of one image: Record the result */
 		cvSetReal2D(posResult, 0, Iid, posAnswer);
 		cvSetReal2D(negResult, 0, Iid, negAnswer);
-		
+
 		/* Remember the minimum posAnswer:
 		 * Since d_minA is implemented as 100%, we must shift the threshold to the minimum posAnswer if it's below zero.
 		 */
@@ -397,7 +397,7 @@ float classifyStrongAll(const int N1, const int blockCount, int selection[], CvM
 			minPosAnswer = posAnswer;
 		}
 	} // End of loop "Iid"
-	
+
 	return minPosAnswer;
 }
 
@@ -407,7 +407,7 @@ void writeModel(vector<AdaStrong> &H, ofstream &fout) {
 	fout << "[Candy2009]" << endl;
 	/* # of Strong classifiers */
 	fout << H.size() << endl;
-	
+
 	// AdaStrong iterator: itStrong. AdaWeak iterator: itWeak
 	for (vector<AdaStrong>::iterator itStrong = H.begin(); itStrong != H.end(); itStrong++) {
 		/* # of H_k' weak classifiers, threshold of H_k */

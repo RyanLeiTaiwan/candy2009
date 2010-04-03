@@ -1,7 +1,7 @@
 /** File: global.h
  ** Author: Ryan Lei
  ** Creation: 2009/12/25
- ** Update: 2010/04/02
+ ** Update: 2010/04/03
  ** Description: Constants or Parameters used globally.
  **/
 
@@ -9,18 +9,19 @@
  ** for loops may have to be in [for y ... for x] order **/
 
 /** Constants **/
-#define FEATURE_COUNT 5 
+#define FEATURE_COUNT 5
 
 
 /** System parameters: may be edited **/
 /* Uncomment either line according to your OS */
-#define Mac 1
+//#define Mac 1
 //#define Linux 1
-//#define Windows 1
-#ifdef Mac || Linux
-	#define Unix 1
-#else
+#define Windows 1
+
+#ifdef Windows
 	#define Unix 0
+#else
+	#define Unix 1
 #endif
 
 #ifdef Mac
