@@ -1,0 +1,145 @@
+# depslib dependency file v1.0
+1270264802 source:c:\users\ryanlei\svn\candy2009\include\util.h
+	<iostream>
+	<iomanip>
+	<fstream>
+	<dirent.h>
+	<cstring>
+	<ctime>
+	<cmath>
+	<vector>
+	<cxcore.h>
+	<cv.h>
+	<highgui.h>
+	"parameters.h"
+
+1270279684 c:\opencv\include\opencv\cxcore.h
+	"ipl.h"
+	"ipl/ipl.h"
+	"cxtypes.h"
+	"cxerror.h"
+	"cvver.h"
+	"cxcore.hpp"
+
+1270274367 c:\opencv\include\opencv\cxtypes.h
+	<assert.h>
+	<stdlib.h>
+	<string.h>
+	<float.h>
+	<stdint.h>
+	<intrin.h>
+	<emmintrin.h>
+	<fastmath.h>
+	<math.h>
+	<ipl.h>
+	<ipl/ipl.h>
+
+1270274367 c:\opencv\include\opencv\cxerror.h
+
+1270274367 c:\opencv\include\opencv\cvver.h
+
+1270274367 c:\opencv\include\opencv\cxcore.hpp
+	"cxmisc.h"
+	<algorithm>
+	<cmath>
+	<complex>
+	<map>
+	<new>
+	<string>
+	<vector>
+	"cxoperations.hpp"
+	"cxmat.hpp"
+	"cxflann.h"
+
+1270274367 c:\opencv\include\opencv\cxmisc.h
+	<limits.h>
+	<malloc.h>
+	<alloca.h>
+	<stdlib.h>
+
+1270274367 c:\opencv\include\opencv\cxoperations.hpp
+	<string.h>
+	<limits.h>
+	<ext/atomicity.h>
+	<bits/atomicity.h>
+	"windows.h"
+
+1270274367 c:\opencv\include\opencv\cxmat.hpp
+	<limits.h>
+
+1270274367 c:\opencv\include\opencv\cxflann.h
+
+1270279684 c:\opencv\include\opencv\cv.h
+	<chdl.h>
+	"cxcore.h"
+	"cvtypes.h"
+	"cv.hpp"
+	"cvcompat.h"
+
+1270274367 c:\opencv\include\opencv\cvtypes.h
+	<assert.h>
+	<stdlib.h>
+
+1270279684 c:\opencv\include\opencv\cv.hpp
+
+1270274367 c:\opencv\include\opencv\cvcompat.h
+	<string.h>
+
+1270274367 c:\opencv\include\opencv\highgui.h
+	"cxcore.h"
+	<windows.h>
+	<chdl.h>
+	"highgui.hpp"
+
+1270274367 c:\opencv\include\opencv\highgui.hpp
+
+1270293780 c:\users\ryanlei\svn\candy2009\include\parameters.h
+
+1270292018 source:c:\users\ryanlei\svn\candy2009\tools\gen_neg.cpp
+	"util.h"
+
+1270264802 c:\users\ryanlei\svn\candy2009\include\util.h
+	<iostream>
+	<iomanip>
+	<fstream>
+	<dirent.h>
+	<cstring>
+	<ctime>
+	<cmath>
+	<vector>
+	<cxcore.h>
+	<cv.h>
+	<highgui.h>
+	"parameters.h"
+
+1270291688 source:c:\users\ryanlei\svn\candy2009\include\parameters.h
+
+1270297286 source:c:\users\ryanlei\svn\candy2009\src\util.cpp
+	"util.h"
+
+1270301614 source:c:\users\ryanlei\svn\candy2009\src\adaboost.cpp
+	"adaboost.h"
+
+1270264802 c:\users\ryanlei\svn\candy2009\include\adaboost.h
+	"util.h"
+
+1270296734 source:c:\users\ryanlei\svn\candy2009\src\extract.cpp
+	"extract.h"
+
+1270264802 c:\users\ryanlei\svn\candy2009\include\extract.h
+	"util.h"
+
+1270264954 source:c:\users\ryanlei\svn\candy2009\src\train_main.cpp
+	"extract.h"
+	"adaboost.h"
+
+1270301604 source:c:\users\ryanlei\svn\candy2009\src\detect.cpp
+	"detect.h"
+
+1270264802 c:\users\ryanlei\svn\candy2009\include\detect.h
+	"adaboost.h"
+	"extract.h"
+
+1270264954 source:c:\users\ryanlei\svn\candy2009\src\detect_main.cpp
+	"detect.h"
+

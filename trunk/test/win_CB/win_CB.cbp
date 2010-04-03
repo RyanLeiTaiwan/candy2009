@@ -11,7 +11,6 @@
 				<Option object_output="obj\Debug\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="test.png test.avi" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -40,6 +39,7 @@
 			<Add library="C:\OpenCV\lib\libcxcore210.dll.a" />
 			<Add library="C:\OpenCV\lib\libhighgui210.dll.a" />
 			<Add library="C:\OpenCV\lib\libml210.dll.a" />
+			<Add library="C:\OpenCV\lib\libopencv_ffmpeg210.dll.a" />
 		</Linker>
 		<Unit filename="main.cpp" />
 		<Extensions>

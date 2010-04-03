@@ -20,57 +20,57 @@
 int main(int argc, char *argv[]) {
 
 	DIR *dir;
-	ofstream fout;  
+	ofstream fout;
 	char slash = Unix ? '/' : '\\'; // It is '/' or '\' depending on OS
 	char POS_PATH_BASE[MAX_PATH_LENGTH];
 	char NEG_PATH_BASE[MAX_PATH_LENGTH];
 	clock_t tic, toc;
-	
+
 	if (argc != 4) {
 		error("Usage: train [POS_DIR] [NEG_DIR] [OUTPUT_FILE].");
 	}
-	
+
 	if (!(dir = opendir(argv[1]))) {
 		error("train: [POS_DIR] open failed.");
 	}
 	/* Set POS_PATH_BASE to [POS_DIR] and append '/' or '\' */
-	strcpy(POS_PATH_BASE, argv[1]);	
+	strcpy(POS_PATH_BASE, argv[1]);
 	sprintf(POS_PATH_BASE, "%s%c", POS_PATH_BASE, slash);
 	closedir(dir);
-	
+
 	if (!(dir = opendir(argv[2]))) {
 		error("train: [NEG_DIR] open failed.");
 	}
 	/* Set NEG_PATH_BASE to [NEG_DIR] and append '/' or '\' */
-	strcpy(NEG_PATH_BASE, argv[2]);	
-	sprintf(NEG_PATH_BASE, "%s%c", NEG_PATH_BASE, slash);	
+	strcpy(NEG_PATH_BASE, argv[2]);
+	sprintf(NEG_PATH_BASE, "%s%c", NEG_PATH_BASE, slash);
 	closedir(dir);
-	
+
 	fout.open(argv[3]);
 	if (!(fout)) {
 		error("train: [OUTPUT_FILE] open failed.");
 	}
-	
+
 	/** Command is correct **/
 	cout << "This program provides cascaded-AdaBoost training.\n" <<
 		"Please make sure that [POS_DIR] and [NEG_DIR] contain only training image data,\n" <<
 		"  whose size is " << WINDOW_WIDTH << " x " << WINDOW_HEIGHT << ".\n" <<
 		"Press [Enter] to continue, or ctrl+C/D/Z to exit ...";
 	getchar();
-	
+
 	tic = clock();
 	/* Use only one large matrix for storing all POS / NEG feature data */
 	CvMat *POS, *NEG;
 	int N1, N2; /* number of positive / negative images */
 	int blockCount = 0; /* number of blocks in an image */
-	
+
 	/* [1] Feature extraction */
 	/* First, check for validity of extraction parameters */
 	assert(!(360 % (BIN_NUM * 2))); // (360 / BIN_NUM / 2) should be an integer */
 	assert(360 / BIN_NUM == BIN_SIZE);
 	assert(BIN_SIZE >> 1 == HALF_BIN_SIZE);
-	
-	
+
+
 	/* Have to pass (CvMat *&) to really create the matrices */
 	cout << "\nStart of feature extraction ...\n";
 	extractAll(POS_PATH_BASE, POS, N1, blockCount);
@@ -84,27 +84,34 @@ int main(int argc, char *argv[]) {
 	printMat(NEG, "NEG", 8999 * blockCount, 9000 * blockCount - 1, 0, 4);
 #endif
 #if 1
+    bool bye = false;
+	cout << "Check NEG matrix for NaN values:" << endl;
 	float *ptr = (float *)NEG->data.ptr;
 	for (int Iid = 0; Iid < N2; Iid++) {
 		for (int Bid = 0; Bid < blockCount; Bid++) {
 			for (int Fid = 0; Fid < FEATURE_COUNT; Fid++) {
 				if (isnan(*ptr)) {
 					cout << "NEG[" << Iid << "][" << Bid << "][" << Fid << "]\n";
+					bye = true;
 				}
 				ptr++;
 			}
 		}
 	}
-	cout << "NEG OK!!" << endl;
-	getchar();
+	if (bye) {
+	    error("NEG matrix contains NaN values!");
+    }
+    else {
+        cout << "OK!" << endl;
+    }
 #endif
 	assert(blockCount > 0);
 	cout << "# of blocks per image: " << blockCount << ".\n";
 #if GETCHAR
 	getchar();
 #endif
-	
-	/* [2] Cascaded-AdaBoost training */ 
+
+	/* [2] Cascaded-AdaBoost training */
 	cout << "Start of cascaded-AdaBoost training ...\n";
 	srand(time(NULL));
 	float F_current = 1.0;  // current overall false positive rate
@@ -115,19 +122,19 @@ int main(int argc, char *argv[]) {
 	/** Note: All the xxxTable[]'s are of boolean flags **/
 	bool *rejectTable = new bool[ N2 ];
 	memset(rejectTable, 0, N2);
-	
+
 	bool stop = false;  // Stopping flag
 	vector<AdaStrong> H;  // A cascade of AdaBoost strong classifiers
-	
+
 	/*** The training algorithm ***/
 	while (F_current > F_target && !stop) {
 		/* upper bound for j */
 		int jEnd = (i == 1) ? (ni + 1) : ni;
-		
+
 		for (int j = 1; j <= jEnd; j++) {
 			/* Learn an A[i,j] stage */
 			cout << "\nLearning stage A[" << i << "," << j << "]...\n";
-			if (stop = learnA(N1, N2, blockCount, rejectCount, rejectTable, POS, NEG, H, F_current)) {
+			if ((stop = learnA(N1, N2, blockCount, rejectCount, rejectTable, POS, NEG, H, F_current))) {
 				break;
 			}
 			cout << "Stage A[" << i << "," << j << "] completed.\n";
@@ -146,18 +153,18 @@ int main(int argc, char *argv[]) {
   #endif
 #endif
 		i++;
-		
-	} // End of loop while (F_current > F_target && !stop)	
+
+	} // End of loop while (F_current > F_target && !stop)
 
 	cout << "The entire training process completed.\nWriting model parameters to " << argv[3] << " ... ";
 	/* Write model parameters to [OUTPUT_FILE]. See docs/train_format.txt for explanation. */
 	writeModel(H, fout);
 	cout << "done!\n";
-	
+
 	/* Show running time */
 	toc = clock();
 	runningTime(tic, toc);
-	
+
 	/* Don't forget to close the file stream */
 	fout.close();
 	return 0;
