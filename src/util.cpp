@@ -14,6 +14,28 @@ void error(const char *msg) {
 	exit(EXIT_FAILURE);
 }
 
+/* Echo the operating system set by #define */
+void echoOS() {
+	cout << "====  OS set in \"parameters.h\": ";
+#ifdef Mac
+	cout << "Mac  ====\n\n";
+	return;
+#endif
+#ifdef Linux
+	cout << "Linux  ====\n\n";
+	return;
+#endif
+#ifdef Windows
+	cout << "Windows  ====\n\n";
+	return;
+#endif
+	
+	/* None of the above */
+	cout << "Unknown  ====\n\n";
+	error("echoOS(): Operating system not set. Please check include/parameters.h");
+	
+}
+
 /* Count the number of images in a directory */
 int	countImages(const char *PATH_BASE) {
 	int ret = 0;
@@ -252,4 +274,21 @@ float recSumTilt(IplImage *ii, int x, int y, int w, int h) {
 		*(double *) (ii->imageData + (y + h) * ii->widthStep + (x - h) * sizeof(double)) -
 		*(double *) (ii->imageData + y * ii->widthStep + x * sizeof(double)) -
 		*(double *) (ii->imageData + (y + w + h) * ii->widthStep + (x + w - h) * sizeof(double));
+}
+
+/* Check for NaN values of a matrix: returns true if it contains NaN values */
+bool checkNaN(CvMat *mat, const char *name) {
+	int rows = mat->rows;
+	int cols = mat->cols;
+	bool NaN = false;
+	
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < cols; j++) {
+			if (isnan(cvGetReal2D(mat, i, j))) {
+				NaN = true;
+				cout << name << "[" << i << "][" << j << "]" << endl;
+			}
+		}
+	}
+	return NaN;
 }
