@@ -1,7 +1,7 @@
 /** File: util.h
  ** Author: Ryan Lei
  ** Creation: 2010/01/09
- ** Update: 2010/03/27
+ ** Update: 2010/04/04
  ** Description: Header file for utility functions
  **/
 
@@ -21,6 +21,8 @@ using namespace std;
 
 /* Print an error message in cerr */
 void error(const char *msg);
+/* Echo the operating system set by #define */
+void echoOS();
 /* (Not precisely) count # of image files in a directory */
 int countImages(const char *PATH);
 /* Print a 2D, single-channel matrix, with / without a specified range */
@@ -38,3 +40,6 @@ void meanVarNorm(IplImage *normImg, double sum, double sqSum, int N);
 float recSumRight(IplImage *ii, int x1, int y1, int x2, int y2);
 /* Tilted rectangular sum given (x, y, w, h) */
 float recSumTilt(IplImage *ii, int x, int y, int w, int h);
+/* Check for NaN values of a matrix: returns true if it contains NaN values */
+bool checkNaN(CvMat *mat, const char *name);
+

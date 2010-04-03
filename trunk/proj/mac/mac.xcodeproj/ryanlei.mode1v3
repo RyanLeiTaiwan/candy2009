@@ -273,8 +273,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>3</integer>
-									<integer>1</integer>
+									<integer>13</integer>
+									<integer>8</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -316,7 +316,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>extract.cpp</string>
+								<string>adaboost.cpp</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -324,11 +324,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>extract.cpp</string>
+										<string>adaboost.cpp</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>2EDA8E3F11665D9D005A34C1</string>
+										<string>2E75701D1167AA7D003844CB</string>
 										<key>history</key>
 										<array>
 											<string>2ED7585110E7E149001D3EE5</string>
@@ -348,19 +348,19 @@
 											<string>2EF3E53B110D54EF008CB96D</string>
 											<string>2E8F120B110EA9A6004AD9A9</string>
 											<string>2E8F47DC110EDE74004AD9A9</string>
-											<string>2E0845CE112DCD2200834857</string>
-											<string>2E37AEC71161ADE40027E1AE</string>
 											<string>2E2E665C1166297F00ACCC4E</string>
-											<string>2E2E665F1166297F00ACCC4E</string>
-											<string>2EDA8E0A116653D2005A34C1</string>
-											<string>2EDA8E0B116653D2005A34C1</string>
 											<string>2EDA8E1C1166547A005A34C1</string>
-											<string>2EDA8E3911665D9D005A34C1</string>
-											<string>2EDA8E3A11665D9D005A34C1</string>
-											<string>2EDA8E3B11665D9D005A34C1</string>
-											<string>2EDA8E3C11665D9D005A34C1</string>
-											<string>2EDA8E3D11665D9D005A34C1</string>
-											<string>2EDA8E3E11665D9D005A34C1</string>
+											<string>2E7570121167AA7D003844CB</string>
+											<string>2E7570131167AA7D003844CB</string>
+											<string>2E7570141167AA7D003844CB</string>
+											<string>2E7570151167AA7D003844CB</string>
+											<string>2E7570161167AA7D003844CB</string>
+											<string>2E7570171167AA7D003844CB</string>
+											<string>2E7570181167AA7D003844CB</string>
+											<string>2E7570191167AA7D003844CB</string>
+											<string>2E75701A1167AA7D003844CB</string>
+											<string>2E75701B1167AA7D003844CB</string>
+											<string>2E75701C1167AA7D003844CB</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -372,14 +372,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {1053, 540}}</string>
+								<string>{{0, 0}, {1053, 537}}</string>
 								<key>RubberWindowFrame</key>
 								<string>0 82 1260 692 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>540pt</string>
+							<string>537pt</string>
 						</dict>
 						<dict>
 							<key>ContentConfiguration</key>
@@ -392,14 +392,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 545}, {1053, 106}}</string>
+								<string>{{0, 542}, {1053, 109}}</string>
 								<key>RubberWindowFrame</key>
 								<string>0 82 1260 692 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
 							<key>Proportion</key>
-							<string>106pt</string>
+							<string>109pt</string>
 						</dict>
 					</array>
 					<key>Proportion</key>
@@ -418,9 +418,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>2EDA8E10116653D2005A34C1</string>
+				<string>2E75701E1167AA7D003844CB</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>2EDA8E11116653D2005A34C1</string>
+				<string>2E75701F1167AA7D003844CB</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -585,7 +585,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>adaboost.cpp</string>
+								<string></string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -602,8 +602,6 @@
 							<string>436pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -643,7 +641,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>2ED7B33D10E787C50080D7C9</string>
-				<string>2EDA46F41166363F005A34C1</string>
+				<string>2E7570011167AA75003844CB</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -765,13 +763,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>2EDA46F51166363F005A34C1</string>
+				<string>2E7570021167AA75003844CB</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>2EDA46F61166363F005A34C1</string>
-				<string>2EDA46F71166363F005A34C1</string>
-				<string>2EDA46F81166363F005A34C1</string>
-				<string>2EDA46F91166363F005A34C1</string>
-				<string>2EDA46FA1166363F005A34C1</string>
+				<string>2E7570031167AA75003844CB</string>
+				<string>2E7570041167AA75003844CB</string>
+				<string>2E7570051167AA75003844CB</string>
+				<string>2E7570061167AA75003844CB</string>
+				<string>2E7570071167AA75003844CB</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debugV3</string>
@@ -997,7 +995,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1C78EAB2065D492600B07095</string>
 								<key>PBXProjectModuleLabel</key>
-								<string></string>
+								<string>util.h</string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -1074,7 +1072,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>2ED756D810E790DF001D3EE5</string>
-				<string>2EDA46FC1166363F005A34C1</string>
+				<string>2E75700F1167AA75003844CB</string>
 				<string>1C78EAB2065D492600B07095</string>
 				<string>1CD052920623707200166675</string>
 			</array>

@@ -1,7 +1,7 @@
 /** File: train_main.cpp
  ** Author: Ryan Lei
  ** Creation: 2009/12/28
- ** Modification: 2010/04/03
+ ** Modification: 2010/04/04
  ** Description: The main function of the car-training program based on the paper:
       Fast Human Detection Using a Novel Boosted Cascading Structure With Meta Stages, Chen and Chen, 2008.
     Important techniques / concepts:
@@ -52,6 +52,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	/** Command is correct **/
+	echoOS();
 	cout << "This program provides cascaded-AdaBoost training.\n" <<
 		"Please make sure that [POS_DIR] and [NEG_DIR] contain only training image data,\n" <<
 		"  whose size is " << WINDOW_WIDTH << " x " << WINDOW_HEIGHT << ".\n" <<
@@ -70,35 +71,27 @@ int main(int argc, char *argv[]) {
 	assert(360 / BIN_NUM == BIN_SIZE);
 	assert(BIN_SIZE >> 1 == HALF_BIN_SIZE);
 
-
-	/* Have to pass (CvMat *&) to really create the matrices */
 	cout << "\nStart of feature extraction ...\n";
+	/* Should pass (CvMat *&) to really create the matrices */
 	extractAll(POS_PATH_BASE, POS, N1, blockCount);
 	cout << "Extraction of POS data completed.\n";
-#if 0
-	printMat(POS, "POS");
+
+#if CHECKNaN
+	cout << "Check POS matrix for NaN values:" << endl;
+	if (checkNaN(POS, "POS")) {
+	    error("POS matrix contains NaN values!");
+    }
+    else {
+        cout << "OK!" << endl;
+    }
 #endif
+	
 	extractAll(NEG_PATH_BASE, NEG, N2, blockCount);
 	cout << "Extraction of NEG data completed.\n";
-#if 0
-	printMat(NEG, "NEG", 8999 * blockCount, 9000 * blockCount - 1, 0, 4);
-#endif
-#if 1
-    bool bye = false;
+
+#if CHECKNaN
 	cout << "Check NEG matrix for NaN values:" << endl;
-	float *ptr = (float *)NEG->data.ptr;
-	for (int Iid = 0; Iid < N2; Iid++) {
-		for (int Bid = 0; Bid < blockCount; Bid++) {
-			for (int Fid = 0; Fid < FEATURE_COUNT; Fid++) {
-				if (isnan(*ptr)) {
-					cout << "NEG[" << Iid << "][" << Bid << "][" << Fid << "]\n";
-					bye = true;
-				}
-				ptr++;
-			}
-		}
-	}
-	if (bye) {
+	if (checkNaN(NEG, "NEG")) {
 	    error("NEG matrix contains NaN values!");
     }
     else {
@@ -106,11 +99,12 @@ int main(int argc, char *argv[]) {
     }
 #endif
 	assert(blockCount > 0);
-	cout << "# of blocks per image: " << blockCount << ".\n";
+	cout << endl << "# of blocks per image: " << blockCount << ".\n";
 #if GETCHAR
 	getchar();
 #endif
 
+	
 	/* [2] Cascaded-AdaBoost training */
 	cout << "Start of cascaded-AdaBoost training ...\n";
 	srand(time(NULL));

@@ -14,9 +14,9 @@
 
 /** System parameters: may be edited **/
 /* Uncomment either line according to your OS */
-//#define Mac 1
-//#define Linux 1
-#define Windows 1
+#define Mac
+//#define Linux
+//#define Windows
 
 #ifdef Windows
 	#define Unix 0
@@ -34,7 +34,8 @@
 #define MAX_LINE_LENGTH 50
 
 /** Run-time options: may be edited **/
-#define GETCHAR 0 // Encounter getchar()'s in training, i.e., verbose mode.;
+#define GETCHAR 0  // Encounter getchar()'s in training, i.e., verbose mode.
+#define CHECKNaN 1  // Check for NaN values after feature extraction
 #define CVWINDOW_X 700  // x position of OpenCV's NamedWindow
 #define CVWINDOW_Y 100  // y position of OpenCV's NamedWindow
 #define RESIZE_WIDTH 512  // width of the resized image

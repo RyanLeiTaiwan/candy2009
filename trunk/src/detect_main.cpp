@@ -1,7 +1,7 @@
 /** File: detect_main.cpp
  ** Author: Ryan Lei
  ** Creation: 2010/01/26
- ** Modification: 2010/03/27
+ ** Modification: 2010/04/04
  ** Description: The main function of the car-detection program based on the paper:
  **   Fast Human Detection Using a Novel Boosted Cascading Structure With Meta Stages, Chen and Chen, 2008.
  **/
@@ -57,6 +57,7 @@ int main(int argc, char *argv[]) {
 				error("detect: [MODEL_FILE] open failed.");
 			}
 			/*** Online single image mode with [TEST_DIR] ***/
+			echoOS();
 			/* Set PATH1_BASE to [TEST_DIR] and append slash */
 			strcpy(PATH1_BASE, argv[2]);	
 			sprintf(PATH1_BASE, "%s%c", PATH1_BASE, slash);
@@ -77,6 +78,7 @@ int main(int argc, char *argv[]) {
 				error("detect: [MODEL_FILE] open failed.");
 			}
 			/*** Batch single image mode with [POS_DIR], [NEG_DIR] ***/
+			echoOS();
 			/* Set PATH1_BASE to [POS_DIR] and append slash */
 			strcpy(PATH1_BASE, argv[2]);	
 			sprintf(PATH1_BASE, "%s%c", PATH1_BASE, slash);
