@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
-	<ActiveTarget name="detect" />
+	<ActiveTarget name="train" />
 	<File name="..\..\include\adaboost.h" open="1" top="0" tabpos="1">
 		<Cursor position="88" topLine="0" />
 	</File>
 	<File name="..\..\include\extract.h" open="0" top="0" tabpos="7">
 		<Cursor position="624" topLine="0" />
 	</File>
-	<File name="..\..\include\parameters.h" open="0" top="0" tabpos="6">
-		<Cursor position="830" topLine="25" />
+	<File name="..\..\include\parameters.h" open="1" top="1" tabpos="3">
+		<Cursor position="492" topLine="9" />
 	</File>
 	<File name="..\..\src\adaboost.cpp" open="0" top="0" tabpos="2">
 		<Cursor position="10824" topLine="252" />
@@ -22,8 +22,8 @@
 	<File name="..\..\src\template.cpp" open="0" top="0" tabpos="8">
 		<Cursor position="134" topLine="0" />
 	</File>
-	<File name="..\..\src\train_main.cpp" open="1" top="1" tabpos="2">
-		<Cursor position="3777" topLine="117" />
+	<File name="..\..\src\train_main.cpp" open="1" top="0" tabpos="2">
+		<Cursor position="4239" topLine="99" />
 	</File>
 	<File name="..\..\src\util.cpp" open="0" top="0" tabpos="5">
 		<Cursor position="861" topLine="24" />

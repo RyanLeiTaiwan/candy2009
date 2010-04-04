@@ -14,9 +14,9 @@
 
 /** System parameters: may be edited **/
 /* Uncomment either line according to your OS */
-#define Mac
+//#define Mac
 //#define Linux
-//#define Windows
+#define Windows
 
 #ifdef Windows
 	#define Unix 0

@@ -93,12 +93,12 @@
 
 1270274367 c:\opencv\include\opencv\highgui.hpp
 
-1270293780 c:\users\ryanlei\svn\candy2009\include\parameters.h
+1270367665 c:\users\ryanlei\svn\candy2009\include\parameters.h
 
 1270292018 source:c:\users\ryanlei\svn\candy2009\tools\gen_neg.cpp
 	"util.h"
 
-1270264802 c:\users\ryanlei\svn\candy2009\include\util.h
+1270365571 c:\users\ryanlei\svn\candy2009\include\util.h
 	<iostream>
 	<iomanip>
 	<fstream>
@@ -114,10 +114,10 @@
 
 1270291688 source:c:\users\ryanlei\svn\candy2009\include\parameters.h
 
-1270297286 source:c:\users\ryanlei\svn\candy2009\src\util.cpp
+1270365573 source:c:\users\ryanlei\svn\candy2009\src\util.cpp
 	"util.h"
 
-1270301614 source:c:\users\ryanlei\svn\candy2009\src\adaboost.cpp
+1270365573 source:c:\users\ryanlei\svn\candy2009\src\adaboost.cpp
 	"adaboost.h"
 
 1270264802 c:\users\ryanlei\svn\candy2009\include\adaboost.h
@@ -129,7 +129,7 @@
 1270264802 c:\users\ryanlei\svn\candy2009\include\extract.h
 	"util.h"
 
-1270264954 source:c:\users\ryanlei\svn\candy2009\src\train_main.cpp
+1270365573 source:c:\users\ryanlei\svn\candy2009\src\train_main.cpp
 	"extract.h"
 	"adaboost.h"
 
@@ -140,6 +140,6 @@
 	"adaboost.h"
 	"extract.h"
 
-1270264954 source:c:\users\ryanlei\svn\candy2009\src\detect_main.cpp
+1270365573 source:c:\users\ryanlei\svn\candy2009\src\detect_main.cpp
 	"detect.h"
 
