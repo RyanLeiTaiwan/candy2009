@@ -1,7 +1,7 @@
 /** File: util.h
  ** Author: Ryan Lei
  ** Creation: 2010/01/09
- ** Update: 2010/04/04
+ ** Update: 2010/07/09
  ** Description: Header file for utility functions
  **/
 
@@ -13,9 +13,12 @@
 #include <ctime>
 #include <cmath>
 #include <vector>
-#include <cxcore.h>
-#include <cv.h>
-#include <highgui.h>
+//#include <cxcore.h>
+//#include <cv.h>
+//#include <highgui.h>
+#include <opencv2/core/core_c.h>
+#include <opencv2/imgproc/imgproc_c.h>
+#include <opencv2/highgui/highgui_c.h>
 #include "parameters.h"
 using namespace std;
 
