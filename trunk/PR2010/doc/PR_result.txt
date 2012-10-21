@@ -1,0 +1,267 @@
+class names:
+  1    Airplane
+  2    Face
+  3    Motorbike
+  4    None
+======================================================
+### PCA: retaining 99% of total variance ...
+###    reduced dimensionality = 348
+### PCA: retaining 98% of total variance ...
+###    reduced dimensionality = 195
+### PCA: retaining 97% of total variance ...
+###    reduced dimensionality = 118
+### PCA: retaining 96% of total variance ...
+###    reduced dimensionality = 75
+### PCA: retaining 95% of total variance ...
+###    reduced dimensionality = 49
+### PCA: retaining 94% of total variance ...
+###    reduced dimensionality = 34
+### PCA: retaining 92% of total variance ...
+###    reduced dimensionality = 20
+### PCA: retaining 90% of total variance ...
+###    reduced dimensionality = 13
+=======================================================
+Attempt 2 (K = 10000; C = 32.0, gamma = 0.0001220703125)
+Accuracy = 95.4357% (230/241) (classification)
+Confusion matrix:
+
+    76     0     1     3
+     0    43     0     1
+     0     0    79     1
+     4     1     0    32
+
+Recall for each class:
+
+    0.9500
+    0.9773
+    0.9875
+    0.8649
+
+Precision for each class:
+
+    0.9500
+    0.9773
+    0.9875
+    0.8649
+=======================================================
+Attempt 2 (K = 1000; C = 8.0, gamma = 0.0001220703125)
+Accuracy = 95.0207% (229/241) (classification)
+Confusion matrix:
+
+    76     0     1     3
+     0    44     0     0
+     0     0    79     1
+     4     2     1    30
+
+Recall for each class:
+
+    0.9500
+    1.0000
+    0.9875
+    0.8108
+
+Precision for each class:
+
+    0.9500
+    0.9565
+    0.9753
+    0.8824
+========================================================
+Attempt 3 (K = 1000; total_var = 99% -> 348-D;
+C = 32, gamma = 0.0001220703125)
+Accuracy = 95.0207% (229/241) (classification)
+Elapsed time is 0.513473 seconds.
+
+Confusion matrix:
+
+    75     0     1     4
+     0    44     0     0
+     0     0    79     1
+     4     2     0    31
+
+Recall for each class:
+
+    0.9375
+    1.0000
+    0.9875
+    0.8378
+
+Precision for each class:
+
+    0.9494
+    0.9565
+    0.9875
+    0.8611
+========================================================
+Attempt 3 (K = 1000; total_var = 98% -> 195-D;
+C = 8.0, gamma = 0.0001220703125)
+Accuracy = 95.8506% (231/241) (classification)
+Confusion matrix:
+
+    77     0     1     2
+     0    44     0     0
+     0     0    80     0
+     4     1     2    30
+
+Recall for each class:
+
+    0.9625
+    1.0000
+    1.0000
+    0.8108
+
+Precision for each class:
+
+    0.9506
+    0.9778
+    0.9639
+    0.9375
+========================================================
+Attempt 3 (K = 1000; total_var = 97% -> 118-D;
+C = 8.0, gamma = 0.0001220703125)
+Accuracy = 95.4357% (230/241) (classification)
+
+Confusion matrix:
+
+    77     0     1     2
+     0    44     0     0
+     0     1    79     0
+     4     1     2    30
+
+Recall for each class:
+
+    0.9625
+    1.0000
+    0.9875
+    0.8108
+
+Precision for each class:
+
+    0.9506
+    0.9565
+    0.9634
+    0.9375
+========================================================
+Attempt 3 (K = 1000; total_var = 96% -> 75-D;
+C = 8.0, gamma = 0.0001220703125)
+Accuracy = 95.4357% (230/241) (classification)
+Elapsed time is 0.079527 seconds.
+
+Confusion matrix:
+
+    76     0     1     3
+     0    44     0     0
+     0     0    79     1
+     4     1     1    31
+
+Recall for each class:
+
+    0.9500
+    1.0000
+    0.9875
+    0.8378
+
+Precision for each class:
+
+    0.9500
+    0.9778
+    0.9753
+    0.8857
+========================================================
+Attempt 3 (K = 1000; total_var = 95% -> 49-D;
+C = 8.0, gamma = 0.0001220703125)
+Accuracy = 94.1909% (227/241) (classification)
+Elapsed time is 0.061641 seconds.
+
+Confusion matrix:
+
+    77     0     1     2
+     0    44     0     0
+     0     0    79     1
+     6     2     2    27
+
+Recall for each class:
+
+    0.9625
+    1.0000
+    0.9875
+    0.7297
+
+Precision for each class:
+
+    0.9277
+    0.9565
+    0.9634
+    0.9000
+=========================================================
+Attempt 3 (K = 1000; total_var = 94% -> 34-D;
+C = 32.0, gamma = 0.0001220703125)
+Accuracy = 95.0207% (229/241) (classification)
+Confusion matrix:
+
+    76     0     1     3
+     1    43     0     0
+     0     0    79     1
+     5     1     0    31
+
+Recall for each class:
+
+    0.9500
+    0.9773
+    0.9875
+    0.8378
+
+Precision for each class:
+
+    0.9268
+    0.9773
+    0.9875
+    0.8857
+=========================================================
+Attempt 3 (K = 1000; total_var = 90% -> 13-D;
+C = 2048.0, gamma =  3.0517578125e-05)
+Accuracy = 88.7967% (214/241) (classification)
+Confusion matrix:
+
+    72     4     2     2
+     4    39     0     1
+     1     0    79     0
+     8     3     2    24
+
+Recall for each class:
+
+    0.9000
+    0.8864
+    0.9875
+    0.6486
+
+Precision for each class:
+
+    0.8471
+    0.8478
+    0.9518
+    0.8889
+=========================================================
+Attempt 4 ([Guess from PCA experience] K = 125; 
+C = 8.0, gamma = 0.0001220703125)
+Accuracy = 94.6058% (228/241) (classification)
+Confusion matrix:
+
+    75     0     1     4
+     0    44     0     0
+     0     0    80     0
+     4     2     2    29
+
+Recall for each class:
+
+    0.9375
+    1.0000
+    1.0000
+    0.7838
+
+Precision for each class:
+
+    0.9494
+    0.9565
+    0.9639
+    0.8788
