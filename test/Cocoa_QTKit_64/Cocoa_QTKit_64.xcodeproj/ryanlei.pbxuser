@@ -56,13 +56,13 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 300298200;
-			PBXWorkspaceStateSaveDate = 300298200;
+			PBXPerProjectTemplateStateSaveDate = 300352662;
+			PBXWorkspaceStateSaveDate = 300352662;
 		};
 		perUserProjectItems = {
 			2E5E37F011E63B38003EB5E9 /* PBXTextBookmark */ = 2E5E37F011E63B38003EB5E9 /* PBXTextBookmark */;
-			2E5E37F111E63B38003EB5E9 /* PBXTextBookmark */ = 2E5E37F111E63B38003EB5E9 /* PBXTextBookmark */;
 			2E5E37F511E63C44003EB5E9 /* PBXTextBookmark */ = 2E5E37F511E63C44003EB5E9 /* PBXTextBookmark */;
+			2EAB724111E704B0008E2AB2 /* PBXTextBookmark */ = 2EAB724111E704B0008E2AB2 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 2E2E1E3F1165CCD400ACCC4E /* Source Control */;
 		userBuildSettings = {
@@ -111,7 +111,7 @@
 	};
 	2E2E1E421165CCFA00ACCC4E /* hello.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {807, 1008}}";
+			sepNavIntBoundsRect = "{{0, 0}, {807, 992}}";
 			sepNavSelRange = "{193, 0}";
 			sepNavVisRange = "{0, 570}";
 			sepNavWindowFrame = "{{15, 68}, {1187, 705}}";
@@ -127,17 +127,17 @@
 		vrLen = 1019;
 		vrLoc = 1287;
 	};
-	2E5E37F111E63B38003EB5E9 /* PBXTextBookmark */ = {
+	2E5E37F511E63C44003EB5E9 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 2E2E1E421165CCFA00ACCC4E /* hello.cpp */;
-		name = "hello.cpp: 52";
+		name = "hello.cpp: 7";
 		rLen = 0;
-		rLoc = 1339;
+		rLoc = 193;
 		rType = 0;
-		vrLen = 525;
-		vrLoc = 836;
+		vrLen = 570;
+		vrLoc = 0;
 	};
-	2E5E37F511E63C44003EB5E9 /* PBXTextBookmark */ = {
+	2EAB724111E704B0008E2AB2 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 2E2E1E421165CCFA00ACCC4E /* hello.cpp */;
 		name = "hello.cpp: 7";
@@ -153,11 +153,6 @@
 		name = highgui.h;
 		path = /usr/local/include/opencv/highgui.h;
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {894, 784}}";
-			sepNavSelRange = "{2306, 0}";
-			sepNavVisRange = "{1997, 309}";
-		};
 	};
 	8DD76F620486A84900D96B5E /* Cocoa_QTKit_64 */ = {
 		activeExec = 0;

@@ -1,0 +1,21 @@
+* My dataset consists of a subset of Caltech 101, with my modifications.
+  http://www.vision.caltech.edu/Image_Datasets/Caltech101/
+
+* Modifications:
+  I filtered out some mislabeled images, e.g., BACKGOUND_Google images that
+  contain faces.
+  I also removed those (few) with which our VW extraction tools failed to work.
+  
+* Number of images in each class (renamed class):
+  airplanes(Airplane): 800 (720 + 80)
+  BACKGROUND_Google(None): 368 (331 + 37)
+  Faces_easy(Face): 435 (391 + 44)
+  Motorbikes(Motorbike): 797 (717 + 80)
+  ========================================================
+  TOTAL: 2400 (2159 + 241), in which train : test = 9 : 1.
+
+* Filename lists
+  Along with the VW features are the filename lists for each class. You need 
+  these to run the demo mode, or "prediction(true)" correctly. See README.txt 
+  for how to put and name these folders.
+
